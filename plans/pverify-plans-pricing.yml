@@ -1,0 +1,99 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: pVerify
+providerId: pverify
+created: '2026-06-21'
+modified: '2026-06-21'
+reconciled: false
+tags:
+- Healthcare
+- Insurance
+- Eligibility
+- Claims
+- EDI
+- 270/271
+- Plans
+description: >-
+  pVerify sells its eligibility, claim status, and estimation APIs through a
+  sales-led, per-transaction model. Pricing is quoted per verification /
+  transaction and tiered by monthly volume and product mix, and is not
+  published as fixed self-service rates. Specific per-transaction prices are
+  not reconciled in this artifact and require a quote from pVerify sales.
+notes: >-
+  Exact per-transaction pricing is not publicly listed; figures must be
+  confirmed with pVerify sales during reconciliation.
+sources:
+- https://pverify.com/api-developers/
+- https://www.pverify.com/rest-api/
+- https://pverify.com/contact-support/
+plans:
+- id: pverify-per-transaction
+  name: Per-Transaction (Sales-Led)
+  type: usage
+  description: >-
+    Volume-tiered per-transaction pricing for real-time eligibility, claim
+    status, payer, and estimation API calls, quoted by pVerify sales.
+  entries:
+  - label: Real-Time Eligibility Verification
+    name: eligibility_transaction
+    type: usage
+    metric: transactions
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: contact sales (per-transaction, volume tiered)
+    userMultiplied: false
+  - label: Claim Status Inquiry
+    name: claim_status_transaction
+    type: usage
+    metric: transactions
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: contact sales (per-transaction, volume tiered)
+    userMultiplied: false
+  - label: Patient Cost Estimation
+    name: estimation_transaction
+    type: usage
+    metric: transactions
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: contact sales (per-transaction, volume tiered)
+    userMultiplied: false
+  elements:
+  - name: Eligibility Inquiry
+  - name: Eligibility Summary
+  - name: Batch Eligibility
+  - name: Claim Status
+  - name: Payers
+  - name: Estimation
+- id: pverify-enterprise
+  name: Enterprise
+  type: enterprise
+  description: >-
+    Negotiated agreements for health technology vendors, billing companies, and
+    high-volume providers, including batch processing, dedicated support, and
+    BAA / HIPAA terms. Contact pVerify sales.
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: Custom Volume Pricing
+  - name: Batch Processing
+  - name: BAA / HIPAA Compliance
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

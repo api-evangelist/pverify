@@ -1,0 +1,798 @@
+{
+  "item": [
+    {
+      "id": "9f3a1d10-1111-4a01-8a01-000000000001",
+      "name": "Authentication",
+      "description": {
+        "content": "OAuth2 token generation for the pVerify API.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9f3a1d10-1111-4a01-8a01-000000000002",
+          "name": "Generate an OAuth2 access token",
+          "request": {
+            "name": "Generate an OAuth2 access token",
+            "description": {
+              "content": "Exchanges Client_Id and Client_Secret for an OAuth2 bearer access token using the client_credentials grant.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "Token"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "Client_Id",
+                  "value": "<string>"
+                },
+                {
+                  "key": "Client_Secret",
+                  "value": "<string>"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9f3a1d10-1111-4a01-8a01-000000000003",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "Token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": []
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"access_token\": \"string\",\n  \"token_type\": \"bearer\",\n  \"expires_in\": 3600\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "9f3a1d10-1111-4a01-8a01-000000000010",
+      "name": "Eligibility",
+      "description": {
+        "content": "Real-time 270/271 eligibility verification and queue management.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9f3a1d10-1111-4a01-8a01-000000000011",
+          "name": "Real-time eligibility summary",
+          "request": {
+            "name": "Real-time eligibility summary",
+            "description": {
+              "content": "Posts a single real-time eligibility request and returns a condensed benefit summary.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "EligibilitySummary"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Client-API-Id",
+                "value": "{{clientApiId}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payerCode\": \"00001\",\n  \"payerName\": \"AETNA\",\n  \"provider\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"npi\": \"<string>\",\n    \"pin\": \"<string>\"\n  },\n  \"subscriber\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"dob\": \"01/01/1980\",\n    \"memberID\": \"<string>\"\n  },\n  \"isSubscriberPatient\": \"True\",\n  \"doS_StartDate\": \"06/21/2026\",\n  \"doS_EndDate\": \"06/21/2026\",\n  \"PracticeTypeCode\": \"1\",\n  \"referenceId\": \"<string>\",\n  \"Location\": \"<string>\",\n  \"IncludeTextResponse\": false,\n  \"InternalId\": \"<string>\",\n  \"CustomerID\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9f3a1d10-1111-4a01-8a01-000000000012",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "API",
+                    "EligibilitySummary"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"requestId\": \"string\",\n  \"APIResponseCode\": \"0\",\n  \"APIResponseMessage\": \"Processed\",\n  \"PayerName\": \"AETNA\",\n  \"PlanCoverageSummary\": {},\n  \"HBPC_Deductible_OOP_Summary\": {},\n  \"DemographicInfo\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9f3a1d10-1111-4a01-8a01-000000000013",
+          "name": "Real-time 270/271 eligibility inquiry",
+          "request": {
+            "name": "Real-time 270/271 eligibility inquiry",
+            "description": {
+              "content": "Posts a full 270 request and returns the detailed 271 response with a unique requestId.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "EligibilityInquiry"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Client-API-Id",
+                "value": "{{clientApiId}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payerCode\": \"00001\",\n  \"provider\": {\n    \"npi\": \"<string>\"\n  },\n  \"subscriber\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"dob\": \"01/01/1980\",\n    \"memberID\": \"<string>\"\n  },\n  \"isSubscriberPatient\": \"True\",\n  \"doS_StartDate\": \"06/21/2026\",\n  \"doS_EndDate\": \"06/21/2026\",\n  \"PracticeTypeCode\": \"1\",\n  \"IncludeTextResponse\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9f3a1d10-1111-4a01-8a01-000000000014",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "API",
+                    "EligibilityInquiry"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"requestId\": \"string\",\n  \"APIResponseCode\": \"0\",\n  \"APIResponseMessage\": \"Processed\",\n  \"Status\": \"Processed\",\n  \"EDIResponse\": \"string\",\n  \"ServiceDetails\": []\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9f3a1d10-1111-4a01-8a01-000000000015",
+          "name": "Retrieve a prior eligibility response",
+          "request": {
+            "name": "Retrieve a prior eligibility response",
+            "description": {
+              "content": "Returns the EligibilityInquiry response for a given requestId.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "GetEligibilityResponse"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "requestId",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Client-API-Id",
+                "value": "{{clientApiId}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9f3a1d10-1111-4a01-8a01-000000000016",
+          "name": "List pending inquiries",
+          "request": {
+            "name": "List pending inquiries",
+            "description": {
+              "content": "Returns eligibility inquiries still in a Pending state.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "GetPendingInquiries"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Client-API-Id",
+                "value": "{{clientApiId}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9f3a1d10-1111-4a01-8a01-000000000017",
+          "name": "Cancel a pending transaction",
+          "request": {
+            "name": "Cancel a pending transaction",
+            "description": {
+              "content": "Sets a pending inquiry's state to Cancel and removes it from the queue.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "CancelTransaction"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Client-API-Id",
+                "value": "{{clientApiId}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "9f3a1d10-1111-4a01-8a01-000000000020",
+      "name": "Batch",
+      "description": {
+        "content": "Asynchronous high-volume eligibility verification.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9f3a1d10-1111-4a01-8a01-000000000021",
+          "name": "Submit a batch of eligibility verifications",
+          "request": {
+            "name": "Submit a batch of eligibility verifications",
+            "description": {
+              "content": "Submits multiple eligibility verifications for asynchronous processing.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "BatchEligibility"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Client-API-Id",
+                "value": "{{clientApiId}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"batchReferenceId\": \"<string>\",\n  \"requests\": [\n    {\n      \"payerCode\": \"00001\",\n      \"provider\": {\n        \"npi\": \"<string>\"\n      },\n      \"subscriber\": {\n        \"memberID\": \"<string>\",\n        \"dob\": \"01/01/1980\"\n      },\n      \"doS_StartDate\": \"06/21/2026\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9f3a1d10-1111-4a01-8a01-000000000022",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "API",
+                    "BatchEligibility"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"batchId\": \"string\",\n  \"accepted\": 1,\n  \"status\": \"Queued\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "9f3a1d10-1111-4a01-8a01-000000000030",
+      "name": "Claim Status",
+      "description": {
+        "content": "Real-time 276/277 claim status inquiry.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9f3a1d10-1111-4a01-8a01-000000000031",
+          "name": "Real-time 276/277 claim status",
+          "request": {
+            "name": "Real-time 276/277 claim status",
+            "description": {
+              "content": "Posts a 276 claim status inquiry and returns the current 277 state for a claim.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "ClaimStatus"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Client-API-Id",
+                "value": "{{clientApiId}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payerCode\": \"00001\",\n  \"provider\": {\n    \"npi\": \"<string>\"\n  },\n  \"subscriber\": {\n    \"memberID\": \"<string>\",\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"dob\": \"01/01/1980\"\n  },\n  \"claimNumber\": \"<string>\",\n  \"claimChargeAmount\": \"100.00\",\n  \"serviceStartDate\": \"05/01/2026\",\n  \"serviceEndDate\": \"05/01/2026\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9f3a1d10-1111-4a01-8a01-000000000032",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "API",
+                    "ClaimStatus"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"requestId\": \"string\",\n  \"APIResponseCode\": \"0\",\n  \"APIResponseMessage\": \"Processed\",\n  \"claimStatusCategoryCode\": \"F1\",\n  \"claimStatusCode\": \"1\",\n  \"claimStatusDescription\": \"Processed\",\n  \"totalClaimChargeAmount\": \"100.00\",\n  \"claimPaymentAmount\": \"80.00\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "9f3a1d10-1111-4a01-8a01-000000000040",
+      "name": "Payers",
+      "description": {
+        "content": "Supported payer reference data.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9f3a1d10-1111-4a01-8a01-000000000041",
+          "name": "List supported payers",
+          "request": {
+            "name": "List supported payers",
+            "description": {
+              "content": "Returns the current pVerify payer list with codes, names, and capability flags.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "Payers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Client-API-Id",
+                "value": "{{clientApiId}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "response": [
+            {
+              "id": "9f3a1d10-1111-4a01-8a01-000000000042",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "API",
+                    "Payers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ]
+                },
+                "method": "GET"
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"payerCode\": \"00001\",\n    \"payerName\": \"AETNA\",\n    \"isActive\": true,\n    \"isSupportingEligibility\": true,\n    \"isSupportingClaims\": true,\n    \"isEDIPayer\": true\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "9f3a1d10-1111-4a01-8a01-000000000050",
+      "name": "Estimation",
+      "description": {
+        "content": "Patient cost / financial responsibility estimation.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9f3a1d10-1111-4a01-8a01-000000000051",
+          "name": "Patient cost estimation",
+          "request": {
+            "name": "Patient cost estimation",
+            "description": {
+              "content": "Estimates patient financial responsibility for a planned service.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "EstimationInquiry"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Client-API-Id",
+                "value": "{{clientApiId}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payerCode\": \"00001\",\n  \"provider\": {\n    \"npi\": \"<string>\"\n  },\n  \"subscriber\": {\n    \"memberID\": \"<string>\",\n    \"dob\": \"01/01/1980\"\n  },\n  \"serviceCptCodes\": [\n    \"99213\"\n  ],\n  \"placeOfService\": \"11\",\n  \"contractedAmount\": \"150.00\",\n  \"dateOfService\": \"06/21/2026\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9f3a1d10-1111-4a01-8a01-000000000052",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "API",
+                    "EstimationInquiry"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ]
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"requestId\": \"string\",\n  \"APIResponseCode\": \"0\",\n  \"APIResponseMessage\": \"Processed\",\n  \"estimatedPatientResponsibility\": \"45.00\",\n  \"estimatedInsurancePayment\": \"105.00\",\n  \"deductibleApplied\": \"0.00\",\n  \"coinsuranceApplied\": \"45.00\",\n  \"copayApplied\": \"0.00\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.pverify.com",
+      "key": "baseUrl"
+    },
+    {
+      "type": "string",
+      "value": "{{clientApiId}}",
+      "key": "clientApiId"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "9f3a1d10-1111-4a01-8a01-000000000000",
+    "name": "pVerify API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Real-time healthcare insurance eligibility, claim status, payer, and estimation API. OAuth2 bearer token from POST /Token plus a Client-API-Id header are required on all API calls.\n\nContact Support:\n Name: pVerify Support\n URL: https://pverify.com/contact-support/",
+      "type": "text/plain"
+    }
+  }
+}

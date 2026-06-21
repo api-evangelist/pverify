@@ -1,0 +1,66 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: pVerify
+providerId: pverify
+created: '2026-06-21'
+modified: '2026-06-21'
+reconciled: false
+tags:
+- Healthcare
+- Insurance
+- Eligibility
+- Claims
+- EDI
+- 270/271
+- Rate Limiting
+- Quotas
+- Throttling
+description: >-
+  pVerify's real-time API enforces per-account throughput controls on
+  synchronous eligibility, claim status, and estimation calls, and routes
+  high-volume work through its Batch API to avoid overloading the real-time
+  exchange. OAuth2 access tokens expire and must be refreshed periodically.
+  Specific request-per-minute and concurrency values are account- and
+  contract-specific and are not published; they are not reconciled in this
+  artifact.
+notes: >-
+  Confirm concurrency, per-minute, and daily limits, plus token lifetime,
+  with pVerify during onboarding and reconciliation.
+sources:
+- https://www.pverify.com/rest-api/
+- https://docs.pverify.io/
+- https://pverify.com/api-developers/
+responseCodes:
+  throttled: 429
+limits:
+- name: Real-Time Requests
+  scope: account
+  metric: requests
+  limit: see provider documentation
+  notes: Synchronous eligibility / claim status / estimation throughput, account specific.
+- name: Concurrency
+  scope: account
+  metric: concurrent_requests
+  limit: see provider documentation
+  notes: Maximum simultaneous in-flight real-time transactions, account specific.
+- name: Batch Eligibility
+  scope: account
+  metric: transactions
+  limit: see provider documentation
+  notes: High-volume verifications routed through the Batch API for async processing.
+- name: Access Token Lifetime
+  scope: account
+  metric: seconds
+  limit: see provider documentation
+  notes: OAuth2 bearer tokens expire (expires_in) and must be re-requested from /Token.
+policies:
+- name: Tiered Limits
+  description: Throughput allowances are set per contract and rise with committed volume.
+- name: Batch Routing
+  description: High-volume eligibility should use the Batch API rather than real-time calls.
+- name: Backoff Strategy
+  description: Clients should implement retry with backoff on 429 responses and refresh expired tokens.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

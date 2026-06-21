@@ -1,0 +1,97 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: pVerify
+providerId: pverify
+created: '2026-06-21'
+modified: '2026-06-21'
+reconciled: false
+tags:
+- Healthcare
+- Insurance
+- Eligibility
+- Claims
+- EDI
+- 270/271
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of pVerify spend. pVerify bills on a sales-led, per-transaction
+  model across real-time eligibility, claim status, and patient estimation
+  calls, tiered by monthly volume, with batch processing for high-volume work.
+  Exact per-transaction rates are not published and must be obtained from
+  pVerify sales, so cost figures here are not reconciled.
+notes: >-
+  Per-transaction rates and volume tiers are quote-based; verify with pVerify
+  sales during reconciliation.
+sources:
+- https://pverify.com/api-developers/
+- https://www.pverify.com/rest-api/
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: pVerify
+serviceCategory: Healthcare and Insurance
+billingModel:
+  pricingCategory: Usage-Based
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Usage
+  - Purchase
+focusColumns:
+  ServiceName: pVerify API
+  ServiceCategory: Healthcare and Insurance
+  ProviderName: pVerify
+  PublisherName: pVerify
+  InvoiceIssuerName: pVerify
+  BillingCurrency: USD
+  ChargeCategory: Usage
+  PricingCategory: Usage-Based
+meters:
+- name: eligibility_transactions
+  description: Real-time eligibility inquiry / summary calls, billed per transaction.
+  unit: transactions
+  aggregation: sum
+  dimensions:
+  - account
+  - payer
+  - api
+- name: claim_status_transactions
+  description: Real-time 276/277 claim status inquiries, billed per transaction.
+  unit: transactions
+  aggregation: sum
+  dimensions:
+  - account
+  - payer
+- name: estimation_transactions
+  description: Patient cost estimation calls, billed per transaction.
+  unit: transactions
+  aggregation: sum
+  dimensions:
+  - account
+  - payer
+- name: batch_transactions
+  description: Eligibility verifications processed through the Batch API.
+  unit: transactions
+  aggregation: sum
+  dimensions:
+  - account
+  - payer
+principles:
+- name: Visibility
+  description: Track per-transaction counts by API, payer, and Client-API-Id against invoices.
+- name: Allocation
+  description: Tag transactions by practice/location/customer (referenceId, Location, CustomerID) to map spend to cost centers.
+- name: Optimization
+  description: Route high-volume verifications through the Batch API; use Eligibility Summary instead of full Inquiry where the condensed benefit set suffices; avoid redundant re-verification.
+- name: Accountability
+  description: Assign owners per Client-API-Id; review monthly transaction volume against contracted tiers.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

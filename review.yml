@@ -1,0 +1,68 @@
+aid: pverify
+name: pVerify
+review:
+  question: Does pVerify expose a documented public WebSocket API?
+  answer: false
+  date: '2026-06-21'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was created. pVerify's API is a synchronous
+    request/response REST surface over HTTPS. No Server-Sent Events (SSE) or
+    WebSocket streaming transport is documented, so there is no event-driven
+    surface in scope for AsyncAPI modeling.
+findings:
+  summary: |
+    pVerify does not publish a documented public WebSocket API. The pVerify
+    Real-Time Exchange is a one-to-one, synchronous REST service under
+    https://api.pverify.com. Clients POST a request and receive an immediate
+    HTTPS JSON response for each call. OAuth2 bearer tokens are minted at
+    POST /Token and sent alongside a Client-API-Id header. High-volume work is
+    handled by a Batch API and an asynchronous pending-queue pattern
+    (GetEligibilityResponse / GetPendingInquiries / CancelTransaction), all
+    over REST polling - not WebSocket. No realtime, bidirectional, or
+    streaming WebSocket (ws:// or wss://) endpoint is documented.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.pverify.com
+      documented: true
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented in pVerify's API reference or developer materials as of the review date.
+  endpointsConfirmedRest:
+    - POST https://api.pverify.com/Token
+    - POST https://api.pverify.com/API/EligibilitySummary
+    - POST https://api.pverify.com/API/EligibilityInquiry
+    - GET  https://api.pverify.com/API/GetEligibilityResponse
+    - GET  https://api.pverify.com/API/GetPendingInquiries
+    - POST https://api.pverify.com/API/CancelTransaction
+    - POST https://api.pverify.com/API/BatchEligibility
+    - POST https://api.pverify.com/API/ClaimStatus
+    - GET  https://api.pverify.com/API/Payers
+    - POST https://api.pverify.com/API/EstimationInquiry
+sources:
+  - url: https://www.pverify.com/rest-api/
+    type: APIReference
+    note: Describes the one-to-one real-time REST exchange and the /Token and /API/EligibilitySummary calls.
+  - url: https://docs.pverify.io/
+    type: Documentation
+    note: API reference portal; all documented endpoints are HTTPS REST.
+  - url: https://pverify.com/api-developers/
+    type: Documentation
+    note: Developer hub; lists RESTful API plus EDI/HL7/FHIR/SOAP options, no WebSocket.
+  - url: https://www.pverify.com/claim-status/
+    type: Documentation
+    note: Claim status is a synchronous 276/277 REST inquiry, not a streaming surface.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket or SSE protocol surface exists. pVerify is a synchronous
+    REST API with an asynchronous polling pattern for batch/pending work, so
+    no AsyncAPI document was authored. The apis.yml catalogs the documented
+    REST APIs only.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

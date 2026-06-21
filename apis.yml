@@ -1,0 +1,175 @@
+aid: pverify
+url: https://raw.githubusercontent.com/api-evangelist/pverify/refs/heads/main/apis.yml
+name: pVerify
+kind: company
+description: pVerify provides real-time healthcare insurance eligibility verification
+  and revenue-cycle APIs. Its RESTful API at https://api.pverify.com exchanges EDI
+  270/271 eligibility transactions, returns plan and benefit summaries, checks claim
+  status (276/277), lists supported payers, and estimates patient financial
+  responsibility, secured with OAuth2 bearer tokens.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Healthcare
+- Insurance
+- Eligibility
+- Claims
+- EDI
+- 270/271
+created: '2026-06-21'
+modified: '2026-06-21'
+specificationVersion: '0.19'
+apis:
+- aid: pverify:eligibility-inquiry
+  name: pVerify Eligibility Inquiry API
+  tags:
+  - Eligibility
+  - 270/271
+  - Real Time
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.pverify.io/
+  baseURL: https://api.pverify.com
+  properties:
+  - url: https://docs.pverify.io/
+    type: Documentation
+  - url: https://www.pverify.com/rest-api/
+    type: APIReference
+  - url: openapi/pverify-openapi.yml
+    type: OpenAPI
+  - url: collections/pverify.postman_collection.json
+    type: PostmanCollection
+  - url: collections/pverify.opencollection.json
+    type: OpenCollection
+  description: Real-time 270/271 eligibility inquiry that posts a full benefit
+    request to a payer and returns the detailed 271 response, with asynchronous
+    retrieval (GetEligibilityResponse), pending-queue listing (GetPendingInquiries),
+    and transaction cancellation (CancelTransaction).
+- aid: pverify:eligibility-summary
+  name: pVerify Eligibility Summary API
+  tags:
+  - Eligibility
+  - Benefits
+  - Summary
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.pverify.io/
+  baseURL: https://api.pverify.com
+  properties:
+  - url: https://docs.pverify.io/
+    type: Documentation
+  - url: https://www.pverify.com/rest-api/
+    type: APIReference
+  - url: openapi/pverify-openapi.yml
+    type: OpenAPI
+  - url: collections/pverify.postman_collection.json
+    type: PostmanCollection
+  - url: collections/pverify.opencollection.json
+    type: OpenCollection
+  description: Posts a single real-time eligibility request and returns a
+    condensed, practice-type-specific summary of plan, coverage, copay,
+    coinsurance, deductible, and out-of-pocket benefits.
+- aid: pverify:batch
+  name: pVerify Batch Eligibility API
+  tags:
+  - Batch
+  - Eligibility
+  - Async
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.pverify.io/
+  baseURL: https://api.pverify.com
+  properties:
+  - url: https://docs.pverify.io/
+    type: Documentation
+  - url: openapi/pverify-openapi.yml
+    type: OpenAPI
+  - url: collections/pverify.postman_collection.json
+    type: PostmanCollection
+  - url: collections/pverify.opencollection.json
+    type: OpenCollection
+  description: Submits many eligibility verifications in a single batch for
+    asynchronous processing and later retrieval of completed results.
+- aid: pverify:claim-status
+  name: pVerify Claim Status API
+  tags:
+  - Claims
+  - 276/277
+  - Claim Status
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.pverify.io/
+  baseURL: https://api.pverify.com
+  properties:
+  - url: https://docs.pverify.io/
+    type: Documentation
+  - url: https://www.pverify.com/claim-status/
+    type: APIReference
+  - url: openapi/pverify-openapi.yml
+    type: OpenAPI
+  - url: collections/pverify.postman_collection.json
+    type: PostmanCollection
+  - url: collections/pverify.opencollection.json
+    type: OpenCollection
+  description: Real-time 276/277 claim status inquiry returning the current
+    processing state, dates, and amounts for a submitted claim direct from the
+    payer.
+- aid: pverify:payers
+  name: pVerify Payers API
+  tags:
+  - Payers
+  - Reference Data
+  - Catalog
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.pverify.io/
+  baseURL: https://api.pverify.com
+  properties:
+  - url: https://docs.pverify.io/
+    type: Documentation
+  - url: https://pverify.com/payer-list/
+    type: APIReference
+  - url: openapi/pverify-openapi.yml
+    type: OpenAPI
+  - url: collections/pverify.postman_collection.json
+    type: PostmanCollection
+  - url: collections/pverify.opencollection.json
+    type: OpenCollection
+  description: Returns the current pVerify payer list with payerCode, payerName,
+    and capability flags (isActive, isSupportingEligibility, isSupportingClaims,
+    isEDIPayer) for mapping requests to supported insurers.
+- aid: pverify:estimation
+  name: pVerify Estimation API
+  tags:
+  - Estimation
+  - Price Transparency
+  - Patient Responsibility
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.pverify.io/
+  baseURL: https://api.pverify.com
+  properties:
+  - url: https://docs.pverify.io/
+    type: Documentation
+  - url: https://www.pverify.com/patient-estimator/
+    type: APIReference
+  - url: openapi/pverify-openapi.yml
+    type: OpenAPI
+  - url: collections/pverify.postman_collection.json
+    type: PostmanCollection
+  - url: collections/pverify.opencollection.json
+    type: OpenCollection
+  description: Patient cost estimation that combines real-time benefits with
+    contracted/fee data to estimate patient financial responsibility for planned
+    services.
+common:
+- type: GitHubOrganization
+  url: https://github.com/pVerify
+- type: LinkedIn
+  url: https://www.linkedin.com/company/pverify
+- type: Website
+  url: https://www.pverify.com
+- type: Documentation
+  url: https://docs.pverify.io/
+- type: Plans
+  url: plans/pverify-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/pverify-rate-limits.yml
+- type: FinOps
+  url: finops/pverify-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

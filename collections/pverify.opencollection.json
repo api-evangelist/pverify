@@ -1,0 +1,201 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "pVerify API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Authentication",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Generate an OAuth2 access token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.pverify.com/Token",
+            "body": {
+              "type": "urlencoded",
+              "data": "Client_Id=<string>&Client_Secret=<string>&grant_type=client_credentials"
+            }
+          },
+          "docs": "Exchanges Client_Id and Client_Secret for an OAuth2 bearer access token using the client_credentials grant."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Eligibility",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Real-time eligibility summary",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.pverify.com/API/EligibilitySummary",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Posts a single real-time eligibility request and returns a condensed, practice-type-specific benefit summary."
+        },
+        {
+          "info": {
+            "name": "Real-time 270/271 eligibility inquiry",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.pverify.com/API/EligibilityInquiry",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Posts a full 270 request and returns the detailed 271 response with a unique requestId."
+        },
+        {
+          "info": {
+            "name": "Retrieve a prior eligibility response",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.pverify.com/API/GetEligibilityResponse?requestId=<string>"
+          },
+          "docs": "Returns the same response produced by an EligibilityInquiry POST using its requestId."
+        },
+        {
+          "info": {
+            "name": "List pending inquiries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.pverify.com/API/GetPendingInquiries"
+          },
+          "docs": "Returns the list of eligibility inquiries still in a Pending state."
+        },
+        {
+          "info": {
+            "name": "Cancel a pending transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.pverify.com/API/CancelTransaction",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets a pending inquiry's state to Cancel and removes it from the queue."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Batch",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Submit a batch of eligibility verifications",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.pverify.com/API/BatchEligibility",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submits multiple eligibility verifications in a single request for asynchronous processing."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Claim Status",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Real-time 276/277 claim status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.pverify.com/API/ClaimStatus",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Posts a 276 claim status inquiry and returns the current 277 state, dates, and amounts for a claim."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Payers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List supported payers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.pverify.com/API/Payers"
+          },
+          "docs": "Returns the current pVerify payer list with codes, names, and capability flags."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Estimation",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Patient cost estimation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.pverify.com/API/EstimationInquiry",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Combines real-time benefits with contracted/fee data to estimate patient financial responsibility."
+        }
+      ]
+    }
+  ]
+}
