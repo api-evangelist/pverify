@@ -156,6 +156,10 @@ apis:
     contracted/fee data to estimate patient financial responsibility for planned
     services.
 common:
+- type: DomainSecurity
+  url: security/pverify-domain-security.yml
+- type: Authentication
+  url: authentication/pverify-authentication.yml
 - type: GitHubOrganization
   url: https://github.com/pVerify
 - type: LinkedIn
@@ -170,6 +174,8 @@ common:
   url: rate-limits/pverify-rate-limits.yml
 - type: FinOps
   url: finops/pverify-finops.yml
+- type: Blog
+  url: https://pverify.com/blog/
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

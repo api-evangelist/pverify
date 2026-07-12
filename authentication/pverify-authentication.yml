@@ -1,0 +1,23 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/pverify-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  description: OAuth2 access token returned by the /Token endpoint.
+  sources:
+  - openapi/pverify-openapi.yml
+- name: clientApiId
+  type: apiKey
+  in: header
+  parameter: Client-API-Id
+  description: Client API identifier issued by pVerify, required on all API calls.
+  sources:
+  - openapi/pverify-openapi.yml

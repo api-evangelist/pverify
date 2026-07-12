@@ -1,0 +1,32 @@
+generated: '2026-07-11'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: www.pverify.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 17 05:56:56 2026 GMT
+  hsts: false
+- host: docs.pverify.io
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  4 07:44:14 2026 GMT
+  hsts: null
+- host: api.pverify.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Jan 18 23:59:59 2027 GMT
+  hsts: true
+  hsts_max_age: 600
+domains:
+- domain: pverify.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject
+- domain: pverify.io
+  dnssec: false
+  caa: []
+  spf: false
+  dmarc: false
