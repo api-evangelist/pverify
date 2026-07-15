@@ -156,6 +156,8 @@ apis:
     contracted/fee data to estimate patient financial responsibility for planned
     services.
 common:
+- type: AgenticAccess
+  url: agentic-access/pverify-agentic-access.yml
 - type: DomainSecurity
   url: security/pverify-domain-security.yml
 - type: Authentication
