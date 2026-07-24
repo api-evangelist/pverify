@@ -1,0 +1,61 @@
+openapi: 3.0.1
+info:
+  title: pVerify Authentication Payers API
+  description: Real-time healthcare insurance eligibility and revenue-cycle API. pVerify exchanges EDI 270/271 eligibility transactions, returns plan and benefit summaries, checks 276/277 claim status, lists supported payers, and estimates patient financial responsibility. All API calls require an OAuth2 bearer token obtained from the /Token endpoint and a Client-API-Id header.
+  termsOfService: https://www.pverify.com/terms-of-use/
+  contact:
+    name: pVerify Support
+    url: https://pverify.com/contact-support/
+  version: '1.0'
+servers:
+- url: https://api.pverify.com
+  description: Production
+security:
+- bearerAuth: []
+  clientApiId: []
+tags:
+- name: Payers
+paths:
+  /API/Payers:
+    get:
+      operationId: getPayers
+      tags:
+      - Payers
+      summary: List supported payers
+      description: Returns the current pVerify payer list with codes, names, and capability flags used to map a request to a supported insurer.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payer'
+components:
+  schemas:
+    Payer:
+      type: object
+      properties:
+        payerCode:
+          type: string
+        payerName:
+          type: string
+        isActive:
+          type: boolean
+        isSupportingEligibility:
+          type: boolean
+        isSupportingClaims:
+          type: boolean
+        isEDIPayer:
+          type: boolean
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: OAuth2 access token returned by the /Token endpoint.
+    clientApiId:
+      type: apiKey
+      in: header
+      name: Client-API-Id
+      description: Client API identifier issued by pVerify, required on all API calls.

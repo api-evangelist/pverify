@@ -1,0 +1,78 @@
+openapi: 3.0.1
+info:
+  title: pVerify Authentication API
+  description: Real-time healthcare insurance eligibility and revenue-cycle API. pVerify exchanges EDI 270/271 eligibility transactions, returns plan and benefit summaries, checks 276/277 claim status, lists supported payers, and estimates patient financial responsibility. All API calls require an OAuth2 bearer token obtained from the /Token endpoint and a Client-API-Id header.
+  termsOfService: https://www.pverify.com/terms-of-use/
+  contact:
+    name: pVerify Support
+    url: https://pverify.com/contact-support/
+  version: '1.0'
+servers:
+- url: https://api.pverify.com
+  description: Production
+security:
+- bearerAuth: []
+  clientApiId: []
+tags:
+- name: Authentication
+paths:
+  /Token:
+    post:
+      operationId: createToken
+      tags:
+      - Authentication
+      summary: Generate an OAuth2 access token
+      description: Exchanges Client_Id and Client_Secret for an OAuth2 bearer access token using the client_credentials grant. The returned access_token is sent as an Authorization bearer header on all subsequent API calls.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+components:
+  schemas:
+    TokenRequest:
+      type: object
+      required:
+      - Client_Id
+      - Client_Secret
+      - grant_type
+      properties:
+        Client_Id:
+          type: string
+        Client_Secret:
+          type: string
+        grant_type:
+          type: string
+          default: client_credentials
+          enum:
+          - client_credentials
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          example: bearer
+        expires_in:
+          type: integer
+          description: Token lifetime in seconds.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: OAuth2 access token returned by the /Token endpoint.
+    clientApiId:
+      type: apiKey
+      in: header
+      name: Client-API-Id
+      description: Client API identifier issued by pVerify, required on all API calls.

@@ -1,0 +1,115 @@
+openapi: 3.0.1
+info:
+  title: pVerify Authentication Estimation API
+  description: Real-time healthcare insurance eligibility and revenue-cycle API. pVerify exchanges EDI 270/271 eligibility transactions, returns plan and benefit summaries, checks 276/277 claim status, lists supported payers, and estimates patient financial responsibility. All API calls require an OAuth2 bearer token obtained from the /Token endpoint and a Client-API-Id header.
+  termsOfService: https://www.pverify.com/terms-of-use/
+  contact:
+    name: pVerify Support
+    url: https://pverify.com/contact-support/
+  version: '1.0'
+servers:
+- url: https://api.pverify.com
+  description: Production
+security:
+- bearerAuth: []
+  clientApiId: []
+tags:
+- name: Estimation
+paths:
+  /API/EstimationInquiry:
+    post:
+      operationId: estimationInquiry
+      tags:
+      - Estimation
+      summary: Patient cost estimation
+      description: Combines real-time benefits with contracted/fee data to estimate the patient's financial responsibility for a planned service.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EstimationRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EstimationResponse'
+components:
+  schemas:
+    Provider:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        npi:
+          type: string
+        pin:
+          type: string
+    Subscriber:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dob:
+          type: string
+          description: Date of birth (MM/DD/YYYY).
+        memberID:
+          type: string
+    EstimationResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+        APIResponseCode:
+          type: string
+        APIResponseMessage:
+          type: string
+        estimatedPatientResponsibility:
+          type: string
+        estimatedInsurancePayment:
+          type: string
+        deductibleApplied:
+          type: string
+        coinsuranceApplied:
+          type: string
+        copayApplied:
+          type: string
+    EstimationRequest:
+      type: object
+      required:
+      - payerCode
+      - provider
+      - subscriber
+      properties:
+        payerCode:
+          type: string
+        provider:
+          $ref: '#/components/schemas/Provider'
+        subscriber:
+          $ref: '#/components/schemas/Subscriber'
+        serviceCptCodes:
+          type: array
+          items:
+            type: string
+        placeOfService:
+          type: string
+        contractedAmount:
+          type: string
+        dateOfService:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: OAuth2 access token returned by the /Token endpoint.
+    clientApiId:
+      type: apiKey
+      in: header
+      name: Client-API-Id
+      description: Client API identifier issued by pVerify, required on all API calls.

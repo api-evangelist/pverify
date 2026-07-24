@@ -1,0 +1,113 @@
+openapi: 3.0.1
+info:
+  title: pVerify Authentication Claim Status API
+  description: Real-time healthcare insurance eligibility and revenue-cycle API. pVerify exchanges EDI 270/271 eligibility transactions, returns plan and benefit summaries, checks 276/277 claim status, lists supported payers, and estimates patient financial responsibility. All API calls require an OAuth2 bearer token obtained from the /Token endpoint and a Client-API-Id header.
+  termsOfService: https://www.pverify.com/terms-of-use/
+  contact:
+    name: pVerify Support
+    url: https://pverify.com/contact-support/
+  version: '1.0'
+servers:
+- url: https://api.pverify.com
+  description: Production
+security:
+- bearerAuth: []
+  clientApiId: []
+tags:
+- name: Claim Status
+paths:
+  /API/ClaimStatus:
+    post:
+      operationId: claimStatus
+      tags:
+      - Claim Status
+      summary: Real-time 276/277 claim status
+      description: Posts a real-time 276 claim status inquiry and returns the current 277 processing state, dates, and amounts for a submitted claim.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClaimStatusRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClaimStatusResponse'
+components:
+  schemas:
+    ClaimStatusResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+        APIResponseCode:
+          type: string
+        APIResponseMessage:
+          type: string
+        claimStatusCategoryCode:
+          type: string
+        claimStatusCode:
+          type: string
+        claimStatusDescription:
+          type: string
+        totalClaimChargeAmount:
+          type: string
+        claimPaymentAmount:
+          type: string
+    Provider:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        npi:
+          type: string
+        pin:
+          type: string
+    Subscriber:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dob:
+          type: string
+          description: Date of birth (MM/DD/YYYY).
+        memberID:
+          type: string
+    ClaimStatusRequest:
+      type: object
+      required:
+      - payerCode
+      - provider
+      - subscriber
+      properties:
+        payerCode:
+          type: string
+        provider:
+          $ref: '#/components/schemas/Provider'
+        subscriber:
+          $ref: '#/components/schemas/Subscriber'
+        claimNumber:
+          type: string
+        claimChargeAmount:
+          type: string
+        serviceStartDate:
+          type: string
+        serviceEndDate:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: OAuth2 access token returned by the /Token endpoint.
+    clientApiId:
+      type: apiKey
+      in: header
+      name: Client-API-Id
+      description: Client API identifier issued by pVerify, required on all API calls.

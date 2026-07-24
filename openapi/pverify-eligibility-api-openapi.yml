@@ -1,0 +1,268 @@
+openapi: 3.0.1
+info:
+  title: pVerify Authentication Eligibility API
+  description: Real-time healthcare insurance eligibility and revenue-cycle API. pVerify exchanges EDI 270/271 eligibility transactions, returns plan and benefit summaries, checks 276/277 claim status, lists supported payers, and estimates patient financial responsibility. All API calls require an OAuth2 bearer token obtained from the /Token endpoint and a Client-API-Id header.
+  termsOfService: https://www.pverify.com/terms-of-use/
+  contact:
+    name: pVerify Support
+    url: https://pverify.com/contact-support/
+  version: '1.0'
+servers:
+- url: https://api.pverify.com
+  description: Production
+security:
+- bearerAuth: []
+  clientApiId: []
+tags:
+- name: Eligibility
+paths:
+  /API/EligibilitySummary:
+    post:
+      operationId: eligibilitySummary
+      tags:
+      - Eligibility
+      summary: Real-time eligibility summary
+      description: Posts a single real-time eligibility request to the payer and returns a condensed, practice-type-specific summary of plan, coverage, copay, coinsurance, deductible, and out-of-pocket benefits.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EligibilityRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EligibilitySummaryResponse'
+  /API/EligibilityInquiry:
+    post:
+      operationId: eligibilityInquiry
+      tags:
+      - Eligibility
+      summary: Real-time 270/271 eligibility inquiry
+      description: Posts a full 270 eligibility request and returns the detailed 271 response, including a unique requestId that can be used with GetEligibilityResponse to retrieve the same result asynchronously.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EligibilityRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EligibilityInquiryResponse'
+  /API/GetEligibilityResponse:
+    get:
+      operationId: getEligibilityResponse
+      tags:
+      - Eligibility
+      summary: Retrieve a prior eligibility response
+      description: Returns the same response produced by an EligibilityInquiry POST using the unique requestId returned in that inquiry's response.
+      parameters:
+      - name: requestId
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EligibilityInquiryResponse'
+  /API/GetPendingInquiries:
+    get:
+      operationId: getPendingInquiries
+      tags:
+      - Eligibility
+      summary: List pending inquiries
+      description: Returns the list of eligibility inquiries still in a Pending state.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PendingInquiry'
+  /API/CancelTransaction:
+    post:
+      operationId: cancelTransaction
+      tags:
+      - Eligibility
+      summary: Cancel a pending transaction
+      description: Sets a pending inquiry's state to Cancel and removes it from the processing queue.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelTransactionRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+components:
+  schemas:
+    EligibilityInquiryResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+        APIResponseCode:
+          type: string
+        APIResponseMessage:
+          type: string
+        Status:
+          type: string
+        EDIResponse:
+          type: string
+          description: Raw 271 EDI response when requested.
+        ServiceDetails:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    EligibilityRequest:
+      type: object
+      required:
+      - payerCode
+      - provider
+      - subscriber
+      properties:
+        payerCode:
+          type: string
+          description: pVerify payer code identifying the target insurer.
+        payerName:
+          type: string
+        provider:
+          $ref: '#/components/schemas/Provider'
+        subscriber:
+          $ref: '#/components/schemas/Subscriber'
+        dependent:
+          $ref: '#/components/schemas/Dependent'
+        isSubscriberPatient:
+          type: string
+          description: '"True" if the subscriber is the patient, otherwise "False".'
+        doS_StartDate:
+          type: string
+          description: Date of service start (MM/DD/YYYY).
+        doS_EndDate:
+          type: string
+          description: Date of service end (MM/DD/YYYY).
+        PracticeTypeCode:
+          type: string
+          description: Code identifying the practice type / benefit set requested.
+        referenceId:
+          type: string
+        Location:
+          type: string
+        IncludeTextResponse:
+          type: boolean
+        InternalId:
+          type: string
+        CustomerID:
+          type: string
+    Provider:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        npi:
+          type: string
+        pin:
+          type: string
+    Subscriber:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dob:
+          type: string
+          description: Date of birth (MM/DD/YYYY).
+        memberID:
+          type: string
+    PendingInquiry:
+      type: object
+      properties:
+        requestId:
+          type: string
+        status:
+          type: string
+        submittedDate:
+          type: string
+        payerCode:
+          type: string
+    StatusResponse:
+      type: object
+      properties:
+        APIResponseCode:
+          type: string
+        APIResponseMessage:
+          type: string
+        Status:
+          type: string
+    EligibilitySummaryResponse:
+      type: object
+      properties:
+        requestId:
+          type: string
+        APIResponseCode:
+          type: string
+        APIResponseMessage:
+          type: string
+        PayerName:
+          type: string
+        PlanCoverageSummary:
+          type: object
+          additionalProperties: true
+        HBPC_Deductible_OOP_Summary:
+          type: object
+          additionalProperties: true
+        DemographicInfo:
+          type: object
+          additionalProperties: true
+    Dependent:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dob:
+          type: string
+        gender:
+          type: string
+        patientRelationship:
+          type: string
+    CancelTransactionRequest:
+      type: object
+      required:
+      - requestId
+      properties:
+        requestId:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: OAuth2 access token returned by the /Token endpoint.
+    clientApiId:
+      type: apiKey
+      in: header
+      name: Client-API-Id
+      description: Client API identifier issued by pVerify, required on all API calls.
