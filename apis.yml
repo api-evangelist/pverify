@@ -7,7 +7,20 @@ description: pVerify provides real-time healthcare insurance eligibility verific
   270/271 eligibility transactions, returns plan and benefit summaries, checks claim
   status (276/277), lists supported payers, and estimates patient financial
   responsibility, secured with OAuth2 bearer tokens.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: enterprise
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Enterprise · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/pverify.png
 tags:
 - Healthcare
 - Insurance
@@ -19,142 +32,150 @@ created: '2026-06-21'
 modified: '2026-06-21'
 specificationVersion: '0.19'
 apis:
-- aid: pverify:eligibility-inquiry
-  name: pVerify Eligibility Inquiry API
-  tags:
-  - Eligibility
-  - 270/271
-  - Real Time
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+- aid: pverify:pverify-authentication-api
+  name: pVerify Authentication API
+  description: The Authentication API from pVerify — 1 operation(s) for authentication.
   humanURL: https://docs.pverify.io/
   baseURL: https://api.pverify.com
-  properties:
-  - url: https://docs.pverify.io/
-    type: Documentation
-  - url: https://www.pverify.com/rest-api/
-    type: APIReference
-  - url: openapi/pverify-openapi.yml
-    type: OpenAPI
-  - url: collections/pverify.postman_collection.json
-    type: PostmanCollection
-  - url: collections/pverify.opencollection.json
-    type: OpenCollection
-  description: Real-time 270/271 eligibility inquiry that posts a full benefit
-    request to a payer and returns the detailed 271 response, with asynchronous
-    retrieval (GetEligibilityResponse), pending-queue listing (GetPendingInquiries),
-    and transaction cancellation (CancelTransaction).
-- aid: pverify:eligibility-summary
-  name: pVerify Eligibility Summary API
   tags:
-  - Eligibility
-  - Benefits
-  - Summary
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  - Authentication
+  properties:
+  - type: OpenAPI
+    url: openapi/pverify-authentication-api-openapi.yml
+  - type: Documentation
+    url: https://docs.pverify.io/
+  - type: APIReference
+    url: https://www.pverify.com/rest-api/
+  - type: PostmanCollection
+    url: collections/pverify.postman_collection.json
+  - type: OpenCollection
+    url: collections/pverify.opencollection.json
+  - type: APIReference
+    url: https://www.pverify.com/claim-status/
+  - type: APIReference
+    url: https://pverify.com/payer-list/
+  - type: APIReference
+    url: https://www.pverify.com/patient-estimator/
+- aid: pverify:pverify-batch-api
+  name: pVerify Batch API
+  description: The Batch API from pVerify — 1 operation(s) for batch.
   humanURL: https://docs.pverify.io/
   baseURL: https://api.pverify.com
-  properties:
-  - url: https://docs.pverify.io/
-    type: Documentation
-  - url: https://www.pverify.com/rest-api/
-    type: APIReference
-  - url: openapi/pverify-openapi.yml
-    type: OpenAPI
-  - url: collections/pverify.postman_collection.json
-    type: PostmanCollection
-  - url: collections/pverify.opencollection.json
-    type: OpenCollection
-  description: Posts a single real-time eligibility request and returns a
-    condensed, practice-type-specific summary of plan, coverage, copay,
-    coinsurance, deductible, and out-of-pocket benefits.
-- aid: pverify:batch
-  name: pVerify Batch Eligibility API
   tags:
   - Batch
-  - Eligibility
-  - Async
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.pverify.io/
-  baseURL: https://api.pverify.com
   properties:
-  - url: https://docs.pverify.io/
-    type: Documentation
-  - url: openapi/pverify-openapi.yml
-    type: OpenAPI
-  - url: collections/pverify.postman_collection.json
-    type: PostmanCollection
-  - url: collections/pverify.opencollection.json
-    type: OpenCollection
-  description: Submits many eligibility verifications in a single batch for
-    asynchronous processing and later retrieval of completed results.
-- aid: pverify:claim-status
+  - type: OpenAPI
+    url: openapi/pverify-batch-api-openapi.yml
+  - type: Documentation
+    url: https://docs.pverify.io/
+  - type: APIReference
+    url: https://www.pverify.com/rest-api/
+  - type: PostmanCollection
+    url: collections/pverify.postman_collection.json
+  - type: OpenCollection
+    url: collections/pverify.opencollection.json
+  - type: APIReference
+    url: https://www.pverify.com/claim-status/
+  - type: APIReference
+    url: https://pverify.com/payer-list/
+  - type: APIReference
+    url: https://www.pverify.com/patient-estimator/
+- aid: pverify:pverify-claim-status-api
   name: pVerify Claim Status API
+  description: The Claim Status API from pVerify — 1 operation(s) for claim status.
+  humanURL: https://docs.pverify.io/
+  baseURL: https://api.pverify.com
   tags:
-  - Claims
-  - 276/277
   - Claim Status
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  properties:
+  - type: OpenAPI
+    url: openapi/pverify-claim-status-api-openapi.yml
+  - type: Documentation
+    url: https://docs.pverify.io/
+  - type: APIReference
+    url: https://www.pverify.com/rest-api/
+  - type: PostmanCollection
+    url: collections/pverify.postman_collection.json
+  - type: OpenCollection
+    url: collections/pverify.opencollection.json
+  - type: APIReference
+    url: https://www.pverify.com/claim-status/
+  - type: APIReference
+    url: https://pverify.com/payer-list/
+  - type: APIReference
+    url: https://www.pverify.com/patient-estimator/
+- aid: pverify:pverify-eligibility-api
+  name: pVerify Eligibility API
+  description: The Eligibility API from pVerify — 5 operation(s) for eligibility.
   humanURL: https://docs.pverify.io/
   baseURL: https://api.pverify.com
-  properties:
-  - url: https://docs.pverify.io/
-    type: Documentation
-  - url: https://www.pverify.com/claim-status/
-    type: APIReference
-  - url: openapi/pverify-openapi.yml
-    type: OpenAPI
-  - url: collections/pverify.postman_collection.json
-    type: PostmanCollection
-  - url: collections/pverify.opencollection.json
-    type: OpenCollection
-  description: Real-time 276/277 claim status inquiry returning the current
-    processing state, dates, and amounts for a submitted claim direct from the
-    payer.
-- aid: pverify:payers
-  name: pVerify Payers API
   tags:
-  - Payers
-  - Reference Data
-  - Catalog
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  - Eligibility
+  properties:
+  - type: OpenAPI
+    url: openapi/pverify-eligibility-api-openapi.yml
+  - type: Documentation
+    url: https://docs.pverify.io/
+  - type: APIReference
+    url: https://www.pverify.com/rest-api/
+  - type: PostmanCollection
+    url: collections/pverify.postman_collection.json
+  - type: OpenCollection
+    url: collections/pverify.opencollection.json
+  - type: APIReference
+    url: https://www.pverify.com/claim-status/
+  - type: APIReference
+    url: https://pverify.com/payer-list/
+  - type: APIReference
+    url: https://www.pverify.com/patient-estimator/
+- aid: pverify:pverify-estimation-api
+  name: pVerify Estimation API
+  description: The Estimation API from pVerify — 1 operation(s) for estimation.
   humanURL: https://docs.pverify.io/
   baseURL: https://api.pverify.com
-  properties:
-  - url: https://docs.pverify.io/
-    type: Documentation
-  - url: https://pverify.com/payer-list/
-    type: APIReference
-  - url: openapi/pverify-openapi.yml
-    type: OpenAPI
-  - url: collections/pverify.postman_collection.json
-    type: PostmanCollection
-  - url: collections/pverify.opencollection.json
-    type: OpenCollection
-  description: Returns the current pVerify payer list with payerCode, payerName,
-    and capability flags (isActive, isSupportingEligibility, isSupportingClaims,
-    isEDIPayer) for mapping requests to supported insurers.
-- aid: pverify:estimation
-  name: pVerify Estimation API
   tags:
   - Estimation
-  - Price Transparency
-  - Patient Responsibility
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  properties:
+  - type: OpenAPI
+    url: openapi/pverify-estimation-api-openapi.yml
+  - type: Documentation
+    url: https://docs.pverify.io/
+  - type: APIReference
+    url: https://www.pverify.com/rest-api/
+  - type: PostmanCollection
+    url: collections/pverify.postman_collection.json
+  - type: OpenCollection
+    url: collections/pverify.opencollection.json
+  - type: APIReference
+    url: https://www.pverify.com/claim-status/
+  - type: APIReference
+    url: https://pverify.com/payer-list/
+  - type: APIReference
+    url: https://www.pverify.com/patient-estimator/
+- aid: pverify:pverify-payers-api
+  name: pVerify Payers API
+  description: The Payers API from pVerify — 1 operation(s) for payers.
   humanURL: https://docs.pverify.io/
   baseURL: https://api.pverify.com
+  tags:
+  - Payers
   properties:
-  - url: https://docs.pverify.io/
-    type: Documentation
-  - url: https://www.pverify.com/patient-estimator/
-    type: APIReference
-  - url: openapi/pverify-openapi.yml
-    type: OpenAPI
-  - url: collections/pverify.postman_collection.json
-    type: PostmanCollection
-  - url: collections/pverify.opencollection.json
-    type: OpenCollection
-  description: Patient cost estimation that combines real-time benefits with
-    contracted/fee data to estimate patient financial responsibility for planned
-    services.
+  - type: OpenAPI
+    url: openapi/pverify-payers-api-openapi.yml
+  - type: Documentation
+    url: https://docs.pverify.io/
+  - type: APIReference
+    url: https://www.pverify.com/rest-api/
+  - type: PostmanCollection
+    url: collections/pverify.postman_collection.json
+  - type: OpenCollection
+    url: collections/pverify.opencollection.json
+  - type: APIReference
+    url: https://www.pverify.com/claim-status/
+  - type: APIReference
+    url: https://pverify.com/payer-list/
+  - type: APIReference
+    url: https://www.pverify.com/patient-estimator/
 common:
 - type: AgenticAccess
   url: agentic-access/pverify-agentic-access.yml
