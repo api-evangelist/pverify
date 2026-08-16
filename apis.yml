@@ -2,24 +2,33 @@ aid: pverify
 url: https://raw.githubusercontent.com/api-evangelist/pverify/refs/heads/main/apis.yml
 name: pVerify
 kind: company
-description: pVerify provides real-time healthcare insurance eligibility verification
-  and revenue-cycle APIs. Its RESTful API at https://api.pverify.com exchanges EDI
-  270/271 eligibility transactions, returns plan and benefit summaries, checks claim
-  status (276/277), lists supported payers, and estimates patient financial
-  responsibility, secured with OAuth2 bearer tokens.
+description: pVerify is a US healthcare insurance eligibility and revenue-cycle API company, part of DoseSpot
+  (now Interra Health). Its REST API at https://api.pverify.com exchanges X12 270/271 eligibility transactions
+  and returns parsed, practice-type-specific benefit summaries; runs 276/277 claim status inquiries; discovers
+  unknown active coverage for self-pay patients; looks up Medicare Beneficiary Identifiers; validates
+  patient demographics; publishes a supported-payer catalog with live per-payer up/down status; and estimates
+  patient financial responsibility at the point of service. Authentication is an OAuth2 client-credentials
+  bearer token plus a case-sensitive Client-API-Id header. pVerify publishes no OpenAPI — its machine-readable
+  contract is a public Postman Collection v2.0.0 at https://postman.pverify.com/, from which the OpenAPI
+  documents in this repository were derived operation-for-operation.
 accessModel:
-  pricing: enterprise
-  onboarding: self-serve
+  pricing: tiered
+  onboarding: sales-led
   trial: false
   try_now: false
   public: false
-  label: Enterprise · Self-serve signup
+  label: Tiered subscription · Sales-led onboarding · API is an Enterprise-tier entitlement
   confidence: high
   source:
   - plans
   - authentication
-  generated: '2026-07-22'
-  method: derived
+  - pricing-page
+  generated: '2026-08-15'
+  method: searched
+  note: CORRECTED 2026-08-15. https://pverify.com/pricing/ publishes eight named tiers across four products
+    with monthly floor prices and included transaction quotas, so this is not an unpriced enterprise API.
+    But the REST API is listed as an ENTERPRISE-tier feature, every CTA routes to request-a-demo, and
+    no self-service checkout or free trial exists — so onboarding is sales-led, not self-serve.
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/pverify.png
 tags:
 - Healthcare
@@ -28,177 +37,373 @@ tags:
 - Claims
 - EDI
 - 270/271
+- 276/277
+- Revenue Cycle
+- Medicare
+- Payers
+- Insurance Discovery
+- Patient Estimation
+- HIPAA
+- Dental
 created: '2026-06-21'
-modified: '2026-06-21'
+modified: '2026-08-15'
 specificationVersion: '0.19'
 apis:
 - aid: pverify:pverify-authentication-api
   name: pVerify Authentication API
-  description: The Authentication API from pVerify — 1 operation(s) for authentication.
-  humanURL: https://docs.pverify.io/
+  description: OAuth2 client-credentials token endpoint. POST /Token exchanges Client_Id + Client_Secret
+    for a bearer access_token used on every other pVerify call, alongside the case-sensitive Client-API-Id
+    header.
+  humanURL: https://postman.pverify.com/
   baseURL: https://api.pverify.com
   tags:
   - Authentication
+  - OAuth2
+  - Tokens
   properties:
   - type: OpenAPI
     url: openapi/pverify-authentication-api-openapi.yml
+  - type: Overlay
+    url: overlays/pverify-authentication-api-overlay.yaml
   - type: Documentation
-    url: https://docs.pverify.io/
+    url: https://postman.pverify.com/
   - type: APIReference
-    url: https://www.pverify.com/rest-api/
+    url: https://postman.pverify.com/
   - type: PostmanCollection
-    url: collections/pverify.postman_collection.json
+    url: collections/pverify-authentication-api.postman_collection.json
   - type: OpenCollection
-    url: collections/pverify.opencollection.json
-  - type: APIReference
-    url: https://www.pverify.com/claim-status/
-  - type: APIReference
-    url: https://pverify.com/payer-list/
-  - type: APIReference
-    url: https://www.pverify.com/patient-estimator/
-- aid: pverify:pverify-batch-api
-  name: pVerify Batch API
-  description: The Batch API from pVerify — 1 operation(s) for batch.
-  humanURL: https://docs.pverify.io/
-  baseURL: https://api.pverify.com
-  tags:
-  - Batch
-  properties:
-  - type: OpenAPI
-    url: openapi/pverify-batch-api-openapi.yml
-  - type: Documentation
-    url: https://docs.pverify.io/
-  - type: APIReference
-    url: https://www.pverify.com/rest-api/
-  - type: PostmanCollection
-    url: collections/pverify.postman_collection.json
-  - type: OpenCollection
-    url: collections/pverify.opencollection.json
-  - type: APIReference
-    url: https://www.pverify.com/claim-status/
-  - type: APIReference
-    url: https://pverify.com/payer-list/
-  - type: APIReference
-    url: https://www.pverify.com/patient-estimator/
-- aid: pverify:pverify-claim-status-api
-  name: pVerify Claim Status API
-  description: The Claim Status API from pVerify — 1 operation(s) for claim status.
-  humanURL: https://docs.pverify.io/
-  baseURL: https://api.pverify.com
-  tags:
-  - Claim Status
-  properties:
-  - type: OpenAPI
-    url: openapi/pverify-claim-status-api-openapi.yml
-  - type: Documentation
-    url: https://docs.pverify.io/
-  - type: APIReference
-    url: https://www.pverify.com/rest-api/
-  - type: PostmanCollection
-    url: collections/pverify.postman_collection.json
-  - type: OpenCollection
-    url: collections/pverify.opencollection.json
-  - type: APIReference
-    url: https://www.pverify.com/claim-status/
-  - type: APIReference
-    url: https://pverify.com/payer-list/
-  - type: APIReference
-    url: https://www.pverify.com/patient-estimator/
+    url: collections/pverify-authentication-api.opencollection.json
 - aid: pverify:pverify-eligibility-api
   name: pVerify Eligibility API
-  description: The Eligibility API from pVerify — 5 operation(s) for eligibility.
-  humanURL: https://docs.pverify.io/
+  description: Real-time X12 270/271 insurance eligibility verification. Submit an EligibilitySummary
+    inquiry, poll the pending queue, retrieve the parsed benefit summary or the raw 271, pull a PDF report,
+    and cancel in-flight transactions.
+  humanURL: https://postman.pverify.com/
   baseURL: https://api.pverify.com
   tags:
   - Eligibility
+  - 270/271
+  - Benefits
+  - EDI
   properties:
   - type: OpenAPI
     url: openapi/pverify-eligibility-api-openapi.yml
+  - type: Overlay
+    url: overlays/pverify-eligibility-api-overlay.yaml
   - type: Documentation
-    url: https://docs.pverify.io/
+    url: https://postman.pverify.com/
   - type: APIReference
-    url: https://www.pverify.com/rest-api/
+    url: https://postman.pverify.com/
   - type: PostmanCollection
-    url: collections/pverify.postman_collection.json
+    url: collections/pverify-eligibility-api.postman_collection.json
   - type: OpenCollection
-    url: collections/pverify.opencollection.json
+    url: collections/pverify-eligibility-api.opencollection.json
+- aid: pverify:pverify-dental-eligibility-api
+  name: pVerify Dental Eligibility API
+  description: Dental insurance eligibility and benefit verification, including the only version-prefixed
+    path in the pVerify surface (/api/v2/DentalEligibilitySummary) alongside the unversioned v1 endpoints.
+  humanURL: https://postman.pverify.com/
+  baseURL: https://api.pverify.com
+  tags:
+  - Eligibility
+  - Dental
+  - 270/271
+  - Benefits
+  properties:
+  - type: OpenAPI
+    url: openapi/pverify-dental-eligibility-api-openapi.yml
+  - type: Overlay
+    url: overlays/pverify-dental-eligibility-api-overlay.yaml
+  - type: Documentation
+    url: https://postman.pverify.com/
   - type: APIReference
-    url: https://www.pverify.com/claim-status/
+    url: https://postman.pverify.com/
+- aid: pverify:pverify-insurance-discovery-api
+  name: pVerify Insurance Discovery API
+  description: Find unknown or unreported active insurance coverage for a patient presenting as self-pay,
+    returning candidate payers and member IDs plus a hosted details URL and PDF report.
+  humanURL: https://postman.pverify.com/
+  baseURL: https://api.pverify.com
+  tags:
+  - Insurance Discovery
+  - Coverage
+  - Revenue Cycle
+  properties:
+  - type: OpenAPI
+    url: openapi/pverify-insurance-discovery-api-openapi.yml
+  - type: Overlay
+    url: overlays/pverify-insurance-discovery-api-overlay.yaml
+  - type: Documentation
+    url: https://postman.pverify.com/
   - type: APIReference
-    url: https://pverify.com/payer-list/
+    url: https://postman.pverify.com/
+- aid: pverify:pverify-mbi-lookup-api
+  name: pVerify MBI Lookup API
+  description: Look up a Medicare Beneficiary Identifier for a patient from demographic data, for providers
+    who need the MBI before they can run Medicare eligibility.
+  humanURL: https://postman.pverify.com/
+  baseURL: https://api.pverify.com
+  tags:
+  - Medicare
+  - MBI
+  - Identifiers
+  properties:
+  - type: OpenAPI
+    url: openapi/pverify-mbi-lookup-api-openapi.yml
+  - type: Overlay
+    url: overlays/pverify-mbi-lookup-api-overlay.yaml
+  - type: Documentation
+    url: https://postman.pverify.com/
   - type: APIReference
-    url: https://www.pverify.com/patient-estimator/
+    url: https://postman.pverify.com/
+- aid: pverify:pverify-patient-demographic-validator-api
+  name: pVerify Patient Demographic Validator API
+  description: Validate and complete patient demographic data (pDV) — name, date of birth, gender and
+    address — so that downstream eligibility and discovery inquiries match on identity.
+  humanURL: https://postman.pverify.com/
+  baseURL: https://api.pverify.com
+  tags:
+  - Demographics
+  - Identity
+  - Data Quality
+  properties:
+  - type: OpenAPI
+    url: openapi/pverify-patient-demographic-validator-api-openapi.yml
+  - type: Overlay
+    url: overlays/pverify-patient-demographic-validator-api-overlay.yaml
+  - type: Documentation
+    url: https://postman.pverify.com/
+  - type: APIReference
+    url: https://postman.pverify.com/
+- aid: pverify:pverify-claim-status-api
+  name: pVerify Claim Status API
+  description: X12 276/277 claim status inquiry. Ask a payer what happened to a submitted claim and retrieve
+    the 277 response by RequestID. Not every payer supports 276/277 electronically.
+  humanURL: https://postman.pverify.com/
+  baseURL: https://api.pverify.com
+  tags:
+  - Claim Status
+  - 276/277
+  - Claims
+  - EDI
+  properties:
+  - type: OpenAPI
+    url: openapi/pverify-claim-status-api-openapi.yml
+  - type: Overlay
+    url: overlays/pverify-claim-status-api-overlay.yaml
+  - type: Documentation
+    url: https://postman.pverify.com/
+  - type: APIReference
+    url: https://postman.pverify.com/
+  - type: PostmanCollection
+    url: collections/pverify-claim-status-api.postman_collection.json
+  - type: OpenCollection
+    url: collections/pverify-claim-status-api.opencollection.json
 - aid: pverify:pverify-estimation-api
-  name: pVerify Estimation API
-  description: The Estimation API from pVerify — 1 operation(s) for estimation.
-  humanURL: https://docs.pverify.io/
+  name: pVerify Patient Cost Estimator API
+  description: Estimate patient financial responsibility for a planned service from the payer benefit
+    data, for point-of-service collection.
+  humanURL: https://postman.pverify.com/
   baseURL: https://api.pverify.com
   tags:
   - Estimation
+  - Patient Responsibility
+  - Price Transparency
   properties:
   - type: OpenAPI
     url: openapi/pverify-estimation-api-openapi.yml
+  - type: Overlay
+    url: overlays/pverify-estimation-api-overlay.yaml
   - type: Documentation
-    url: https://docs.pverify.io/
+    url: https://postman.pverify.com/
   - type: APIReference
-    url: https://www.pverify.com/rest-api/
+    url: https://postman.pverify.com/
   - type: PostmanCollection
-    url: collections/pverify.postman_collection.json
+    url: collections/pverify-estimation-api.postman_collection.json
   - type: OpenCollection
-    url: collections/pverify.opencollection.json
-  - type: APIReference
-    url: https://www.pverify.com/claim-status/
-  - type: APIReference
-    url: https://pverify.com/payer-list/
-  - type: APIReference
-    url: https://www.pverify.com/patient-estimator/
+    url: collections/pverify-estimation-api.opencollection.json
 - aid: pverify:pverify-payers-api
   name: pVerify Payers API
-  description: The Payers API from pVerify — 1 operation(s) for payers.
-  humanURL: https://docs.pverify.io/
+  description: 'The payer network surface: the full supported-payer catalog, live per-payer up/down status
+    (the only pVerify operation requiring no authentication), and recent per-payer rejection statistics.'
+  humanURL: https://postman.pverify.com/
   baseURL: https://api.pverify.com
   tags:
   - Payers
+  - Status
+  - Availability
   properties:
   - type: OpenAPI
     url: openapi/pverify-payers-api-openapi.yml
+  - type: Overlay
+    url: overlays/pverify-payers-api-overlay.yaml
   - type: Documentation
-    url: https://docs.pverify.io/
+    url: https://postman.pverify.com/
   - type: APIReference
-    url: https://www.pverify.com/rest-api/
+    url: https://postman.pverify.com/
   - type: PostmanCollection
-    url: collections/pverify.postman_collection.json
+    url: collections/pverify-payers-api.postman_collection.json
   - type: OpenCollection
-    url: collections/pverify.opencollection.json
+    url: collections/pverify-payers-api.opencollection.json
+- aid: pverify:pverify-cgx-widget-api
+  name: pVerify CGX Widget API
+  description: Provision and drive the embeddable eligibility-and-estimates widget. Setup runs against
+    the premium portal host; CGXInquiry returns a combined estimate plus eligibility result for the widget
+    to render.
+  humanURL: https://postman.pverify.com/
+  baseURL: https://api.pverify.com
+  tags:
+  - Widget
+  - Embeddable
+  - Eligibility
+  - Estimation
+  properties:
+  - type: OpenAPI
+    url: openapi/pverify-cgx-widget-api-openapi.yml
+  - type: Overlay
+    url: overlays/pverify-cgx-widget-api-overlay.yaml
+  - type: Documentation
+    url: https://postman.pverify.com/
   - type: APIReference
-    url: https://www.pverify.com/claim-status/
+    url: https://postman.pverify.com/
+- aid: pverify:pverify-same-or-similar-api
+  name: pVerify Same or Similar API (discontinued)
+  description: Medicare same-or-similar DME history check. pVerify labels this product "(Discontinued)"
+    in its own documentation while continuing to document it in full; every operation is marked deprecated
+    in the spec.
+  humanURL: https://postman.pverify.com/
+  baseURL: https://api.pverify.com
+  tags:
+  - DME
+  - Medicare
+  - Discontinued
+  properties:
+  - type: OpenAPI
+    url: openapi/pverify-same-or-similar-api-openapi.yml
+  - type: Overlay
+    url: overlays/pverify-same-or-similar-api-overlay.yaml
+  - type: Documentation
+    url: https://postman.pverify.com/
   - type: APIReference
-    url: https://pverify.com/payer-list/
+    url: https://postman.pverify.com/
+- aid: pverify:pverify-cmn-api
+  name: pVerify CMN API (discontinued)
+  description: Certificate of Medical Necessity lookup. Labelled "(Discontinued)" by pVerify; every operation
+    is marked deprecated in the spec.
+  humanURL: https://postman.pverify.com/
+  baseURL: https://api.pverify.com
+  tags:
+  - CMN
+  - Medicare
+  - Discontinued
+  properties:
+  - type: OpenAPI
+    url: openapi/pverify-cmn-api-openapi.yml
+  - type: Overlay
+    url: overlays/pverify-cmn-api-overlay.yaml
+  - type: Documentation
+    url: https://postman.pverify.com/
   - type: APIReference
-    url: https://www.pverify.com/patient-estimator/
+    url: https://postman.pverify.com/
+- aid: pverify:pverify-snf-api
+  name: pVerify SNF API (discontinued)
+  description: Skilled Nursing Facility stay verification. Labelled "(Discontinued)" by pVerify; every
+    operation is marked deprecated in the spec.
+  humanURL: https://postman.pverify.com/
+  baseURL: https://api.pverify.com
+  tags:
+  - SNF
+  - Medicare
+  - Discontinued
+  properties:
+  - type: OpenAPI
+    url: openapi/pverify-snf-api-openapi.yml
+  - type: Overlay
+    url: overlays/pverify-snf-api-overlay.yaml
+  - type: Documentation
+    url: https://postman.pverify.com/
+  - type: APIReference
+    url: https://postman.pverify.com/
 common:
-- type: AgenticAccess
-  url: agentic-access/pverify-agentic-access.yml
-- type: DomainSecurity
-  url: security/pverify-domain-security.yml
-- type: Authentication
-  url: authentication/pverify-authentication.yml
+- type: Website
+  url: https://www.pverify.com
+- type: DeveloperPortal
+  url: https://pverify.com/api-developers/
+- type: Documentation
+  url: https://docs.pverify.io/
+- type: APIReference
+  url: https://postman.pverify.com/
+- type: Postman
+  url: https://postman.pverify.com/
+- type: GettingStarted
+  url: https://pverify.com/templates/
+- type: Support
+  url: https://pverify.com/contact-support/
+- type: Blog
+  url: https://pverify.com/blog/
 - type: GitHubOrganization
   url: https://github.com/pVerify
 - type: LinkedIn
   url: https://www.linkedin.com/company/pverify
-- type: Website
-  url: https://www.pverify.com
-- type: Documentation
-  url: https://docs.pverify.io/
+- type: Login
+  url: https://apimgmt.pverify.com/
+- type: Pricing
+  url: https://pverify.com/pricing/
+- type: TermsOfService
+  url: https://pverify.com/pverify-legal-documentation/
+- type: PrivacyPolicy
+  url: https://pverify.com/privacy-policy/
+- type: StatusPage
+  url: https://status.dosespot.com/posts/dashboard
+- type: TrustCenter
+  url: security/pverify-trust-center.yml
+- type: Compliance
+  url: https://trust.dosespot.com/
+- type: SLA
+  url: https://pverify.com/wp-content/uploads/2025/04/Exhibit-B-SLA.docx
+- type: Authentication
+  url: authentication/pverify-authentication.yml
+- type: Conventions
+  url: conventions/pverify-conventions.yml
+- type: ErrorCatalog
+  url: errors/pverify-error-codes.yml
+- type: Lifecycle
+  url: lifecycle/pverify-lifecycle.yml
+- type: Conformance
+  url: conformance/pverify-conformance.yml
+- type: DataModel
+  url: data-model/pverify-data-model.yml
+- type: Vocabulary
+  url: vocabulary/pverify-vocabulary.yml
+- type: Sandbox
+  url: sandbox/pverify-sandbox.yml
+- type: Components
+  url: components/pverify-components.yml
+- type: Packages
+  url: packages/pverify-packages.yml
+- type: SDKs
+  url: packages/pverify-packages.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: LLMsTxt
+  url: llms/pverify-llms.txt
+- type: AgenticAccess
+  url: agentic-access/pverify-agentic-access.yml
+- type: DomainSecurity
+  url: security/pverify-domain-security.yml
 - type: Plans
   url: plans/pverify-plans-pricing.yml
 - type: RateLimits
   url: rate-limits/pverify-rate-limits.yml
 - type: FinOps
   url: finops/pverify-finops.yml
-- type: Blog
-  url: https://pverify.com/blog/
+- type: PostmanCollection
+  url: collections/pverify-published-postman-collection.json
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-08-15'
+  status: enriched
+  artifacts_added: 22
+  pass: local-v1
