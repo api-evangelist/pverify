@@ -47,7 +47,7 @@ tags:
 - Dental
 created: '2026-06-21'
 modified: '2026-08-15'
-specificationVersion: '0.19'
+specificationVersion: '0.23'
 apis:
 - aid: pverify:pverify-authentication-api
   name: pVerify Authentication API
