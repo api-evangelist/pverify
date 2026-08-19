@@ -1,23 +1,60 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/pverify-openapi.yml
+generated: '2026-08-14'
+method: searched
+source: openapi/_original/pverify-openapi.yml
+docs: https://postman.pverify.com/
+description: >-
+  pVerify uses a two-factor-by-header model: an OAuth2 client-credentials bearer token obtained
+  from POST /Token, sent alongside a Client-API-Id header that identifies the account. Both are
+  required on every call. A small set of "one step" endpoints skips the token entirely and
+  authenticates with Client-API-Id + Client-Secret headers, and one endpoint (GetPayerStatus) is
+  documented as requiring no authentication at all.
 summary:
-  types:
-  - apiKey
-  - http
-  api_key_in:
-  - header
+  types: [http, apiKey]
+  api_key_in: [header]
+  oauth2_flows: [clientCredentials]
+  oauth2_scopes: 0
 schemes:
 - name: bearerAuth
   type: http
   scheme: bearer
-  description: OAuth2 access token returned by the /Token endpoint.
-  sources:
-  - openapi/pverify-openapi.yml
+  description: 'OAuth2 access token returned by POST /Token, sent as `Authorization: Bearer <token>`.'
+  sources: [openapi/_original/pverify-openapi.yml]
 - name: clientApiId
   type: apiKey
   in: header
   parameter: Client-API-Id
-  description: Client API identifier issued by pVerify, required on all API calls.
-  sources:
-  - openapi/pverify-openapi.yml
+  description: >-
+    Client API identifier issued by pVerify. Required on every call. pVerify states the header key
+    is case sensitive.
+  sources: [openapi/_original/pverify-openapi.yml]
+- name: clientSecret
+  type: apiKey
+  in: header
+  parameter: Client-Secret
+  description: >-
+    Client secret issued by pVerify. Used by the one-step endpoints (EasyEligibilitySummary) and
+    the premium report endpoints (EligibilityPDFReport, PDFReport/*) in place of a bearer token.
+  sources: [openapi/_original/pverify-openapi.yml]
+token_endpoint:
+  url: https://api.pverify.com/Token
+  test_url: https://testapi.pverify.com/Token
+  method: POST
+  content_type: application/x-www-form-urlencoded
+  grant_type: client_credentials
+  parameters: [Client_Id, Client_Secret, grant_type]
+  response_fields: [access_token, token_type, expires_in]
+  note: >-
+    A client-credentials grant, but with non-standard parameter names — pVerify sends Client_Id /
+    Client_Secret rather than RFC 6749's client_id / client_secret, and there is no scope parameter.
+    Token lifetime is returned in expires_in; no fixed value is published.
+scopes:
+  published: false
+  note: >-
+    No OAuth scopes exist. Product entitlements (eligibility, claim status, insurance discovery,
+    MBI, pDV) are attached to the account contract, not to the token, so scopes/ is deliberately
+    not emitted for this provider.
+unauthenticated_operations:
+- {operationId: getPayerStatus, path: /api/GetPayerStatus, note: 'pVerify documents "this API call does not require authentication"'}
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

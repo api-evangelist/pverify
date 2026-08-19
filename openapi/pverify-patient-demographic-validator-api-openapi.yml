@@ -1,0 +1,304 @@
+# Derived from pVerify's published Postman collection: https://postman.pverify.com/
+# method: derived  generated: 2026-08-14
+openapi: 3.0.3
+info:
+  title: pVerify Patient Demographic Validator API
+  description: pVerify Patient Demographic Validator API, derived operation-for-operation from the public
+    Postman collection pVerify publishes at https://postman.pverify.com/ (last updated 03/01/2026). All
+    calls require an OAuth2 bearer token from POST /Token plus the Client-API-Id header.
+  version: '1.0'
+  termsOfService: https://pverify.com/privacy-policy/
+  contact:
+    name: pVerify Support
+    email: support@pverify.com
+    url: https://pverify.com/contact-support/
+servers:
+- url: https://api.pverify.com
+  description: Production
+- url: https://testapi.pverify.com
+  description: Test environment published by pVerify
+tags:
+- name: Patient Demographic Validator
+paths:
+  /api/PatientFinderInquiry:
+    post:
+      operationId: patientFinderInquiry
+      tags:
+      - Patient Demographic Validator
+      summary: PatientFinderInquiry
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/PatientFinderInquiry\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/PatientFinderInquiry | \n\nDescription:Returns\
+        \ only the top matching patient based on provided demographic information. This endpoint is optimized\
+        \ for use cases where only the most likely match is needed.\n\nUse Cases:Fast lookups for integrations\
+        \ where a single high-confidence match is sufficient.Scenarios where presenting a list of potential\
+        \ matches is not required.\n\nBehavior:Returns a maximum of 1 patient record (the best match).Uses\
+        \ match score to determine the top candidate.Ideal for a specific patient match.\n\nHeaders\n\n\
+        Key | \nValue | \n\nURL | \nhttps://api.pverify.com/API/PatientFinderInquiry | \n\nMethod | \n\
+        POST | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token from above preceded\
+        \ by the String \"Bearer\" | \n\nClient-API-Id | \nAPI ID provided by pVerify | \n\nContent-Type\
+        \ | \napplication/json | \n\n*Note: The Client-API-Id is required. Header keys are case sensitive.\n\
+        \nSearch Criterias\n\nSNo | \nSearch Criteria | \n\n1 | \nFirstName,LastName,Street Address,City,State\
+        \ | \n\n2 | \nFirstName,LastName,DOB,City,State | \n\n3 | \nFirstName,LastName,DOB,State | \n\n\
+        4 | \nLastName,DOB,Street Address,Zip Code | \n\n5 | \nFirstName,LastName, Last 4 SSN | \n\n6\
+        \ | \nFirstName,LastName, Full SSN | \n\n7 | \nFirstName,LastName, Zip Code | \n\n8 | \nFirstName,LastName,\
+        \ State | \n\nPatientFinderInquiry Request Fields\n\nProperty Name | \nData Type | \nUsage | \n\
+        Description | \n\nFirstName | \nString | \nOptional | \nFirst Name of patient for inquiry | \n\
+        \nMiddleName | \nString | \nOptional | \nMiddle Name of patient for inquiry | \n\nLastName | \n\
+        String | \nRequired | \nLast Name of patient required for inquiry | \n\nDOB | \nString | \nOptional\
+        \ | \n(Expected format: MM/dd/YYYY ie 01/01/2000) | \n\nSSN | \nString | \nOptional | \nSocial\
+        \ Security Number (Exported format XXX-XX-XXXX) | \n\nAddress.AddressLine1 | \nString | \nOptional\
+        \ | \nAddress1 | \n\nAddress.AddressLine2 | \nString | \nOptional | \nAddress2 | \n\nAddress.City\
+        \ | \nString | \nOptional | \nCity | \n\nAddress.State | \nString | \nOptional | \nState | \n\n\
+        Address.ZipCode | \nString | \nOptional | \nZip | \n\nLocation | \nString | \nRequired | \nLocation\
+        \ is the practice location. Note by setting this, you will lock the patient to one location, so\
+        \ that users that login in via our portal who are not authorized to see that location will not\
+        \ see the patient. | \n\nReferenceNumber | \nString | \nOptional | \nAny free text for patient\
+        \ identifier, ie MRN | \n\nPatientFinderInquiry Response Fields\n\nKey | \nType | \nDescription\
+        \ | \n\nRequestID | \nInteger | \nEligibility Transaction ID | \n\nAPIResponseCode | \nInteger\
+        \ | \n0-Processed,1-Rejected,2-NoFunds,3-Pending | \n\nAPIResponseMessage | \nString | \nMessage\
+        \ about the transaction | \n\nError | \nString | \nMessage from Payer about errors | \n\npatientsFound\
+        \ | \nInteger | \nNumber of patients found | \n\nRequestHasSSN | \nBoolean | \nTrue if request\
+        \ has SSN | \n\nIsMBIRegistered | \nBoolean | \nTrue if the request contains a registered MBI;\
+        \ otherwise, false | \n\nIsTRHasError | \nBoolean | \nTrue if there was an error during Thomson\
+        \ Reuters (TR) verification; otherwise, false | \n\nIsShowSSN | \nBoolean | \nIndicates whether\
+        \ the patient's SSN should be displayed in the response. True = show SSN, False = mask SSN | \n\
+        \nPatients | \nArray of Object | \nReturns the top-matched patient based on the request. (Note:\
+        \ Patients is an array, but it contains only one patient.) | \n\nPatients.FirstName | \nString\
+        \ | \nFirst name (Note Patients object is an array) | \n\nPatients.LastName | \nString | \nLast\
+        \ Name | \n\nPatients.MiddleName | \nString | \nMiddle name | \n\nPatients.DOB | \nString | \n\
+        ODB | \n\nPatients.SSN | \nString | \nSSN (this is masked unless request has SSN) | \n\nPatients.RecordCount\
+        \ | \nInteger | \nNumber of records with this information (usually | \n\nPatients.Score | \nInteger\
+        \ | \nFrom 1-99, higher is better. >90 is typical for a very likely chance of exact match | \n\
+        \nPatients.GroupId | \nString | \nGroupId | \n\nPatients.Emails | \nString | \n(not supported\
+        \ yet) | \n\nPatients.Address | \nObject | \nAddress object as request | \n\nPatients.Address.AddressLine1\
+        \ | \nString | \nAddress1 | \n\nPatients.Address.AddressLine2 | \nString | \nAddress2 | \n\nPatients.Address.City\
+        \ | \nString | \nCity | \n\nPatients.Address.State | \nString | \nState | \n\nPatients.Address.ZipCode\
+        \ | \nString | \nZip | \n\nPatients.Address.ReportedDate | \nString | \nThe date on which the\
+        \ patient's record was last updated. | \n\nPatients.PhoneNumber | \nString | \n(not supported\
+        \ yet) |"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                FirstName:
+                  type: string
+                  example: firstname
+                MiddleName:
+                  nullable: true
+                LastName:
+                  type: string
+                  example: lastname
+                DOB:
+                  nullable: true
+                SSN:
+                  nullable: true
+                PhoneNumber:
+                  nullable: true
+                Address:
+                  type: object
+                  properties:
+                    AddressLine1:
+                      type: string
+                      example: Address1
+                    AddressLine2:
+                      nullable: true
+                    City:
+                      type: string
+                      example: City
+                    State:
+                      type: string
+                      example: ST
+                    ZipCode:
+                      type: string
+                      example: '12345'
+                Location:
+                  type: string
+                  example: Somewhere
+                ReferenceNumber:
+                  nullable: true
+            example:
+              FirstName: firstname
+              MiddleName: null
+              LastName: lastname
+              DOB: null
+              SSN: null
+              PhoneNumber: null
+              Address:
+                AddressLine1: Address1
+                AddressLine2: null
+                City: City
+                State: ST
+                ZipCode: '12345'
+              Location: Somewhere
+              ReferenceNumber: null
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/PatientFinderInquiryResults:
+    post:
+      operationId: patientFinderInquiryResults
+      tags:
+      - Patient Demographic Validator
+      summary: PatientFinderInquiryResults
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/PatientFinderInquiryResults\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/PatientFinderInquiryResults | \n\nDescription:Returns\
+        \ all matching patient records based on the search criteria. This endpoint is intended for workflows\
+        \ that require presenting multiple potential matches for verification.\n\nUse Cases:Used in Patient\
+        \ Validator-Verification.\n\nBehavior:Returns all matched patient records that meet the criteria.\n\
+        \nHeaders\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/PatientFinderInquiryResults\
+        \ | \n\nMethod | \nPOST | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token\
+        \ from above preceded by the String \"Bearer\" | \n\nClient-API-Id | \nAPI ID provided by pVerify\
+        \ | \n\nContent-Type | \napplication/json | \n\n*Note: The Client-API-Id is required. Header keys\
+        \ are case sensitive.\n\nPatientFinderInquiryResults Request Fields\n\nProperty Name | \nData\
+        \ Type | \nUsage | \nDescription | \n\nFirstName | \nString | \nOptional | \nFirst Name of patient\
+        \ for inquiry | \n\nMiddleName | \nString | \nOptional | \nMiddle Name of patient for inquiry\
+        \ | \n\nLastName | \nString | \nRequired | \nLast Name of patient required for inquiry | \n\n\
+        DOB | \nString | \nOptional | \n(Expected format: MM/dd/YYYY ie 01/01/2000) | \n\nSSN | \nString\
+        \ | \nOptional | \nSocial Security Number (Exported format XXX-XX-XXXX) | \n\nAddress.AddressLine1\
+        \ | \nString | \nOptional | \nAddress1 | \n\nAddress.AddressLine2 | \nString | \nOptional | \n\
+        Address2 | \n\nAddress.City | \nString | \nOptional | \nCity | \n\nAddress.State | \nString |\
+        \ \nOptional | \nState | \n\nAddress.ZipCode | \nString | \nOptional | \nZip | \n\nLocation |\
+        \ \nString | \nRequired | \nLocation is the practice location. Note by setting this, you will\
+        \ lock the patient to one location, so that users that login in via our portal who are not authorized\
+        \ to see that location will not see the patient. | \n\nReferenceNumber | \nString | \nOptional\
+        \ | \nAny free text for patient identifier, ie MRN | \n\nPatientFinderInquiryResults Response\
+        \ Fields\n\nReturns a list of all matched patients. All other response fields are the same as\
+        \ the PatientFinderInquiry endpoint.\n\nKey | \nType | \nDescription | \n\nRequestID | \nInteger\
+        \ | \nEligibility Transaction ID | \n\nAPIResponseCode | \nString | \n0-Processed,1-Rejected,2-NoFunds,3-Pending\
+        \ | \n\nAPIResponseMessage | \nString | \nMessage about the transaction | \n\nError | \nString\
+        \ | \nMessage from Payer about errors | \n\npatientsFound | \nInteger | \nNumber of patients found\
+        \ | \n\nRequestHasSSN | \nBoolean | \nTrue if request has SSN | \n\nIsMBIRegistered | \nBoolean\
+        \ | \nTrue if the request contains a registered MBI; otherwise, false | \n\nIsTRHasError | \n\
+        Boolean | \nTrue if there was an error during Thomson Reuters (TR) verification; otherwise, false\
+        \ | \n\nIsShowSSN | \nBoolean | \nIndicates whether the patient's SSN should be displayed in the\
+        \ response. True = show SSN, False = mask SSN | \n\nPatients | \nArray of Objects | \nReturns\
+        \ a list of matched patients based on the request. If only one patient is matched, the array will\
+        \ still contain a single object. (Note: Patients is always returned as an array.) | \n\nPatients.FirstName\
+        \ | \nString | \nFirst name | \n\nPatients.LastName | \nString | \nLast Name | \n\nPatients.MiddleName\
+        \ | \nString | \nMiddle name | \n\nPatients.DOB | \nString | \nODB | \n\nPatients.SSN | \nString\
+        \ | \nSSN (this is masked unless request has SSN) | \n\nPatients.RecordCount | \nInteger | \n\
+        Number of records with this information (usually | \n\nPatients.Score | \nInteger | \nFrom 1-99,\
+        \ higher is better. >90 is typical for a very likely chance of exact match | \n\nPatients.GroupId\
+        \ | \nString | \nGroupId | \n\nPatients.Emails | \nString | \n(not supported yet) | \n\nPatients.Address\
+        \ | \nObject | \nAddress object as request | \n\nPatients.Address.AddressLine1 | \nString | \n\
+        Address1 | \n\nPatients.Address.AddressLine2 | \nString | \nAddress2 | \n\nPatients.Address.City\
+        \ | \nString | \nCity | \n\nPatients.Address.State | \nString | \nState | \n\nPatients.Address.ZipCode\
+        \ | \nString | \nZip | \n\nPatients.Address.ReportedDate | \nString | \nThe date on which the\
+        \ patient's record was last updated. | \n\nPatients.PhoneNumber | \nString | \n(not supported\
+        \ yet) |"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                FirstName:
+                  type: string
+                  example: JOHN
+                MiddleName:
+                  nullable: true
+                LastName:
+                  type: string
+                  example: WILLIAMS
+                DOB:
+                  type: string
+                  example: 07/12/1938
+                SSN:
+                  nullable: true
+                PhoneNumber:
+                  nullable: true
+                Address:
+                  type: object
+                  properties:
+                    AddressLine1:
+                      nullable: true
+                    AddressLine2:
+                      nullable: true
+                    City:
+                      nullable: true
+                    State:
+                      nullable: true
+                    ZipCode:
+                      nullable: true
+                Location:
+                  nullable: true
+                ReferenceNumber:
+                  nullable: true
+                SearchCriteriaId:
+                  nullable: true
+            example:
+              FirstName: JOHN
+              MiddleName: null
+              LastName: WILLIAMS
+              DOB: 07/12/1938
+              SSN: null
+              PhoneNumber: null
+              Address:
+                AddressLine1: null
+                AddressLine2: null
+                City: null
+                State: null
+                ZipCode: null
+              Location: null
+              ReferenceNumber: null
+              SearchCriteriaId: null
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetPatientFinderResponse/{requestId}:
+    get:
+      operationId: getPatientFinderResponse
+      tags:
+      - Patient Demographic Validator
+      summary: GetPatientFinderResponse
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/GetPatientFinderResponse/{id}\
+        \ | \n\nProduction | \nhttps://api.pverify.com/Test/API/GetPatientFinderResponse/{id} | \n\nThis\
+        \ GET method will return complete response of PatientFinderInquiry endpoint. This call allows\
+        \ you to get the patient demographicverification result by a unique transaction ID.\n\nGetPatientFinderResponse\
+        \ Request\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/GetEligibilityResponse/{id}\
+        \ | \n\nMethod | \nGET | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token\
+        \ from above preceded by the String \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id\
+        \ | \n\n*Note: The Client-API-Id header is required. Header keys are case sensitive.\n\nA successful\
+        \ GetPatientFinderResponse call will have the same format as the Patient Finder Inquiry response\
+        \ (above)."
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'OAuth2 access token returned by POST /Token, sent as `Authorization: Bearer <token>`.'
+    clientApiId:
+      type: apiKey
+      in: header
+      name: Client-API-Id
+      description: Client API identifier issued by pVerify. Required on every call; header keys are case
+        sensitive.
+    clientSecret:
+      type: apiKey
+      in: header
+      name: Client-Secret
+      description: Client secret issued by pVerify, used by the one-step (no-token) endpoints and the
+        premium report endpoints.

@@ -1,0 +1,47 @@
+generated: '2026-08-14'
+method: searched
+source: https://postman.pverify.com/ ("Widget / Eligibility and Estimates / CGX" folder) +
+  https://pverify.com/api-developers/ + https://github.com/pVerify/WordpressPlugin
+description: >-
+  Beyond the REST API, pVerify ships embeddable client-side surfaces: a hosted eligibility and
+  estimates widget provisioned through an API call, a low-code "Drop-in UI", and a WordPress
+  plugin. These are client-side integration surfaces, distinct from the server-side SDKs
+  catalogued in packages/.
+components:
+- family: CGX Widget
+  name: Eligibility and Estimates Widget
+  type: hosted-embeddable-widget
+  provisioning:
+    setup_operation: createWidgetSetup
+    setup_endpoint: POST https://premium.pverify.com/Widget/Setup
+    inquiry_operation: cgxInquiry
+    inquiry_endpoint: POST https://api.pverify.com/api/CGXInquiry
+    spec: openapi/pverify-cgx-widget-api-openapi.yml
+  description: >-
+    A widget provisioned by a Setup call against the premium portal host, then driven by the
+    CGXInquiry endpoint which returns a combined estimate + eligibility result.
+- family: Drop-in UI
+  name: Drop-in UI
+  type: low-code-javascript-embed
+  description: >-
+    pVerify's developer page describes a "Drop-in UI" for embedding Advanced Eligibility and Claim
+    Validation into an existing platform with low-code JavaScript. No public loader script URL,
+    npm package or component reference is published — provisioning is through pVerify.
+  loader_published: false
+  source: https://pverify.com/api-developers/
+- family: WordPress
+  name: pVerify WordPress Plugin
+  type: cms-plugin
+  repo: https://github.com/pVerify/WordpressPlugin
+  language: php
+  last_push: '2020-12-07'
+  description: >-
+    First-party WordPress plugin distributed from pVerify's GitHub organization. Not listed on
+    wordpress.org and not updated since 2020.
+notes:
+- >-
+  No published component library, no CDN loader URL and no versioned front-end package exists, so
+  a consumer cannot pin a widget version. Every embeddable surface is provisioned through pVerify.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,86 @@
+generated: '2026-08-14'
+method: searched
+source: https://postman.pverify.com/ (collection "Client Libraries and Sample Code" section) + https://api.nuget.org + https://github.com/pVerify
+description: >-
+  pVerify ships one registry-published client library — a .NET/C# package on NuGet — plus
+  first-party sample clients on its own GitHub organization. There is no npm, PyPI, RubyGems,
+  Packagist or crates.io package under the pVerify name; those registries were queried directly
+  and returned 404.
+packages:
+- language: csharp
+  registry: nuget
+  name: Pverify.Apis
+  url: https://www.nuget.org/packages/Pverify.Apis
+  install: dotnet add package Pverify.Apis
+  official: true
+  version: 2.0.5
+  published: '2022-03-08'
+  authors: pVerify
+  note: >-
+    C# client library for using pVerify APIs, published by pVerify and linked from the
+    introduction of pVerify's own Postman documentation. 15 versions published; the latest
+    (2.0.5) predates the current API surface by four years, which is a decay signal for
+    anyone adopting the SDK rather than calling the REST API directly.
+- language: csharp
+  registry: github
+  name: pVerify/restapicsharp
+  url: https://github.com/pVerify/restapicsharp
+  official: true
+  version: null
+  published: '2018-02-21'
+  note: >-
+    Source-only C# REST client on pVerify's GitHub organization; no package registry release,
+    so there is no registry version to read. Date is the last push observed via the GitHub API.
+- language: java
+  registry: github
+  name: pVerify/restapijava
+  url: https://github.com/pVerify/restapijava
+  official: true
+  version: null
+  published: '2019-07-27'
+  note: >-
+    "Java client library for pVerify's REST API" per the repository description. Source-only —
+    not published to Maven Central under any pVerify coordinate, so version is null by check,
+    not by omission.
+- language: csharp
+  registry: github
+  name: pVerify/claimstatuscsharp
+  url: https://github.com/pVerify/claimstatuscsharp
+  official: true
+  version: null
+  published: '2018-09-21'
+  note: Claim Status sample client, source-only, no registry release.
+- language: java
+  registry: github
+  name: pVerify/claimstatusjava
+  url: https://github.com/pVerify/claimstatusjava
+  official: true
+  version: null
+  published: '2018-10-11'
+  note: Claim Status sample client, source-only, no registry release.
+- language: csharp
+  registry: github
+  name: pVerify/csharp_demo
+  url: https://github.com/pVerify/csharp_demo
+  official: true
+  version: null
+  published: '2021-02-25'
+  note: Demonstration project for the Pverify.Apis NuGet package.
+- language: php
+  registry: github
+  name: pVerify/WordpressPlugin
+  url: https://github.com/pVerify/WordpressPlugin
+  official: true
+  version: null
+  published: '2020-12-07'
+  note: WordPress plugin distributed from pVerify's GitHub organization; not listed on wordpress.org.
+registries_checked:
+- {registry: nuget, query: Pverify.Apis, result: found}
+- {registry: npm, query: 'pverify, @pverify/sdk, pverify-api', result: 404}
+- {registry: pypi, query: 'pverify, pverify-api', result: 404}
+- {registry: rubygems, query: pverify, result: 404}
+- {registry: packagist, query: pverify/pverify, result: 404}
+- {registry: crates.io, query: pverify, result: 403 (registry blocks unauthenticated lookups)}
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,614 @@
+# Derived from pVerify's published Postman collection: https://postman.pverify.com/
+# method: derived  generated: 2026-08-14
+openapi: 3.0.3
+info:
+  title: pVerify Dental Eligibility API
+  description: pVerify Dental Eligibility API, derived operation-for-operation from the public Postman
+    collection pVerify publishes at https://postman.pverify.com/ (last updated 03/01/2026). All calls
+    require an OAuth2 bearer token from POST /Token plus the Client-API-Id header.
+  version: '1.0'
+  termsOfService: https://pverify.com/privacy-policy/
+  contact:
+    name: pVerify Support
+    email: support@pverify.com
+    url: https://pverify.com/contact-support/
+servers:
+- url: https://api.pverify.com
+  description: Production
+- url: https://testapi.pverify.com
+  description: Test environment published by pVerify
+tags:
+- name: Dental Eligibility
+paths:
+  /api/DentalEligibilitySummary:
+    post:
+      operationId: dentalEligibilitySummary
+      tags:
+      - Dental Eligibility
+      summary: DentalEligibilitySummary
+      description: "There two type of verifications Self and Dependent.\n\nDentalEligibilitySummary Request\
+        \ Details\n\nProperty Name | \nData Type | \nUsage | \nDescription | \n\nPayerCode | \nString\
+        \ | \nRequired | \npVerify payer Code or Client payer map code (i.e. Delta Dental of WH-DE0171)\
+        \ | \n\nPayerName | \nString | \nOptional | \nPayer Name | \n\nProvider.FirstName | \nString |\
+        \ \nOptional | \nProvider first name | \n\nProvider.LastName | \nString | \nRequired | \nProvider\
+        \ last name | \n\nProvider.NPI | \nString | \nRequired | \n10-digit NPI value | \n\nProvider.TaxId\
+        \ | \nString | \nRequired | \nTax Id | \n\nSubscriber.FirstName | \nString | \nConditional | \n\
+        First Name of subscriber required for self-inquiry | \n\nSubscriber.LastName | \nString | \nConditional\
+        \ | \nLast Name of subscriber required for self-inquiry | \n\nSubscriber.MemberId | \nString |\
+        \ \nRequired | \nMember Id required for both type inquiries (self, dependent) | \n\nSubscriber.DOB\
+        \ | \nString | \nConditional | \nRequired for self-inquiry for better matching result Format is\
+        \ MM/dd/yyyy | \n\nSubscriber.SSN | \nString | \nOptional | \nSSN of subscriber | \n\nisSubscriberPatient\
+        \ | \nString | \nRequired | \nTrue for self and False for Dependent inquiry | \n\ndoS_StartDate\
+        \ | \nString | \nRequired | \nDate of service start date in MM/dd/yyyy format | \n\ndoS_EndDate\
+        \ | \nString | \nRequired | \nDate of service end date in MM/dd/yyyy format | \n\nPracticeTypeCode\
+        \ | \nNumber | \nOptional | \nDefault practice type is 86 | \n\nLocation | \nString | \nOptional\
+        \ | \nDefault is clients default location. | \n\nReferenceId | \nString | \nOptional | \nAny refence\
+        \ Id,for ex: Patient MRN | \n\nIncludeHTMLResponse | \nBoolean | \nOptional | \nDefault is false,\
+        \ if true then Entire response will be returned as formatted text in Response Test along with\
+        \ Summary details. | \n\nDependent | \nObject | \nConditional | \nRequired for dependent inquiry\
+        \ | \n\nDependent.Patient.FirstName | \nString | \nConditional | \nFirst Name of dependent required\
+        \ for dependent inquiry | \n\nDependent.Patient.LastName | \nString | \nConditional | \nLast Name\
+        \ of dependent required for dependent inquiry | \n\nDependent.Patient.DOB | \nString | \nConditional\
+        \ | \nRequired for dependent inquiry for better matching result Format is MM/dd/yyyy | \n\nDCodes\
+        \ | \nObject | \nConditional | \nDental Diagnosis Codes to get coinsurance and Deductible values\
+        \ | \n\nDentalEligibilitySummary Response details\n\nKey | \nType | \nDescription | \n\nRequestID\
+        \ | \nInteger | \nEligibility Transaction ID | \n\nAPIResponseCode | \nString | \n0-Processed,1-Rejected,3-Pending\
+        \ | \n\nAPIResponseMessage | \nString | \nMessage about the transaction | \n\nVerificationType\
+        \ | \nString | \nVerification Type –Subscriber or dependent | \n\nDOS | \nString | \nDate of service\
+        \ start date – DOS end date | \n\nIs HMO Plan | \nBoolean | \nIf true then Patient has HMO plan\
+        \ | \n\nExceptionNotes | \nString | \n\"Exception Notes if any . If response demographic info\
+        \ is not matched with that of Request\" | \n\nAdditionalInformation | \nString | \nIf there is\
+        \ any other info | \n\nDemographicInfo | \nObject | \nIt contains the subscriber info or dependent\
+        \ info . | \n\nServiceDetails | \nObject | \n\"It contains all Service type details info\" | \n\
+        \nPreventiveServices | \nObject | \nContains Preventive codes details | \n\nOtherPayerInfo | \n\
+        Object | \nIt contains Other Payer info. It is null then there is no payer change. | \n\nPlanCoverageSummary\
+        \ | \nobject | \nIt contains Plan related info. | \n\nDentalInfo | \nObject | \nIt contains response\
+        \ as formatted HTML response when IncludeHTMLResponse of request is true. | \n\nResponseText |\
+        \ \nString | \n | \n\nDCodes | \nObject | \nIt contains the dental diagnosis codes used for deductible\
+        \ and coinsurance values |"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payerCode:
+                  type: string
+                  example: DE0171
+                payerName:
+                  type: string
+                  example: Delta Dental of Washington
+                provider:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                    middleName:
+                      type: string
+                    lastName:
+                      type: string
+                      example: ' test name'
+                    npi:
+                      type: string
+                      example: '1427006147'
+                    TaxId:
+                      type: string
+                      example: '123456789'
+                subscriber:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                    dob:
+                      type: string
+                      example: 01/01/1950
+                    lastName:
+                      type: string
+                    memberID:
+                      type: string
+                      example: '1234567890'
+                dependent:
+                  nullable: true
+                isSubscriberPatient:
+                  type: string
+                  example: 'True'
+                doS_StartDate:
+                  type: string
+                  example: 02/02/2021
+                doS_EndDate:
+                  type: string
+                  example: 02/02/2021
+                PracticeTypeCode:
+                  type: string
+                  example: '86'
+                referenceId:
+                  type: string
+                  example: Pat MRN
+                Location:
+                  type: string
+                  example: Any location Name
+                IncludeHtmlResponse:
+                  type: boolean
+                  example: false
+                dCodes:
+                  type: array
+                  items:
+                    type: string
+                    example: D0120
+            example:
+              payerCode: DE0171
+              payerName: Delta Dental of Washington
+              provider:
+                firstName: ''
+                middleName: ''
+                lastName: ' test name'
+                npi: '1427006147'
+                TaxId: '123456789'
+              subscriber:
+                firstName: ''
+                dob: 01/01/1950
+                lastName: ''
+                memberID: '1234567890'
+              dependent: null
+              isSubscriberPatient: 'True'
+              doS_StartDate: 02/02/2021
+              doS_EndDate: 02/02/2021
+              PracticeTypeCode: '86'
+              referenceId: Pat MRN
+              Location: Any location Name
+              IncludeHtmlResponse: false
+              dCodes:
+              - D0120
+              - D0145
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /api/DentalEligibilityBenefitSummary:
+    post:
+      operationId: dentalEligibilityBenefitSummary
+      tags:
+      - Dental Eligibility
+      summary: DentalEligibilityBenefitSummary
+      description: "There two type of verifications Self and Dependent.\n\nDentalEligibilityBenefitSummary\
+        \ Request Details\n\nProperty Name | \nData Type | \nUsage | \nDescription | \n\nPayerCode | \n\
+        String | \nRequired | \npVerify payer Code or Client payer map code (i.e. Delta Dental of WH-DE0171)\
+        \ | \n\nPayerName | \nString | \nOptional | \nPayer Name | \n\nProvider.FirstName | \nString |\
+        \ \nOptional | \nProvider first name | \n\nProvider.LastName | \nString | \nRequired | \nProvider\
+        \ last name | \n\nProvider.NPI | \nString | \nRequired | \n10-digit NPI value | \n\nProvider.TaxId\
+        \ | \nString | \nRequired | \nTax Id | \n\nSubscriber.FirstName | \nString | \nConditional | \n\
+        First Name of subscriber required for self-inquiry | \n\nSubscriber.LastName | \nString | \nConditional\
+        \ | \nLast Name of subscriber required for self-inquiry | \n\nSubscriber.MemberId | \nString |\
+        \ \nRequired | \nMember Id required for both type inquiries (self, dependent) | \n\nSubscriber.DOB\
+        \ | \nString | \nConditional | \nRequired for self-inquiry for better matching result Format is\
+        \ MM/dd/yyyy | \n\nSubscriber.SSN | \nString | \nOptional | \nSSN of subscriber | \n\nisSubscriberPatient\
+        \ | \nString | \nRequired | \nTrue for self and False for Dependent inquiry | \n\ndoS_StartDate\
+        \ | \nString | \nRequired | \nDate of service start date in MM/dd/yyyy format | \n\ndoS_EndDate\
+        \ | \nString | \nRequired | \nDate of service end date in MM/dd/yyyy format | \n\nPracticeTypeCode\
+        \ | \nNumber | \nOptional | \nDefault practice type is 86 | \n\nLocation | \nString | \nOptional\
+        \ | \nDefault is clients default location. | \n\nReferenceId | \nString | \nOptional | \nAny refence\
+        \ Id,for ex: Patient MRN | \n\nIncludeHTMLResponse | \nBoolean | \nOptional | \nDefault is false,\
+        \ if true then Entire response will be returned as formatted text in Response Test along with\
+        \ Summary details. | \n\nDependent | \nObject | \nConditional | \nRequired for dependent inquiry\
+        \ | \n\nDependent.Patient.FirstName | \nString | \nConditional | \nFirst Name of dependent required\
+        \ for dependent inquiry | \n\nDependent.Patient.LastName | \nString | \nConditional | \nLast Name\
+        \ of dependent required for dependent inquiry | \n\nDependent.Patient.DOB | \nString | \nConditional\
+        \ | \nRequired for dependent inquiry for better matching result Format is MM/dd/yyyy | \n\nDentalEligibilityBenefitSummary\
+        \ Response details\n\nKey | \nType | \nDescription | \n\nRequestID | \nInteger | \nEligibility\
+        \ Transaction ID | \n\nAPIResponseCode | \nString | \n0-Processed,1-Rejected,3-Pending | \n\n\
+        APIResponseMessage | \nString | \nMessage about the transaction | \n\nVerificationType | \nString\
+        \ | \nVerification Type –Subscriber or dependent | \n\nDOS | \nString | \nDate of service start\
+        \ date – DOS end date | \n\nIs HMO Plan | \nBoolean | \nIf true then Patient has HMO plan | \n\
+        \nExceptionNotes | \nString | \n\"Exception Notes if any . If response demographic info is not\
+        \ matched with that of Request\" | \n\nAdditionalInformation | \nString | \nIf there is any other\
+        \ info | \n\nDemographicInfo | \nObject | \nIt contains the subscriber info or dependent info\
+        \ . | \n\nBenefitDetails | \nObject | \nIt contains all details info group by Benefit type. Ex\
+        \ ; Dedcutible, Co-pay. | \n\nPreventiveServices | \nObject | \nContains Preventive codes details\
+        \ | \n\nOtherPayerInfo | \nObject | \nIt contains Other Payer info. It is null then there is no\
+        \ payer change. | \n\nPlanCoverageSummary | \nobject | \nIt contains Plan related info. | \n\n\
+        DentalInfo | \nObject | \nIt contains response as formatted HTML response when IncludeHTMLResponse\
+        \ of request is true. | \n\nResponseText | \nString | \n |"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payerCode:
+                  type: string
+                  example: DE0171
+                payerName:
+                  type: string
+                  example: Delta Dental of Washington
+                provider:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                    middleName:
+                      type: string
+                    lastName:
+                      type: string
+                      example: ' test name'
+                    npi:
+                      type: string
+                      example: '1427006147'
+                    TaxId:
+                      type: string
+                      example: '123456789'
+                subscriber:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                    dob:
+                      type: string
+                      example: 01/01/1950
+                    lastName:
+                      type: string
+                    memberID:
+                      type: string
+                      example: '1234567890'
+                dependent:
+                  nullable: true
+                isSubscriberPatient:
+                  type: string
+                  example: 'True'
+                doS_StartDate:
+                  type: string
+                  example: 02/02/2021
+                doS_EndDate:
+                  type: string
+                  example: 02/02/2021
+                PracticeTypeCode:
+                  type: string
+                  example: '86'
+                referenceId:
+                  type: string
+                  example: Pat MRN
+                Location:
+                  type: string
+                  example: Any location Name
+                IncludeHtmlResponse:
+                  type: boolean
+                  example: false
+            example:
+              payerCode: DE0171
+              payerName: Delta Dental of Washington
+              provider:
+                firstName: ''
+                middleName: ''
+                lastName: ' test name'
+                npi: '1427006147'
+                TaxId: '123456789'
+              subscriber:
+                firstName: ''
+                dob: 01/01/1950
+                lastName: ''
+                memberID: '1234567890'
+              dependent: null
+              isSubscriberPatient: 'True'
+              doS_StartDate: 02/02/2021
+              doS_EndDate: 02/02/2021
+              PracticeTypeCode: '86'
+              referenceId: Pat MRN
+              Location: Any location Name
+              IncludeHtmlResponse: false
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetEligibilitySummary/{requestId}:
+    get:
+      operationId: getEligibilitySummary
+      tags:
+      - Dental Eligibility
+      summary: GetEligibilitySummary
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/GetEligibilitySummary\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/GetEligibilitySummary | \n\nGetEligibilitySummary\
+        \ returns the response from the EligibilitySummary POST call using a unique request id provided\
+        \ in the EligibilitySummary response. EligibilitySummary is not supported for back office payers.\n\
+        \nHeaders\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/GetEligibilitySummary | \n\
+        \nMethod | \nGET | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token from\
+        \ above preceded by the String \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id\
+        \ | \n\nClient-API-Id | \nAPI ID provided by pVerify | \n\nContent-Type | \napplication/json |\
+        \ \n\nURL Parameters | \nRequestId returned in EligibilitySummary response | \n\n*Note: The Client-API-Id\
+        \ header is required. Header keys are case sensitive.\n\nGetEligibilitySummary Response Fields\n\
+        \nKey | \nType | \nDescription | \n\nRequestID | \nInteger | \nEligibility Transaction ID | \n\
+        \nAPIResponseCode | \nInteger | \n0-Processed,1-Rejected | \n\nAPIResponseMessage | \nString |\
+        \ \nMessage about the transaction | \n\nVerificationType | \nString | \nVerification Type –Subscriber\
+        \ or dependent | \n\nVerificationStatus | \nString | \nEligibility Transaction Status- Values\
+        \ : Processed, Pending, Rejected | \n\nDOS | \nString | \nDate of service start date – DOS end\
+        \ date | \n\nIs HMO Plan | \nBoolean | \nIf true then Patient has HMO plan | \n\nExceptionNotes\
+        \ | \nString | \nException Notes if any. If response demographic info is not matched with that\
+        \ of Request | \n\nAddtionalInformation | \nString | \nIf there is any other info | \n\nDemographicInfo\
+        \ | \nObject | \nIt contains the subscriber info or dependent info | \n\nServiceDetails | \nObject\
+        \ | \nIt contains all Service type details info | \n\nOtherPayerInfo | \nObject | \nIt contains\
+        \ Other Payer info. It is null then there is no payer change. | \n\nPlanCoverageSummary | \nobject\
+        \ | \nIt contains Plan realted info. | \n\nDentalInfo | \nObject | \nIt contains response as formatted\
+        \ HTML response when IncludeHTMLResponse of request is true. |"
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /api/v2/DentalEligibilitySummary:
+    post:
+      operationId: dentalEligibilitySummaryV2
+      tags:
+      - Dental Eligibility
+      summary: V2 DentalEligibilitySummary
+      description: "There two type of verifications Self and Dependent.\n\nV2 DentalEligibilitySummary\
+        \ Request Details\n\nProperty Name | \nData Type | \nUsage | \nDescription | \n\nPayerCode | \n\
+        String | \nRequired | \npVerify payer Code or Client payer map code (i.e. Delta Dental of WH-DE0171)\
+        \ | \n\nPayerName | \nString | \nOptional | \nPayer Name | \n\nProvider.FirstName | \nString |\
+        \ \nOptional | \nProvider first name | \n\nProvider.LastName | \nString | \nRequired | \nProvider\
+        \ last name | \n\nProvider.NPI | \nString | \nRequired | \n10-digit NPI value | \n\nProvider.TaxId\
+        \ | \nString | \nRequired | \nTax Id | \n\nSubscriber.FirstName | \nString | \nConditional | \n\
+        First Name of subscriber required for self-inquiry | \n\nSubscriber.LastName | \nString | \nConditional\
+        \ | \nLast Name of subscriber required for self-inquiry | \n\nSubscriber.MemberId | \nString |\
+        \ \nRequired | \nMember Id required for both type inquiries (self, dependent) | \n\nSubscriber.DOB\
+        \ | \nString | \nConditional | \nRequired for self-inquiry for better matching result Format is\
+        \ MM/dd/yyyy | \n\nSubscriber.SSN | \nString | \nOptional | \nSSN of subscriber | \n\nisSubscriberPatient\
+        \ | \nString | \nRequired | \nTrue for self and False for Dependent inquiry | \n\ndoS_StartDate\
+        \ | \nString | \nRequired | \nDate of service start date in MM/dd/yyyy format | \n\ndoS_EndDate\
+        \ | \nString | \nRequired | \nDate of service end date in MM/dd/yyyy format | \n\nPracticeTypeCode\
+        \ | \nNumber | \nOptional | \nDefault practice type is 86 | \n\nLocation | \nString | \nOptional\
+        \ | \nDefault is clients default location. | \n\nReferenceId | \nString | \nOptional | \nAny refence\
+        \ Id,for ex: Patient MRN | \n\nIncludeHTMLResponse | \nBoolean | \nOptional | \nDefault is false,\
+        \ if true then Entire response will be returned as formatted text in Response Test along with\
+        \ Summary details. | \n\nDependent | \nObject | \nConditional | \nRequired for dependent inquiry\
+        \ | \n\nDependent.Patient.FirstName | \nString | \nConditional | \nFirst Name of dependent required\
+        \ for dependent inquiry | \n\nDependent.Patient.LastName | \nString | \nConditional | \nLast Name\
+        \ of dependent required for dependent inquiry | \n\nDependent.Patient.DOB | \nString | \nConditional\
+        \ | \nRequired for dependent inquiry for better matching result Format is MM/dd/yyyy | \n\nDCodes\
+        \ | \nObject | \nConditional | \nDental Diagnosis Codes to get coinsurance and Deductible values\
+        \ | \n\nDentalEligibilitySummary Response details\n\nKey | \nType | \nDescription | \n\nRequestID\
+        \ | \nlong | \nEligibility Transaction ID | \n\nAPIResponseCode | \nString | \n0-Processed,1-Rejected,3-Pending\
+        \ | \n\nAPIResponseMessage | \nString | \nMessage about the transaction | \n\nEDIErrorMessage\
+        \ | \nString | \nEDI error messages if any | \n\nFollowUpAction | \nString | \nActions to be taken\
+        \ based on payer response | \n\nPossibleResolution | \nString | \nPossible solutions if any |\
+        \ \n\nProcessedWithError | \nBoolean | \nIf transaction verified with error, the value will be\
+        \ false | \n\nErrorCode | \nString | \nTransaction Error Code | \n\nErrorDescription | \nString\
+        \ | \nTransaction Error Description | \n\nPverifyPayerCode | \nString | \nPverify Payer Code |\
+        \ \n\nPayerName | \nString | \nPverify Payer Name | \n\nClientPayerName | \nString | \nClient\
+        \ Payer Name if any | \n\nVerificationType | \nString | \nVerification Type –Subscriber or dependent\
+        \ | \n\nDOS | \nString | \nDate of service start date – DOS end date | \n\nIs HMO Plan | \nBoolean\
+        \ | \nIf true then Patient has HMO plan | \n\nExceptionNotes | \nString | \n\"Exception Notes\
+        \ if any . If response demographic info is not matched with that of Request\" | \n\nAdditionalInformation\
+        \ | \nString | \nIf there is any other info | \n\nLocation | \nString | \nClient Location | \n\
+        \nReferenceId | \nString | \nReference Id of Practice | \n\nInternalId | \nString | \nInternal\
+        \ Id of Practice | \n\nCustomerId | \nString | \nCustomer Id in request | \n\nNotes | \nString\
+        \ | \nNotes if there are any in the response | \n\nResultPracticeType | \nString | \nPractice\
+        \ Type which is processed by payer | \n\nAreAllSTCsProcessed | \nBoolean | \nProcessed by | \n\
+        \nSTCsStatusMessage | \nString | \nService Codes status messages if any | \n\nIsProviderInNetwork\
+        \ | \nBoolean | \nIf provider is in with in network, it will return true | \n\nIsSkipped | \n\
+        Boolean | \nif transaction get skipped(same transaction if we verify multiple time, transaction\
+        \ will be skipped and return last successful verified response), it will be true | \n\nDetailsURL\
+        \ | \nString | \nDetails URL for view transaction results | \n\nIsPriorAuthRequired | \nString\
+        \ | \nIf any service require pre approval | \n\nDemographicInfo | \nObject | \nIt contains the\
+        \ subscriber info or dependent info . | \n\nServiceDetails | \nObject | \n\"It contains all Service\
+        \ type details info\" | \n\nOtherPayerInfo | \nObject | \nIt contains Other Payer info. It is\
+        \ null then there is no payer change. | \n\nPlanCoverageSummary | \nobject | \nIt contains Plan\
+        \ related info. | \n\nHBPC_Deductible_OOP_Summary | \nobject | \nIt contains HBPC related info.\
+        \ | \n\nMiscellaneousInfoSummary | \nobject | \nMiscellaneousInfoSummary | \n\nDentalSummary |\
+        \ \nPracticeTypeSummary | \nIt contains Dental Care Summary specific info | \n\nDentalAdjunctiveServiceSummary\
+        \ | \nPracticeTypeSummary | \nIt contains Dental Adjunctive Service Summary specific info | \n\
+        \nDentalAnesthesiaSummary | \nPracticeTypeSummary | \nIt contains Dental Anesthesia Summary specific\
+        \ info | \n\nDentalCrownSummary | \nPracticeTypeSummary | \nIt contains the Dental Crown Summary\
+        \ specific values | \n\nDentalDiagnosticSummary | \nPracticeTypeSummary | \nIt contains Dental\
+        \ Diagnostic Summary specific values | \n\nDentalDiagnosticXRaySummary | \nPracticeTypeSummary\
+        \ | \nIt contains Dental Diagnostic X-Ray Summary specific values | \n\nDentalEndodonticSummary\
+        \ | \nPracticeTypeSummary | \nIt contains Dental Endodontics Summary specific values | \n\nDentalMaxillofacialProstheticSummary\
+        \ | \nPracticeTypeSummary | \nIt contains Dental Maxillofacial Prosthetic Summary specific values\
+        \ | \n\nDentalOrthodonticSummary | \nPracticeTypeSummary | \nIt contains Dental Orthodontics Summary\
+        \ specific values | \n\nDentalPeriodonticSummary | \nPracticeTypeSummary | \nIt contains Dental\
+        \ Periodontics Summary specific values | \n\nDentalProsthodonticSummary | \nPr"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payerCode:
+                  type: string
+                  example: DE0171
+                payerName:
+                  type: string
+                  example: Delta Dental of Washington
+                provider:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                    middleName:
+                      type: string
+                    lastName:
+                      type: string
+                      example: ' test name'
+                    npi:
+                      type: string
+                      example: '1234567890'
+                    TaxId:
+                      type: string
+                      example: '123456789'
+                subscriber:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                      example: firstname
+                    dob:
+                      type: string
+                      example: 12/31/1967
+                    lastName:
+                      type: string
+                      example: lastname
+                    memberID:
+                      type: string
+                      example: 123456789A
+                dependent:
+                  nullable: true
+                isSubscriberPatient:
+                  type: string
+                  example: 'True'
+                doS_StartDate:
+                  type: string
+                  example: 05/20/2026
+                doS_EndDate:
+                  type: string
+                  example: 05/20/2026
+                PracticeTypeCode:
+                  type: string
+                  example: '211'
+                referenceId:
+                  type: string
+                  example: MRN001
+                Location:
+                  type: string
+                  example: TestLocation01
+                dCodes:
+                  type: array
+                  items:
+                    type: string
+                    example: D0140
+            example:
+              payerCode: DE0171
+              payerName: Delta Dental of Washington
+              provider:
+                firstName: ''
+                middleName: ''
+                lastName: ' test name'
+                npi: '1234567890'
+                TaxId: '123456789'
+              subscriber:
+                firstName: firstname
+                dob: 12/31/1967
+                lastName: lastname
+                memberID: 123456789A
+              dependent: null
+              isSubscriberPatient: 'True'
+              doS_StartDate: 05/20/2026
+              doS_EndDate: 05/20/2026
+              PracticeTypeCode: '211'
+              referenceId: MRN001
+              Location: TestLocation01
+              dCodes:
+              - D0140
+              - D0150
+              - D0170
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetDentalEligibilitySummary/{requestId}:
+    get:
+      operationId: getDentalEligibilitySummary
+      tags:
+      - Dental Eligibility
+      summary: GetDentalEligibilitySummary
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/V2/GetDentalEligibilitySummary\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/V2/GetDentalEligibilitySummary | \n\nGetEligibilitySummary\
+        \ returns the response from the EligibilitySummary POST call using a unique request id provided\
+        \ in the EligibilitySummary response. EligibilitySummary is not supported for back office payers.\n\
+        \nHeaders\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/Test/API/V2/DentalEligibilitySummary\
+        \ | \n\nMethod | \nGET | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token\
+        \ from above preceded by the String \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id\
+        \ | \n\nClient-API-Id | \nAPI ID provided by pVerify | \n\nContent-Type | \napplication/json |\
+        \ \n\nURL Parameters | \nRequestId returned in Dental EligibilitySummary response | \n\n*Note:\
+        \ The Client-API-Id header is required. Header keys are case sensitive.\n\nV2 GetDentalEligibilitySummary\
+        \ Response Fields\n\nKey | \nType | \nDescription | \n\nRequestID | \nlong | \nEligibility Transaction\
+        \ ID | \n\nAPIResponseCode | \nString | \n0-Processed,1-Rejected,3-Pending | \n\nAPIResponseMessage\
+        \ | \nString | \nMessage about the transaction | \n\nEDIErrorMessage | \nString | \nEDI error\
+        \ messages if any | \n\nFollowUpAction | \nString | \nActions to be taken based on payer response\
+        \ | \n\nPossibleResolution | \nString | \nPossible solutions if any | \n\nProcessedWithError |\
+        \ \nBoolean | \nIf transaction verified with error, the value will be false | \n\nErrorCode |\
+        \ \nString | \nTransaction Error Code | \n\nErrorDescription | \nString | \nTransaction Error\
+        \ Description | \n\nPverifyPayerCode | \nString | \nPverify Payer Code | \n\nPayerName | \nString\
+        \ | \nPverify Payer Name | \n\nClientPayerName | \nString | \nClient Payer Name if any | \n\n\
+        VerificationType | \nString | \nVerification Type –Subscriber or dependent | \n\nDOS | \nString\
+        \ | \nDate of service start date – DOS end date | \n\nIs HMO Plan | \nBoolean | \nIf true then\
+        \ Patient has HMO plan | \n\nExceptionNotes | \nString | \n\"Exception Notes if any . If response\
+        \ demographic info is not matched with that of Request\" | \n\nAdditionalInformation | \nString\
+        \ | \nIf there is any other info | \n\nLocation | \nString | \nClient Location | \n\nReferenceId\
+        \ | \nString | \nReference Id of Practice | \n\nInternalId | \nString | \nInternal Id of Practice\
+        \ | \n\nCustomerId | \nString | \nCustomer Id in request | \n\nNotes | \nString | \nNotes if there\
+        \ are any in the response | \n\nResultPracticeType | \nString | \nPractice Type which is processed\
+        \ by payer | \n\nAreAllSTCsProcessed | \nBoolean | \nProcessed by | \n\nSTCsStatusMessage | \n\
+        String | \nService Codes status messages if any | \n\nIsProviderInNetwork | \nBoolean | \nIf provider\
+        \ is in with in network, it will return true | \n\nIsSkipped | \nBoolean | \nif transaction get\
+        \ skipped(same transaction if we verify multiple time, transaction will be skipped and return\
+        \ last successful verified response), it will be true | \n\nDetailsURL | \nString | \nDetails\
+        \ URL for view transaction results | \n\nIsPriorAuthRequired | \nString | \nIf any service require\
+        \ pre approval | \n\nDemographicInfo | \nObject | \nIt contains the subscriber info or dependent\
+        \ info . | \n\nServiceDetails | \nObject | \n\"It contains all Service type details info\" | \n\
+        \nOtherPayerInfo | \nObject | \nIt contains Other Payer info. It is null then there is no payer\
+        \ change. | \n\nPlanCoverageSummary | \nobject | \nIt contains Plan related info. | \n\nHBPC_Deductible_OOP_Summary\
+        \ | \nobject | \nIt contains HBPC related info. | \n\nMiscellaneousInfoSummary | \nobject | \n\
+        MiscellaneousInfoSummary | \n\nDentalSummary | \nPracticeTypeSummary | \nIt contains Dental Care\
+        \ Summary specific info | \n\nDentalAdjunctiveServiceSummary | \nPracticeTypeSummary | \nIt contains\
+        \ Dental Adjunctive Service Summary specific info | \n\nDentalAnesthesiaSummary | \nPracticeTypeSummary\
+        \ | \nIt contains Dental Anesthesia Summary specific info | \n\nDentalCrownSummary | \nPracticeTypeSummary\
+        \ | \nIt contains the Dental Crown Summary specific values | \n\nDentalDiagnosticSummary | \n\
+        PracticeTypeSummary | \nIt contains Dental Diagnostic Summary specific values | \n\nDentalDiagnosticXRaySummary\
+        \ | \nPracticeTypeSummary | \nIt contains Dental Diagnostic X-Ray Summary specific values | \n\
+        \nDentalEndodonticSummary | \nPracticeTypeSummary | \nIt contains Dental Endodontics Summary specific\
+        \ values | \n\nDentalMaxillofacialProstheticSummary | \nPracticeTypeSummary | \nIt contains Dental\
+        \ Maxillofacial Prosthetic Summary specific values | \n\nDentalOrthodonticSummary | \nPracticeTypeSummary\
+        \ | \nIt contains Dental Orthodontics Summary specific values | \n\nDentalPeriodonticSummary |\
+        \ \nPracticeTypeSummary | \nIt contains Dental Periodontics Summary specific values | \n\nDentalProsthodonticSummary\
+        \ | \nPracticeTypeSummary | \nIt contains Dental Prosthodontics Summary specific values | \n\n\
+        DentalRestorativeSummary | \nPracticeTypeSummary | \nIt contains Dental Restorative Summary specific\
+        \ values | \n\nDentalRoutineSummary | \nPracticeTypeSummary | \nIt contains Dental Routine Summary\
+        \ specific values | \n\nDCodeBenefitsSummary | \nList | \nPer-D-code benefits summary, populated\
+        \ when D-codes are requested. | \n\nDCodesDetails | \nList | \nD-code-specific benefit details\
+        \ (populated by GetDCodesDetails(PboDentalEligibilityResponseSummary, List) when DCodes is provided).\
+        \ |"
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'OAuth2 access token returned by POST /Token, sent as `Authorization: Bearer <token>`.'
+    clientApiId:
+      type: apiKey
+      in: header
+      name: Client-API-Id
+      description: Client API identifier issued by pVerify. Required on every call; header keys are case
+        sensitive.
+    clientSecret:
+      type: apiKey
+      in: header
+      name: Client-Secret
+      description: Client secret issued by pVerify, used by the one-step (no-token) endpoints and the
+        premium report endpoints.

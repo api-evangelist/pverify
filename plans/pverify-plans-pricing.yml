@@ -4,7 +4,14 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: pVerify
 providerId: pverify
 created: '2026-06-21'
-modified: '2026-06-21'
+modified: '2026-08-15'
+generated: '2026-08-15'
+method: searched
+source: https://pverify.com/pricing/
+plan_count: 8
+currency: USD
+billing_period: month
+contract_term: 1 year
 reconciled: false
 tags:
 - Healthcare
@@ -15,85 +22,265 @@ tags:
 - 270/271
 - Plans
 description: >-
-  pVerify sells its eligibility, claim status, and estimation APIs through a
-  sales-led, per-transaction model. Pricing is quoted per verification /
-  transaction and tiered by monthly volume and product mix, and is not
-  published as fixed self-service rates. Specific per-transaction prices are
-  not reconciled in this artifact and require a quote from pVerify sales.
-notes: >-
-  Exact per-transaction pricing is not publicly listed; figures must be
-  confirmed with pVerify sales during reconciliation.
+  CORRECTED 2026-08-15. Earlier rounds of this artifact recorded pVerify as sales-led with no
+  published pricing. That is wrong: pVerify publishes a real per-product rate card at
+  https://pverify.com/pricing/, with two named tiers per product, a monthly floor price and an
+  included monthly transaction quota on each. Four products are priced — Advanced Eligibility,
+  Insurance Discovery, MBI Lookup and Claim Status — for eight priced tiers in total, plus two
+  published onboarding fees. Every price is quoted as "Starting at", so these are published FLOORS
+  rather than final rates, and pVerify still quotes the actual contract. API access is the
+  material tier boundary: on all four products the Standard tier is portal-only and the API is an
+  ENTERPRISE-tier entitlement. Nothing on the page states an overage rate, a per-transaction rate
+  beyond the bundle, a free trial, or a month-to-month option — those remain unpublished.
+api_access_note: >-
+  The pricing page lists "API" and "API Integrations" as Enterprise-tier features on Advanced
+  Eligibility, Insurance Discovery and Claim Status. A buyer on a Standard tier gets the Premium
+  Portal, not the REST API documented in openapi/. MBI Lookup does not list API on either tier.
 sources:
+- https://pverify.com/pricing/
 - https://pverify.com/api-developers/
-- https://www.pverify.com/rest-api/
+- https://pverify.com/request-a-demo/
 - https://pverify.com/contact-support/
 plans:
-- id: pverify-per-transaction
-  name: Per-Transaction (Sales-Led)
-  type: usage
+- id: pverify-advanced-eligibility-standard
+  name: Advanced Eligibility — Standard
+  product: Advanced Eligibility
+  type: subscription
+  api_included: false
   description: >-
-    Volume-tiered per-transaction pricing for real-time eligibility, claim
-    status, payer, and estimation API calls, quoted by pVerify sales.
+    Portal-only real-time eligibility verification. No API entitlement is listed on this tier.
   entries:
-  - label: Real-Time Eligibility Verification
-    name: eligibility_transaction
-    type: usage
+  - label: Advanced Eligibility Standard
+    name: advanced_eligibility_standard
+    type: subscription
     metric: transactions
-    limit: -1
+    limit: 500
     timeFrame: month
-    geo: global
+    geo: US
     unit: 1
-    price: contact sales (per-transaction, volume tiered)
-    userMultiplied: false
-  - label: Claim Status Inquiry
-    name: claim_status_transaction
-    type: usage
-    metric: transactions
-    limit: -1
-    timeFrame: month
-    geo: global
-    unit: 1
-    price: contact sales (per-transaction, volume tiered)
-    userMultiplied: false
-  - label: Patient Cost Estimation
-    name: estimation_transaction
-    type: usage
-    metric: transactions
-    limit: -1
-    timeFrame: month
-    geo: global
-    unit: 1
-    price: contact sales (per-transaction, volume tiered)
+    price: 'Starting at $125/month'
+    price_amount: 125
+    price_qualifier: starting-at
+    currency: USD
+    contract_term: 1 year
     userMultiplied: false
   elements:
-  - name: Eligibility Inquiry
-  - name: Eligibility Summary
-  - name: Batch Eligibility
-  - name: Claim Status
-  - name: Payers
-  - name: Estimation
-- id: pverify-enterprise
-  name: Enterprise
-  type: enterprise
+  - name: Premium Portal
+  - name: Single Process via Portal
+  - name: Business Rules Engine
+  - name: Basic Reporting
+- id: pverify-advanced-eligibility-enterprise
+  name: Advanced Eligibility — Enterprise
+  product: Advanced Eligibility
+  type: subscription
+  api_included: true
   description: >-
-    Negotiated agreements for health technology vendors, billing companies, and
-    high-volume providers, including batch processing, dedicated support, and
-    BAA / HIPAA terms. Contact pVerify sales.
+    Adds the REST API, API integrations, self-service and full-service batch, and detailed
+    reporting on top of the portal.
   entries:
-  - label: Enterprise Agreement
-    name: enterprise
-    type: flat
-    metric: contract
-    limit: -1
-    timeFrame: year
-    geo: global
+  - label: Advanced Eligibility Enterprise
+    name: advanced_eligibility_enterprise
+    type: subscription
+    metric: transactions
+    limit: 1500
+    timeFrame: month
+    geo: US
     unit: 1
-    price: contact sales
+    price: 'Starting at $395/month'
+    price_amount: 395
+    price_qualifier: starting-at
+    currency: USD
+    contract_term: 1 year
     userMultiplied: false
   elements:
-  - name: Custom Volume Pricing
-  - name: Batch Processing
-  - name: BAA / HIPAA Compliance
+  - name: Premium Portal
+  - name: API
+  - name: API Integrations
+  - name: Single Process
+  - name: Self Batch
+  - name: Full Service Batch
+  - name: Business Rules Engine
+  - name: Detailed Reporting
+- id: pverify-insurance-discovery-standard
+  name: Insurance Discovery — Standard
+  product: Insurance Discovery
+  type: subscription
+  api_included: false
+  description: Portal-only insurance discovery across commercial payers and Medicare.
+  entries:
+  - label: Insurance Discovery Standard
+    name: insurance_discovery_standard
+    type: subscription
+    metric: transactions
+    limit: 80
+    timeFrame: month
+    geo: US
+    unit: 1
+    price: 'Starting at $120/month'
+    price_amount: 120
+    price_qualifier: starting-at
+    currency: USD
+    contract_term: 1 year
+    userMultiplied: false
+  elements:
+  - name: Premium Portal
+  - name: Single Process
+  - name: Basic Reporting
+  - name: 'Searchability: Commercial Payers + Medicare (Standard)'
+- id: pverify-insurance-discovery-enterprise
+  name: Insurance Discovery — Enterprise
+  product: Insurance Discovery
+  type: subscription
+  api_included: true
+  description: >-
+    Adds the REST API, full-service batch, detailed reporting and State Medicaid searchability.
+  entries:
+  - label: Insurance Discovery Enterprise
+    name: insurance_discovery_enterprise
+    type: subscription
+    metric: transactions
+    limit: 200
+    timeFrame: month
+    geo: US
+    unit: 1
+    price: 'Starting at $390/month'
+    price_amount: 390
+    price_qualifier: starting-at
+    currency: USD
+    contract_term: 1 year
+    userMultiplied: false
+  elements:
+  - name: Premium Portal
+  - name: API
+  - name: Full Service Batch
+  - name: Detailed Reporting
+  - name: 'Searchability: Commercial Payers + Medicare + State Medicaid (Advanced)'
+- id: pverify-mbi-lookup-standard
+  name: MBI Lookup — Standard
+  product: MBI Lookup
+  type: subscription
+  api_included: null
+  description: >-
+    Medicare Beneficiary Identifier lookup. The pricing page does not list API on either MBI tier,
+    even though openapi/pverify-mbi-lookup-api-openapi.yml documents MBIInquiry / GetMBIResponse.
+  entries:
+  - label: MBI Lookup Standard
+    name: mbi_lookup_standard
+    type: subscription
+    metric: transactions
+    limit: 75
+    timeFrame: month
+    geo: US
+    unit: 1
+    price: 'Starting at $50/month'
+    price_amount: 50
+    price_qualifier: starting-at
+    currency: USD
+    contract_term: 1 year
+    userMultiplied: false
+  elements:
+  - name: Business Rules Engine
+  - name: Basic Reporting
+- id: pverify-mbi-lookup-enterprise
+  name: MBI Lookup — Enterprise
+  product: MBI Lookup
+  type: subscription
+  api_included: null
+  description: Higher MBI quota with State Medicaid access and detailed reporting.
+  entries:
+  - label: MBI Lookup Enterprise
+    name: mbi_lookup_enterprise
+    type: subscription
+    metric: transactions
+    limit: 200
+    timeFrame: month
+    geo: US
+    unit: 1
+    price: 'Starting at $200/month'
+    price_amount: 200
+    price_qualifier: starting-at
+    currency: USD
+    contract_term: 1 year
+    userMultiplied: false
+  elements:
+  - name: Detailed Reporting
+  - name: State Medicaid access
+- id: pverify-claim-status-standard
+  name: Claim Status — Standard
+  product: Claim Status
+  type: subscription
+  api_included: false
+  description: Portal-only 276/277 claim status checks.
+  entries:
+  - label: Claim Status Standard
+    name: claim_status_standard
+    type: subscription
+    metric: transactions
+    limit: 150
+    timeFrame: month
+    geo: US
+    unit: 1
+    price: 'Starting at $40/month'
+    price_amount: 40
+    price_qualifier: starting-at
+    currency: USD
+    contract_term: 1 year
+    userMultiplied: false
+  elements:
+  - name: Premium Portal
+  - name: Single Process
+  - name: Basic Reporting
+- id: pverify-claim-status-enterprise
+  name: Claim Status — Enterprise
+  product: Claim Status
+  type: subscription
+  api_included: true
+  description: Adds the REST API, single/batch processing and detailed reporting.
+  entries:
+  - label: Claim Status Enterprise
+    name: claim_status_enterprise
+    type: subscription
+    metric: transactions
+    limit: 250
+    timeFrame: month
+    geo: US
+    unit: 1
+    price: 'Starting at $70/month'
+    price_amount: 70
+    price_qualifier: starting-at
+    currency: USD
+    contract_term: 1 year
+    userMultiplied: false
+  elements:
+  - name: Premium Portal
+  - name: API
+  - name: Single/Batch Processing
+  - name: Detailed Reporting
+one_time_fees:
+- name: Standard onboarding
+  price: 'Starting at $495'
+  price_amount: 495
+  price_qualifier: starting-at
+  currency: USD
+- name: Enterprise onboarding
+  price: 'Starting at $950'
+  price_amount: 950
+  price_qualifier: starting-at
+  currency: USD
+add_ons:
+- name: Patient Demographic Validator (PDV)
+  price: not published
+  note: Listed as an optional add-on with no published price.
+not_published:
+- overage rate once the included monthly transaction quota is exhausted
+- a pure per-transaction rate outside a bundled tier
+- month-to-month (non-annual) pricing
+- a free trial or self-service checkout — every CTA routes to https://pverify.com/request-a-demo/
+- pricing for Dental Eligibility, Patient Cost Estimation, the CGX widget or the Payers API
+notes: >-
+  Prices are published floors ("Starting at"). Billing is noted as quarterly with monthly
+  subscriptions available. Confirm the final rate, the overage rate and API entitlement with
+  pVerify before integrating — the API is an Enterprise-tier feature on the products that list it.
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

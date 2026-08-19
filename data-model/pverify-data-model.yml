@@ -1,0 +1,98 @@
+generated: '2026-08-14'
+method: derived
+source: openapi/_original/pverify-openapi.yml (derived in turn from https://postman.pverify.com/)
+description: >-
+  Entity-relationship view of the pVerify API, derived from the request bodies and documented
+  response-field tables in pVerify's published collection. The model is transaction-centric: every
+  product creates an Inquiry that yields a RequestID, and that RequestID is the only key a client
+  can use to retrieve, cancel or report on the work. There are no durable server-side resources a
+  client can list or update — no customer, account or patient record is exposed as an addressable
+  entity.
+entities:
+- name: Transaction
+  aliases: [RequestID, RequestId, Inquiry]
+  id_field: RequestID
+  id_type: integer/long (pVerify-assigned)
+  description: >-
+    The central entity. Created by any *Inquiry / *Summary POST, carries an APIResponseCode
+    lifecycle state (0 Processed / 1 Rejected / 2 NoFunds / 3 Pending / 4 New), and is retrieved
+    by the matching GET.
+  created_by: [eligibilitySummary, easyEligibilitySummary, dentalEligibilitySummary, dentalEligibilitySummaryV2,
+    dentalEligibilityBenefitSummary, insuranceDiscovery, mbiInquiry, patientFinderInquiry,
+    claimStatusInquiry, estimateCalculation, cgxInquiry, sameOrSimilarInquiry, cmnInquiry, snfInquiry]
+  read_by: [getEligibilitySummary, getEligibility271, getDentalEligibilitySummary,
+    getInsuranceDiscoverySummaryResponse, getMBIResponse, getPatientFinderResponse,
+    getClaimStatusResponse, getSameOrSimilarResponse, getCMNResponse, getSNFResponse]
+  cancelled_by: [cancelTransaction]
+  listed_by: [getPendingInquiries]
+- name: Provider
+  id_field: npi
+  description: The rendering/billing provider on an inquiry — firstName, lastName, npi, pin.
+- name: Subscriber
+  id_field: memberID
+  description: The insured member — firstName, lastName, dob, memberID.
+- name: Dependent
+  id_field: null
+  description: >-
+    The patient when they are not the subscriber — firstName, lastName, dob, gender,
+    patientRelationship. Selected by the isSubscriberPatient flag.
+- name: Payer
+  id_field: payerCode
+  description: >-
+    An insurer in the pVerify network. payerCode is the join key on every inquiry. Back-office
+    (non-EDI) payers carry a BO prefix. Carries capability flags isSupportingEligibility,
+    isSupportingClaims, isEDIPayer, isActive, and a live payerStatus.
+  listed_by: [getAllPayers, getPayerStatus, getPayerStatusStatistics]
+- name: BenefitResult
+  id_field: null
+  description: >-
+    The parsed eligibility payload hanging off a Transaction — PlanCoverageSummary,
+    HBPC_Deductible_OOP_Summary, ServiceTypeDetailInfo/ServicesTypes, MedicareInfoSummary,
+    DemographicInfo. Shape varies by PracticeTypeCode.
+- name: ClaimStatusResult
+  id_field: null
+  description: >-
+    277 response hanging off a claim-status Transaction — ClaimStatuses[] with serviceLine[] items.
+- name: EstimateResult
+  id_field: null
+  description: Patient-responsibility estimate hanging off an estimation or CGX Transaction.
+- name: Report
+  id_field: RequestID
+  description: >-
+    Rendered PDF for a completed Transaction, served from the premium portal host
+    (premium.pverify.com/Report/..., /PDFReport/...), plus a details-URL endpoint returning a
+    deep link into the pVerify portal.
+  read_by: [getEligibilityPdfReport, getInsuranceDiscoveryReport, getCmnReport, getSameOrSimilarReport,
+    getEligibilityDetailsUrl, getInsuranceDiscoveryDetailsUrl, getSameOrSimilarDetailsUrl]
+relationships:
+- {from: Transaction, to: Payer, type: belongs_to, via: payerCode}
+- {from: Transaction, to: Provider, type: has_one, via: provider}
+- {from: Transaction, to: Subscriber, type: has_one, via: subscriber}
+- {from: Transaction, to: Dependent, type: has_one, via: dependent}
+- {from: Transaction, to: BenefitResult, type: has_one, via: response body}
+- {from: Transaction, to: ClaimStatusResult, type: has_one, via: ClaimStatuses}
+- {from: Transaction, to: EstimateResult, type: has_one, via: response body}
+- {from: Transaction, to: Report, type: has_one, via: RequestID}
+- {from: Transaction, to: Transaction, type: has_one, via: RecursiveRequestId, note: 'Medicare Advantage
+    recursive lookup chains one eligibility transaction to another; must be enabled by pVerify.'}
+- {from: Payer, to: BenefitResult, type: has_many, via: payerCode}
+- {from: BenefitResult, to: ServiceType, type: has_many, via: 'ServicesTypes[].ServiceTypeName'}
+id_conventions:
+  transaction: bare integer/long, not prefixed; scoped to the account
+  payer: 5-digit numeric string (e.g. 00192 = UHC); back-office payers prefixed BO (e.g. BO00018)
+  practice_type: numeric string, see vocabulary/pverify-vocabulary.yml
+  service_type: X12 EB03 code, 1-2 alphanumeric characters
+notes:
+- >-
+  There is no CRUD surface. Nothing can be updated; the only mutation besides creating a
+  transaction is cancelTransaction, which moves a pending transaction to Cancel.
+- >-
+  Client-side identity is carried, never stored as an entity: referenceId, InternalId, CustomerId
+  and ReferenceNumber are free-text passthrough fields echoed on the response.
+related:
+- vocabulary/pverify-vocabulary.yml
+- errors/pverify-error-codes.yml
+- conventions/pverify-conventions.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

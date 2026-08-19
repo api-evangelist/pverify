@@ -1,0 +1,121 @@
+{
+  "item": [
+    {
+      "id": "89c54cfd-84da-4720-a904-49c09a545fa7",
+      "name": "Payers",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "bba7b41b-2b52-4c6b-a87c-9ef38061eef7",
+          "name": "List supported payers",
+          "request": {
+            "name": "List supported payers",
+            "description": {
+              "content": "Returns the current pVerify payer list with codes, names, and capability flags used to map a request to a supported insurer.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "Payers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e17a740d-1f5f-42c0-b45d-612f2a07af5f",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "API",
+                    "Payers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"payerCode\": \"string\",\n    \"payerName\": \"string\",\n    \"isActive\": true,\n    \"isSupportingEligibility\": false,\n    \"isSupportingClaims\": false,\n    \"isEDIPayer\": true\n  },\n  {\n    \"payerCode\": \"string\",\n    \"payerName\": \"string\",\n    \"isActive\": true,\n    \"isSupportingEligibility\": false,\n    \"isSupportingClaims\": true,\n    \"isEDIPayer\": false\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.pverify.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "14df4424-b8e6-474b-b392-5657ab047dd3",
+    "name": "pVerify Authentication Payers API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Real-time healthcare insurance eligibility and revenue-cycle API. pVerify exchanges EDI 270/271 eligibility transactions, returns plan and benefit summaries, checks 276/277 claim status, lists supported payers, and estimates patient financial responsibility. All API calls require an OAuth2 bearer token obtained from the /Token endpoint and a Client-API-Id header.\n\nContact Support:\n Name: pVerify Support",
+      "type": "text/plain"
+    }
+  }
+}

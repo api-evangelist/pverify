@@ -1,0 +1,103 @@
+generated: '2026-08-14'
+method: searched
+source: https://postman.pverify.com/ (published request documentation) + openapi/_original/pverify-openapi.yml
+description: >-
+  Cross-cutting request/response semantics for the pVerify REST API, read from the collection
+  pVerify publishes on its own domain. The dominant pattern is a two-step transaction: POST an
+  inquiry, receive either a completed result (APIResponseCode 0) or a RequestID with a Pending
+  code, then GET the matching retrieval endpoint with that RequestID. Errors are in-envelope,
+  not HTTP.
+authentication:
+  style: oauth2-client-credentials + api-key header
+  token_endpoint: POST /Token (application/x-www-form-urlencoded)
+  token_fields: [access_token, token_type, expires_in]
+  request_headers:
+  - {name: Authorization, value: 'Bearer <access_token>', required: true}
+  - {name: Client-API-Id, value: 'client api id issued by pVerify', required: true}
+  - {name: Content-Type, value: application/json, required: true}
+  case_sensitivity: >-
+    pVerify states explicitly and repeatedly that header keys are CASE SENSITIVE — Client-API-Id
+    must be sent exactly as spelled.
+  one_step_variants: >-
+    EasyEligibilitySummary and the premium report endpoints skip the token step and authenticate
+    with Client-API-Id + Client-Secret headers directly.
+  unauthenticated_endpoints:
+  - GET /api/GetPayerStatus  # pVerify documents "this API call does not require authentication"
+  detail: authentication/pverify-authentication.yml
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    pVerify publishes no idempotency key, no request de-duplication contract and no replay
+    guarantee. Re-POSTing an inquiry creates a new transaction with a new RequestID and is
+    separately billable. The only client-side correlation handles are the optional free-text
+    referenceId / InternalId / CustomerId fields echoed back on the response, and RequestID
+    for retrieval. NOTE FOR AGENTS: retries after a timeout are NOT safe.
+  client_correlation_fields: [referenceId, InternalId, CustomerId, ReferenceNumber]
+pagination:
+  supported: false
+  note: >-
+    No cursor, offset, page or limit parameter appears anywhere in the published surface. List
+    endpoints (GetAllPayers, GetPendingInquiries, GetPayerStatus) return the full collection in
+    one response.
+async_pattern:
+  style: submit-then-poll
+  submit: POST <product>Inquiry returns RequestID
+  pending_signal: APIResponseCode 3 (Pending) — and 4 (New) on the eligibility family
+  retrieve:
+  - GET /API/GetEligibilitySummary/{requestId}
+  - GET /API/GetDentalEligibilitySummary/{requestId}
+  - GET /API/GetClaimStatusResponse/{requestId}
+  - GET /API/GetMBIResponse/{requestId}
+  - GET /API/GetPatientFinderResponse/{requestId}
+  - GET /api/GetInusuranceDiscoverySummaryResponse/{requestId}
+  cancel: POST /API/CancelTransaction
+  queue_inspection: GET /API/GetPendingInquiries?DOS=MM-DD-YYYY
+  callbacks: >-
+    An optional callbackURL body field is documented on SameOrSimilarInquiry, CMNInquiry and
+    SNFInquiry — pVerify POSTs the JSON result to that URL when processing completes. All three
+    products are labelled Discontinued in pVerify's own collection, so the callback mechanism is
+    not offered on any current product. See asyncapi/pverify-callbacks.yml.
+error_envelope:
+  shape: HTTP 200 + {APIResponseCode, APIResponseMessage, ...}
+  detail: errors/pverify-error-codes.yml
+  rfc9457: false
+rate_limiting:
+  documented: false
+  headers_published: none
+  detail: rate-limits/pverify-rate-limits.yml
+versioning:
+  scheme: path-segment, per endpoint, opt-in
+  evidence: >-
+    Only one versioned path exists in the published surface — /api/v2/DentalEligibilitySummary
+    alongside the unversioned /api/DentalEligibilitySummary. There is no global /v1 prefix and no
+    version header. pVerify instead names generations in prose ("1st Generation" EligibilityInquiry,
+    "2nd Generation" EligibilitySummary, "1 Step Easy" methods).
+  detail: lifecycle/pverify-lifecycle.yml
+field_conventions:
+  date_format: MM/dd/yyyy on request bodies; MM-DD-YYYY on the GetPendingInquiries DOS query param
+  casing: >-
+    Mixed and inconsistent — request bodies use camelCase (payerCode, subscriber.firstName),
+    PascalCase (PracticeTypeCode, Location, IncludeTextResponse) and screaming variants
+    (doS_StartDate) in the same object. Responses mix RequestID and requestId across products.
+  path_casing: >-
+    Both /API/... and /api/... prefixes are in live use on the same host (e.g. /api/EligibilitySummary
+    vs /API/GetEligibilitySummary). Agents should treat the published casing as literal.
+  expansion: not supported
+  sparse_fields: not supported
+  metadata: free-text passthrough fields only (referenceId, InternalId, CustomerId)
+request_tracing:
+  request_id_header: none
+  correlation: RequestID in the response body (pVerify-assigned, integer/long)
+content_types:
+  request: [application/json, application/x-www-form-urlencoded (token only)]
+  response: [application/json, application/pdf (premium report endpoints)]
+related:
+- errors/pverify-error-codes.yml
+- authentication/pverify-authentication.yml
+- lifecycle/pverify-lifecycle.yml
+- rate-limits/pverify-rate-limits.yml
+- sandbox/pverify-sandbox.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,53 @@
+generated: '2026-08-14'
+method: searched
+source: https://postman.pverify.com/ — per-request "Environment / URL" tables and the
+  "Practice type table → Test Environment" table in the published collection
+description: >-
+  pVerify publishes a separate test host, testapi.pverify.com, alongside production
+  api.pverify.com. Every documented request in pVerify's Postman collection carries an
+  Environment table naming both URLs, so the test surface is a first-class, documented
+  environment rather than a hidden one. Credentials are not shared test keys: the same
+  Client-API-Id / Client-Secret pair issued to an account is used against the test host,
+  so a sandbox call still requires onboarding with pVerify.
+environments:
+- name: Test
+  base_url: https://testapi.pverify.com
+  token_url: https://testapi.pverify.com/Token
+  example_endpoint: https://testapi.pverify.com/API/EligibilitySummary
+  credentials: account Client-API-Id + Client-Secret issued by pVerify (no public shared test key)
+  reachable: true
+  probe: {url: 'https://testapi.pverify.com/', status: 200, checked: '2026-08-14'}
+- name: Production
+  base_url: https://api.pverify.com
+  token_url: https://api.pverify.com/Token
+  reachable: true
+  probe: {url: 'https://api.pverify.com/openapi.json', status: 404, checked: '2026-08-14'}
+key_separation:
+  mode: host-based
+  note: >-
+    pVerify separates test from live by HOST, not by key prefix. There is no sk_test_/sk_live_
+    style prefix in the credential, so a client cannot tell from the credential alone which
+    environment it is pointed at — the base URL is the only switch.
+test_data:
+  scope: >-
+    pVerify publishes no test member IDs, test payer members or magic patient identifiers. The
+    only published test-environment constraint is a reduced practice-type list.
+  practice_types_available_in_test:
+  - {id: 3, name: DME}
+  - {id: 12, name: Physical Therapy}
+  - {id: 18, name: Specialist OV-Professional Services}
+  - {id: 27, name: OV_DxLab_Sx(Office)}
+  - {id: 38, name: PT_DME}
+  - {id: 40, name: PT_OT_ST}
+  practice_types_in_production: 162 (see vocabulary/pverify-vocabulary.yml)
+  gap: >-
+    6 of 162 production practice types are available in test, so most eligibility behaviour cannot
+    be exercised before go-live.
+not_published:
+- shared/public test credentials
+- test member IDs or synthetic patients
+- time simulation / test clocks
+- fixture or trigger tooling for forcing a specific APIResponseCode
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,142 @@
+{
+  "item": [
+    {
+      "id": "b87a2773-1ab0-4b54-81a4-3fd724419d00",
+      "name": "Estimation",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "97267563-3104-4d60-8e02-581844dde1bc",
+          "name": "Patient cost estimation",
+          "request": {
+            "name": "Patient cost estimation",
+            "description": {
+              "content": "Combines real-time benefits with contracted/fee data to estimate the patient's financial responsibility for a planned service.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "EstimationInquiry"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payerCode\": \"<string>\",\n  \"provider\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"npi\": \"<string>\",\n    \"pin\": \"<string>\"\n  },\n  \"subscriber\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"dob\": \"<string>\",\n    \"memberID\": \"<string>\"\n  },\n  \"serviceCptCodes\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"placeOfService\": \"<string>\",\n  \"contractedAmount\": \"<string>\",\n  \"dateOfService\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "ab01739a-a061-44b3-8238-dcad6e79fafa",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "API",
+                    "EstimationInquiry"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payerCode\": \"<string>\",\n  \"provider\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"npi\": \"<string>\",\n    \"pin\": \"<string>\"\n  },\n  \"subscriber\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"dob\": \"<string>\",\n    \"memberID\": \"<string>\"\n  },\n  \"serviceCptCodes\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"placeOfService\": \"<string>\",\n  \"contractedAmount\": \"<string>\",\n  \"dateOfService\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"requestId\": \"string\",\n  \"APIResponseCode\": \"string\",\n  \"APIResponseMessage\": \"string\",\n  \"estimatedPatientResponsibility\": \"string\",\n  \"estimatedInsurancePayment\": \"string\",\n  \"deductibleApplied\": \"string\",\n  \"coinsuranceApplied\": \"string\",\n  \"copayApplied\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.pverify.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "d333ce6c-2923-43c8-a542-99c207b9b7bc",
+    "name": "pVerify Authentication Estimation API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Real-time healthcare insurance eligibility and revenue-cycle API. pVerify exchanges EDI 270/271 eligibility transactions, returns plan and benefit summaries, checks 276/277 claim status, lists supported payers, and estimates patient financial responsibility. All API calls require an OAuth2 bearer token obtained from the /Token endpoint and a Client-API-Id header.\n\nContact Support:\n Name: pVerify Support",
+      "type": "text/plain"
+    }
+  }
+}

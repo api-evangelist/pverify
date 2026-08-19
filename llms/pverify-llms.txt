@@ -1,0 +1,90 @@
+# pVerify
+
+> pVerify is a US healthcare insurance eligibility and revenue-cycle API company, part of DoseSpot
+> (now Interra Health). Its REST API at https://api.pverify.com exchanges X12 270/271 eligibility
+> transactions, runs 276/277 claim status inquiries, discovers unknown insurance coverage, validates
+> Medicare Beneficiary Identifiers and patient demographics, lists and health-checks payers, and
+> estimates patient financial responsibility. pVerify publishes no OpenAPI; its machine-readable
+> contract is a public Postman Collection v2.0.0 at https://postman.pverify.com/. The OpenAPI
+> documents linked below were derived operation-for-operation from that collection by API Evangelist.
+
+## How the API works
+
+- Two-factor-by-header auth: an OAuth2 client-credentials bearer token from `POST /Token`, sent
+  alongside a `Client-API-Id` header. Header keys are case sensitive. Some "1 Step Easy" and PDF
+  report endpoints use `Client-API-Id` + `Client-Secret` instead of a token. `GET /api/GetPayerStatus`
+  requires no authentication.
+- Submit-then-poll: every product POSTs an inquiry that returns a `RequestID`, then the client GETs
+  the matching retrieval endpoint with that id. `APIResponseCode` 3 (Pending) / 4 (New) means keep polling.
+- Errors are in-envelope, not HTTP: business failures return HTTP 200 with a non-zero
+  `APIResponseCode` and an `APIResponseMessage`. Always check `APIResponseCode` before reading a payload.
+- No idempotency key exists. Re-POSTing an inquiry creates a new billable transaction. Retries
+  after a timeout are NOT safe — poll `GET /API/GetPendingInquiries` instead.
+- No pagination, no field expansion, no request-id header, and no published rate limits or
+  rate-limit response headers.
+- Test and production are separated by HOST (`testapi.pverify.com` vs `api.pverify.com`), not by
+  key prefix, and there are no public shared test credentials.
+
+## APIs
+
+- [Authentication API](https://docs.pverify.io/): OAuth2 client-credentials token endpoint (`createToken`)
+- [Eligibility API](https://www.pverify.com/rest-api/): 270/271 eligibility summary, raw 271 retrieval, one-step easy summary, pending queue, cancel, PDF report
+- [Dental Eligibility API](https://docs.pverify.io/): dental eligibility summary (v1 and v2) and benefit summary
+- [Insurance Discovery API](https://docs.pverify.io/): find unknown active coverage for a patient
+- [MBI Lookup API](https://docs.pverify.io/): Medicare Beneficiary Identifier lookup
+- [Patient Demographic Validator API](https://docs.pverify.io/): validate and complete patient demographics
+- [Claim Status API](https://www.pverify.com/claim-status/): 276/277 claim status inquiry and retrieval
+- [Estimation API](https://www.pverify.com/patient-estimator/): patient cost / financial responsibility estimate
+- [Payers API](https://pverify.com/payer-list/): supported payer list, live payer status, payer rejection statistics
+- [CGX Widget API](https://docs.pverify.io/): provision and drive the embeddable eligibility + estimates widget
+- Discontinued but still documented: Same or Similar API, CMN API, SNF API
+
+## Specs
+
+- [OpenAPI — full surface (derived)](openapi/_original/pverify-openapi.yml)
+- [OpenAPI — per-API documents](openapi/)
+- [Postman Collection published by pVerify (verbatim)](collections/pverify-published-postman-collection.json)
+
+## Artifacts
+
+- [Authentication profile](authentication/pverify-authentication.yml)
+- [API conventions](conventions/pverify-conventions.yml)
+- [Error codes (in-envelope APIResponseCode)](errors/pverify-error-codes.yml)
+- [Data model](data-model/pverify-data-model.yml)
+- [Vocabulary](vocabulary/pverify-vocabulary.yml)
+- [Lifecycle, versioning and status](lifecycle/pverify-lifecycle.yml)
+- [Sandbox / test environment](sandbox/pverify-sandbox.yml)
+- [Standards conformance](conformance/pverify-conformance.yml)
+- [Client packages and SDKs](packages/pverify-packages.yml)
+- [Embeddable components](components/pverify-components.yml)
+- [Callbacks / event surface](asyncapi/pverify-callbacks.yml)
+- [Plans and pricing](plans/pverify-plans-pricing.yml)
+- [Rate limits](rate-limits/pverify-rate-limits.yml)
+- [Domain security](security/pverify-domain-security.yml)
+- [Trust center](security/pverify-trust-center.yml)
+- [Agent skills](skills/_index.yml)
+
+## Docs
+
+- [Developer Hub](https://pverify.com/api-developers/)
+- [API documentation (Postman-published)](https://postman.pverify.com/)
+- [Documentation portal](https://docs.pverify.io/)
+- [REST API overview](https://www.pverify.com/rest-api/)
+- [Payer list](https://pverify.com/payer-list/)
+- [Pricing](https://pverify.com/pricing/)
+- [Contact support](https://pverify.com/contact-support/)
+- [API login](https://apimgmt.pverify.com/)
+- [Application status (DoseSpot)](https://status.dosespot.com/posts/dashboard)
+- [Trust portal (Interra Health)](https://trust.dosespot.com/)
+- [Privacy policy](https://pverify.com/privacy-policy/)
+- [Blog](https://pverify.com/blog/)
+
+## Not published by pVerify
+
+- No OpenAPI, no AsyncAPI, no GraphQL, no gRPC
+- No MCP server and no A2A agent card
+- No `/.well-known/` documents on any host (`security.txt`, `openid-configuration`,
+  `oauth-authorization-server`, `api-catalog` all 404 on the API hosts)
+- No `llms.txt` — this file is generated by API Evangelist from the catalog, not served by pVerify
+- No published rate limits, no dated changelog, no deprecation policy, no SLA, no OAuth scopes,
+  no CLI, and no public vulnerability-disclosure program

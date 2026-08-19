@@ -1,0 +1,260 @@
+# Derived from pVerify's published Postman collection: https://postman.pverify.com/
+# method: derived  generated: 2026-08-14
+openapi: 3.0.3
+info:
+  title: pVerify Insurance Discovery API
+  description: pVerify Insurance Discovery API, derived operation-for-operation from the public Postman
+    collection pVerify publishes at https://postman.pverify.com/ (last updated 03/01/2026). All calls
+    require an OAuth2 bearer token from POST /Token plus the Client-API-Id header.
+  version: '1.0'
+  termsOfService: https://pverify.com/privacy-policy/
+  contact:
+    name: pVerify Support
+    email: support@pverify.com
+    url: https://pverify.com/contact-support/
+servers:
+- url: https://api.pverify.com
+  description: Production
+- url: https://testapi.pverify.com
+  description: Test environment published by pVerify
+- url: https://premium.pverify.com
+  description: pVerify premium portal host (PDF reports, widget setup)
+tags:
+- name: Insurance Discovery
+paths:
+  /api/InsuranceDiscovery:
+    post:
+      operationId: insuranceDiscovery
+      tags:
+      - Insurance Discovery
+      summary: InsuranceDiscovery
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/InsuranceDiscovery\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/InsuranceDiscovery | \n\npVerify’s Insurance\
+        \ Discovery allows Hospitals and Providers to find a patient’s insurance coverage to collect potentially\
+        \ millions from insurance companies, allow prompt claim submission, increase patient payment collection,\
+        \ and drastically decrease Account Receivables.\n\nPatient StatesTo run insurance discovery a\
+        \ patient state or patient state ID is required. As part of the setup, pVerify will work with\
+        \ you to create Patient States.\n\nMedicareWe will return a new object for Medicare called MedicareInfoSummary\
+        \ which will return Medicare specific information such as Part A/B deductible, pharmacy payer\
+        \ name, MCA payer name, and more information. This object will only be returned for Medicare,\
+        \ for all other payers it is null. Please use this object when sending Medicare patients to retrieve\
+        \ Medicare specific information.\n\nHeaders\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/InsuranceDiscovery\
+        \ | \n\nMethod | \nPOST | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token\
+        \ from above preceded by the String \"Bearer\" | \n\nClient-API-Id | \nAPI ID provided by pVerify\
+        \ | \n\nContent-Type | \napplication/json | \n\n*Note: The Client-API-Id is required. Header keys\
+        \ are case sensitive.\n\nInsuranceDiscovery Request Fields\n\nProperty Name | \nData Type | \n\
+        Usage | \nDescription | \n\npatientStateId | \nInteger | \nConditional | \nPlease get it from\
+        \ pverify Team. Either patientSateId or patientState is required. | \n\npatientState | \nString\
+        \ | \nConditional | \nPlease get it from pverify Team. Either patientSateId or patientState is\
+        \ required. | \n\npatientFirstName | \nString | \nRequired | \nFirst Name of patient required\
+        \ for inquiry | \n\npatientLastName | \nString | \nRequired | \nLast Name of patient required\
+        \ for inquiry | \n\npatientDOB | \nString | \nRequired | \nRequired for self-inquiry for better\
+        \ matching result. (Expected format: MM/dd/YYYY ie 01/01/2000) | \n\npatientSSN | \nString | \n\
+        Conditional | \nSSN of Patient(To MBI lookup) | \n\npatientGender | \nString | \nConditional |\
+        \ \nGender will be mandatory for Medicaid patients | \n\ndoS_StartDate | \nString | \nRequired\
+        \ | \nDate of service start date (Expected format: MM/dd/YYYY ie 01/01/2000) | \n\ndoS_EndDate\
+        \ | \nString | \nRequired | \nDate of service end date (Expected format: MM/dd/YYYY ie 01/01/2000)\
+        \ | \n\nreferenceId | \nString | \nOptional | \nPatient MRN or account Number | \n\nNotes | \n\
+        String | \nOptional | \nany free-text related patient | \n\nlocation | \nString | \nRequired |\
+        \ \nLocation is the practice location. Note by setting this, you will lock the patient to one\
+        \ location, so that users that login in via our portal who are not authorized to see that location\
+        \ will not see the patient. | \n\nverifyMedicare | \nBoolean | \nOptional | \nDefault is false.\
+        \ If true, then Medicare transaction will takes place when the patient's age is >30 years. | \n\
+        \npatientHasDisability | \nBoolean | \nOptional | \nDefault is false. If true, then Medicare transaction\
+        \ will takes place. | \n\nInsuranceDiscovery Response Fields\n\nKey | \nType | \nDescription |\
+        \ \n\nRequestID | \nInteger | \nEligibility Transaction ID | \n\nAPIResponseCode | \nString |\
+        \ \n0-Processed,1-Rejected,2-NoFunds,3-Pending | \n\nAPIResponseMessage | \nString | \nMessage\
+        \ about the transaction | \n\nEDIErrorMessage | \nString | \nMessage from Payer about errors |\
+        \ \n\nPayerName | \nString | \nPayer Name as defined by pVerify | \n\nPverifyPayerCode | \nString\
+        \ | \nPverify Payer Code | \n\nClientPayerName | \nString | \nIt contains client practice payer\
+        \ map name to the pverify payer. | \n\nVerificationType | \nString | \nVerification Type –Subscriber\
+        \ or dependent | \n\nDOS | \nString | \nDate of service start date – DOS end date | \n\nIsHMOPlan\
+        \ | \nBoolean | \nIf true then Patient has HMO plan | \n\nExceptionNotes | \nString | \nException\
+        \ Notes if any. If response demographic info is not matched with that of Request | \n\nAddtionalInfo\
+        \ | \nString | \nIf there is any other info | \n\nLocation | \nString | \nLocation in which trans\
+        \ ran | \n\nReferrenceId | \nString | \nReferencid passed in request | \n\nResultPracticeType\
+        \ | \nString | \nPractice type Name | \n\nAreAllSTCsProcessed* | \nBoolean | \nTrue when all service\
+        \ codes are processed by payer else false, This is helpful to determine to whether transaction\
+        \ needs to be reverify or not. | \n\nSTCsStatusMessage* | \nString | \nContains message when AreAllSTCsProcessed=false.\
+        \ Message contains list of not processed service codes | \n\nNotes | \nString | \n | \n\nDemographicInfo\
+        \ | \nObject | \nIt contains the subscriber info or dependent info . | \n\nServiceDetails | \n\
+        Object | \nIt contains all Service type details info | \n\nPreventiveServices | \nObject | \n\
+        Contains Preventive codes details | \n\nOtherPayerInfo | \nObject | \nIt contains Other Payer\
+        \ info. It is null then there is no payer change. | \n\nPlanCoverageSummary | \nobject | \nIt\
+        \ contains Plan realted info. | \n\nPCPAuthInfoSummary | \nObject | \nIt contains PCP auth info.\
+        \ | \n\nHBPC_Deductible_OOP_Summary | \nObject | \nIt contains Deductible and OOP in from Health\
+        \ benefit Plan Coverage service type .It is null for Medicare Payer Inquiries. | \n\nMedicareInfoSummary\
+        \ | \nObject | \nIt contains Medicare info summary. It is null for other payers and other summary\
+        \ details are empty for Medicare payer transaction. | \n\nSpecialistOfficeSummary | \nPracticeTypeSummary\
+        \ | \nIt contains Specialist Consultation specific Summary (Co-Pay,Co-ins,Ded,OOP) and exclusive\
+        \ values of practice type . | \n\nComboPayerResponses | \nArray of Object | \nIt conatins Combo\
+        \ Group payer responses.. This response has been appended with Address,DOB,FullName,MemberId.\
+        \ | \n\nComboPayerResponses.Address | \nString | \nIt contains Address | \n\nComboPayerResponses.DOB\
+        \ | \nString | \nIt contains DOB | \n\nComboPayerResponses.FullName | \nString | \nIt contains\
+        \ FullName | \n\nComboPayerResponses.MemberId | \nString | \nIt contains MemberId | \n\nComboPayerResponses.City\
+        \ | \nString | \nIt contains City | \n\nComboPayerResponses.State | \nString | \nIt contains State\
+        \ | "
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                doS_EndDate:
+                  type: string
+                  example: 04/28/2023
+                doS_StartDate:
+                  type: string
+                  example: 04/28/2023
+                patientStateId:
+                  type: integer
+                  example: 10
+                patientState:
+                  type: string
+                patientSSN:
+                  type: string
+                patientLastName:
+                  type: string
+                  example: TEST
+                patientFirstName:
+                  type: string
+                  example: TEST
+                patientDOB:
+                  type: string
+                  example: 01/01/1950
+                patientGender:
+                  type: string
+                  example: M
+                location:
+                  type: string
+                  example: CA
+                notes:
+                  type: string
+                verifyMedicare:
+                  type: boolean
+                  example: false
+                patientHasDisability:
+                  type: boolean
+                  example: false
+            example:
+              doS_EndDate: 04/28/2023
+              doS_StartDate: 04/28/2023
+              patientStateId: 10
+              patientState: ''
+              patientSSN: ''
+              patientLastName: TEST
+              patientFirstName: TEST
+              patientDOB: 01/01/1950
+              patientGender: M
+              location: CA
+              notes: ''
+              verifyMedicare: false
+              patientHasDisability: false
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /api/GetInusuranceDiscoverySummaryResponse/{requestId}:
+    get:
+      operationId: getInsuranceDiscoverySummaryResponse
+      tags:
+      - Insurance Discovery
+      summary: InsuranceDiscovery GET
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/GetInusuranceDiscoverySummaryResponse/{id}\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/GetInusuranceDiscoverySummaryResponse/{id}\
+        \ | \n\nGetInusuranceDiscoverySummaryResponse returns the response from the InsuranceDiscovery\
+        \ POST call using a unique request id provided in the InsuranceDiscovery response.\n\nHeaders\n\
+        \nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/GetInusuranceDiscoverySummaryResponse/{id}\
+        \ | \n\nMethod | \nGET | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token\
+        \ from above preceded by the String \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id\
+        \ | \n\nClient-API-Id | \nAPI ID provided by pVerify | \n\nContent-Type | \napplication/json |\
+        \ \n\nURL Parameters | \nRequestId returned in InsuranceDiscovery response | \n\n*Note: The Client-API-Id\
+        \ header is required. Header keys are case sensitive.\n\nGetInusuranceDiscoverySummaryResponse\
+        \ Response Fields\n\nSee InsuranceDiscovery response."
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetInsuranceDiscoveryDetailsURL/{requestId}:
+    get:
+      operationId: getInsuranceDiscoveryDetailsUrl
+      tags:
+      - Insurance Discovery
+      summary: ID Details URL
+      description: "Environment | \nURL | \n\nTest | \n/API/GetInsuranceDiscoveryDetailsURL/{id} | \n\n\
+        Production | \n/API/GetInsuranceDiscoveryDetailsURL/{id} | \n\nThis GET method will return details\
+        \ URL with Insurance Discovery Request ID as a parameter.\n\nGetInsuranceDiscoveryDetailsURL Request\n\
+        \nKey | \nValue | \n\nURL | \n/API/GetInsuranceDiscoveryDetailsURL/{id} | \n\nMethod | \nGET |\
+        \ \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token from above preceded\
+        \ by the String \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id | \n\nContent-Type\
+        \ | \napplication/json | \n\n*Note: The Client-API-Id header is required. Header keys are case\
+        \ sensitive.\n\nGetInsuranceDiscoveryDetailsURL Resposne\n\nKey | \nValue | \n\nisDetailsURLGenerated\
+        \ | \nTrue or false | \n\nurl | \nstring URL | \n\nerrorMessage | \nMessage when isDetailsURLGenerated\
+        \ is false | \n\nJSON Response\n\n{\n\n\"isDetailsURLGenerated\": true,\n\n\"url\": \"https://premium.pverify.com/Details\"\
+        ,\n\n\"errorMessage\": null\n\n}"
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /PDFReport/InsuranceDiscovery/{id}:
+    get:
+      operationId: getInsuranceDiscoveryReport
+      tags:
+      - Insurance Discovery
+      summary: Insurance Discovery Report
+      description: "This returns a PDF report of the Insurance Discovery request.\n\nNote two things:\n\
+        \nThe endpoint is premium.pverify.com\n\nAuthentication token is not used, instead pass your API\
+        \ ID and Secret. \n\nReplace {id} with the requestid you receive from the Insurance Discovery\
+        \ request."
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - clientApiId: []
+        clientSecret: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'OAuth2 access token returned by POST /Token, sent as `Authorization: Bearer <token>`.'
+    clientApiId:
+      type: apiKey
+      in: header
+      name: Client-API-Id
+      description: Client API identifier issued by pVerify. Required on every call; header keys are case
+        sensitive.
+    clientSecret:
+      type: apiKey
+      in: header
+      name: Client-Secret
+      description: Client secret issued by pVerify, used by the one-step (no-token) endpoints and the
+        premium report endpoints.

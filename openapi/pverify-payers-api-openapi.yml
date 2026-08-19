@@ -1,61 +1,110 @@
-openapi: 3.0.1
+# Derived from pVerify's published Postman collection: https://postman.pverify.com/
+# method: derived  generated: 2026-08-14
+openapi: 3.0.3
 info:
-  title: pVerify Authentication Payers API
-  description: Real-time healthcare insurance eligibility and revenue-cycle API. pVerify exchanges EDI 270/271 eligibility transactions, returns plan and benefit summaries, checks 276/277 claim status, lists supported payers, and estimates patient financial responsibility. All API calls require an OAuth2 bearer token obtained from the /Token endpoint and a Client-API-Id header.
-  termsOfService: https://www.pverify.com/terms-of-use/
+  title: pVerify Payers API
+  description: pVerify Payers API, derived operation-for-operation from the public Postman collection
+    pVerify publishes at https://postman.pverify.com/ (last updated 03/01/2026). All calls require an
+    OAuth2 bearer token from POST /Token plus the Client-API-Id header.
+  version: '1.0'
+  termsOfService: https://pverify.com/privacy-policy/
   contact:
     name: pVerify Support
+    email: support@pverify.com
     url: https://pverify.com/contact-support/
-  version: '1.0'
 servers:
 - url: https://api.pverify.com
   description: Production
-security:
-- bearerAuth: []
-  clientApiId: []
+- url: https://testapi.pverify.com
+  description: Test environment published by pVerify
 tags:
 - name: Payers
 paths:
-  /API/Payers:
+  /API/GetAllPayers:
     get:
-      operationId: getPayers
+      operationId: getAllPayers
       tags:
       - Payers
-      summary: List supported payers
-      description: Returns the current pVerify payer list with codes, names, and capability flags used to map a request to a supported insurer.
+      summary: GetAllPayers
+      description: "Environment | \nURL | \n\nProduction | \nhttps://api.pverify.com/API/GetAllPayers\
+        \ | \n\nReturns the list of current pVerify payers (pVerify payer code & pVerify Payer Name).\
+        \ Note backoffice (non-EDI) payers are denoted with a payer code prefix of BO. For example BO00018\n\
+        \nGetAllPayers Request\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/GetAllPayers\
+        \ | \n\nMethod | \nGET | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token\
+        \ from above preceded by the String \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id\
+        \ | \n\nContent-Type | \napplication/json | \n\n*Note: The Client-API-Id header is required. Header\
+        \ keys are case sensitive.\n\nGetAllPayers Response\n\nKey | \nValue | \n\npayerCode | \nPayer\
+        \ Code | \n\npayerName | \nPayer Name | \n\nisActive | \nBoolean determines if payer is active\
+        \ | \n\nisSupportingEligibility | \nBoolean determines if payer is supporting eligibility | \n\
+        \nisSupportingClaims | \nBoolean to see if payer is supporting claims | \n\nisEDIPayer | \nBoolean\
+        \ to see if payer is EDI |"
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Payer'
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /api/GetPayerStatus:
+    get:
+      operationId: getPayerStatus
+      tags:
+      - Payers
+      summary: GetPayerStatus
+      description: "Environment | \nURL | \n\nProduction | \nhttps://api.pverify.com/API/GetPayerStatus\
+        \ | \n\nThis GET call will return the status of all pVerify payers. You can call this endpoint\
+        \ with an optional parameter of payerStatus and it will return payers from that status. By default\
+        \ the endpoint returns all payers and statuses. This API call does not require authentication.\n\
+        \nGetPayerStatus Request\n\nKey | \nValue | \n\nURL | \nhttp://api.pverify.com/api/GetPayerStatus\
+        \ | \n\nMethod | \nGET | \n\nURL Params | \nDescription | \n\nGetPayerStatus | \nAllows you to\
+        \ return specific payer status from response | \n\nHeaders | \nNone (this API call does not require\
+        \ authentication) | \n\nBody | \nNone | \n\nURL Parameter payerStatus value and description\n\n\
+        Value | \nDescription | \n\nPayer Up | \nPayer is Active and running transactions. | \n\nPayer\
+        \ Active | \nPayer is Active but no recent transactions. | \n\nPayer Inactive | \nThis is marked\
+        \ as inactive in our system. | \n\nPayer Down | \nPayer is Active but more transactions are failing\
+        \ from the past one hour. | \n\nGetPayerStatus Response\n\nKey | \nValue | \n\npayerName | \n\
+        Name of payer | \n\npayer_Code | \nPayer code | \n\npayerStatus | \nPayer Status (see URL parameters\
+        \ description) |"
+      responses:
+        '200':
+          description: OK
+  /API/GetPayerStatusStatistics:
+    get:
+      operationId: getPayerStatusStatistics
+      tags:
+      - Payers
+      summary: Down Payer List
+      description: This API will return an array of payers that are known to be temporarily down.
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+        example: Rejected
+      - name: checkForLastNumberOfHours
+        in: query
+        required: false
+        schema:
+          type: string
+        example: '1'
+      responses:
+        '200':
+          description: OK
 components:
-  schemas:
-    Payer:
-      type: object
-      properties:
-        payerCode:
-          type: string
-        payerName:
-          type: string
-        isActive:
-          type: boolean
-        isSupportingEligibility:
-          type: boolean
-        isSupportingClaims:
-          type: boolean
-        isEDIPayer:
-          type: boolean
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
-      description: OAuth2 access token returned by the /Token endpoint.
+      description: 'OAuth2 access token returned by POST /Token, sent as `Authorization: Bearer <token>`.'
     clientApiId:
       type: apiKey
       in: header
       name: Client-API-Id
-      description: Client API identifier issued by pVerify, required on all API calls.
+      description: Client API identifier issued by pVerify. Required on every call; header keys are case
+        sensitive.
+    clientSecret:
+      type: apiKey
+      in: header
+      name: Client-Secret
+      description: Client secret issued by pVerify, used by the one-step (no-token) endpoints and the
+        premium report endpoints.

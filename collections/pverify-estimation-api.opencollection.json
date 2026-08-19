@@ -1,0 +1,39 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "pVerify Authentication Estimation API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Estimation",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Patient cost estimation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.pverify.com/API/EstimationInquiry",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Combines real-time benefits with contracted/fee data to estimate the patient's financial responsibility for a planned service."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

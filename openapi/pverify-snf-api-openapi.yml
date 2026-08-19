@@ -1,0 +1,169 @@
+# Derived from pVerify's published Postman collection: https://postman.pverify.com/
+# method: derived  generated: 2026-08-14
+openapi: 3.0.3
+info:
+  title: pVerify SNF API (discontinued)
+  description: pVerify SNF API (discontinued), derived operation-for-operation from the public Postman
+    collection pVerify publishes at https://postman.pverify.com/ (last updated 03/01/2026). All calls
+    require an OAuth2 bearer token from POST /Token plus the Client-API-Id header.
+  version: '1.0'
+  termsOfService: https://pverify.com/privacy-policy/
+  contact:
+    name: pVerify Support
+    email: support@pverify.com
+    url: https://pverify.com/contact-support/
+servers:
+- url: https://api.pverify.com
+  description: Production
+- url: https://testapi.pverify.com
+  description: Test environment published by pVerify
+tags:
+- name: SNF
+paths:
+  /API/SNFInquiry:
+    post:
+      operationId: snfInquiry
+      tags:
+      - SNF
+      summary: SNF Inquiry
+      description: "Environment | \nURL | \n\nProduction | \nhttps://api.pverify.com/API/SNFInquiry |\
+        \ \n\nThe pVerify API for SNF is like Same or Similar in that it will not deliver a result instantly,\
+        \ instead the user is expected to call the GET method 1 minute later.\n\nKey | \nValue | \n\n\
+        URL | \nhttps://api.pverify.com/API/SNFInquiry | \n\nMethod | \nPOST | \n\nHeaders | \nDescription\
+        \ | \n\nContent-Type | \napplication/json | \n\nAuthorization | \nAuthorization token from above\
+        \ preceded by the String \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id | \n\n\
+        Body | \nSee Below | \n\nSNF Codes Inquiry Request Fields\n\nKey | \nType | \nUsage | \nValue\
+        \ | \n\nPayerCode | \nString | \nRequired | \nPayer Code | \n\nMemberId | \nString | \nRequired\
+        \ | \nMember ID | \n\nPatientFirstName | \nString | \nRequired | \nPatient First Name | \n\nPatientLastName\
+        \ | \nString | \nRequired | \nPatient Last Name | \n\nPatientDOB | \nString | \nRequired | \n\
+        Patient Date of Birth (MM/DD/YYYY) | \n\nPatientStateCode | \nString | \nRequired | \nPatient\
+        \ State | \n\nDOS | \nString | \nOptional | \nDate of Service (MM/DD/YYYY) | \n\nLocation | \n\
+        String | \nOptional | \nLocation is the practice location. Note by setting this, you will lock\
+        \ the patient to one location, so that users that login in via our portal who are not authorized\
+        \ to see that location will not see the patient. | \n\nCallbackURL | \nString | \nOptional | \n\
+        JSON response will be posted to callbackURL when inquiry is processed and if callbackURL is valid.\
+        \ This URL should support HTTP POST method and Content-Type =’application/json’ | \n\nMRN | \n\
+        String | \nOptional | \nMedical Record Number (like Same or Similar, when populated we will send\
+        \ the results back to this URL) - optional | \n\nSNF Codes Inquiry Response Fields\n\nKey | \n\
+        Type | \nDescription | \n\nrequestId | \nString | \nrequestId | \n\nProcessed | \nboolean | \n\
+        Returns true if processed | \n\nisDataError | \nboolean | \nDetermines if data error occurred\
+        \ | \n\nerrorMessage | \nString | \nError Message | \n\nDetails | \nObject | \nDetails | \n\n\
+        Details.DOSStart | \nString | \nDate of service start date (Format: MM/DD/YYYY) | \n\nDetails.DOSEnd\
+        \ | \nString | \nDate of service end (Format: MM/DD/YYYY) | \n\nDetails.AdmitanceDate | \nString\
+        \ | \nAdmitance date | \n\nDetails.DischargedDate | \nString | \nDischarged date | \n\nDetails.BillingNPI\
+        \ | \nString | \nBilling NPI | \n\nDetails.PatientStatus | \nString | \nPatient Status | \n\n\
+        Details.Message | \nString | \nDetails Message | \n\nDetails.SNFRequestId | \nInt | \nSNF request\
+        \ ID | \n\nDetails.CreatedOn | \nString | \nDate and time created | \n\nDetails.BillingType |\
+        \ \nString | \nBilling type | \n\nMessage | \nString | \nMessage | \n\nStatus | \nString | \n\
+        Status | \n\nexpectedTimeInSeconds | \nString | \nExpected time to get response (when you can\
+        \ call GET) | \n\napiResponseCode | \nint | \nAPI Response Code | \n\napiResponseMessage | \n\
+        String | \nAPI Response Message |"
+      deprecated: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                PayerCode:
+                  type: string
+                  example: '00007'
+                MemberId:
+                  type: string
+                  example: 123456789A
+                PatientFirstName:
+                  type: string
+                  example: firstName
+                PatientLastName:
+                  type: string
+                  example: lastName
+                PatientDOB:
+                  type: string
+                  example: 01/02/1983
+                PatientStateCode:
+                  type: string
+                  example: TX
+                DOS:
+                  type: string
+                  example: 07/22/2020
+                Location:
+                  nullable: true
+                CallbackURL:
+                  nullable: true
+                MRN:
+                  nullable: true
+            example:
+              PayerCode: '00007'
+              MemberId: 123456789A
+              PatientFirstName: firstName
+              PatientLastName: lastName
+              PatientDOB: 01/02/1983
+              PatientStateCode: TX
+              DOS: 07/22/2020
+              Location: null
+              CallbackURL: null
+              MRN: null
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetSNFResponse/{requestId}:
+    get:
+      operationId: getSNFResponse
+      tags:
+      - SNF
+      summary: GetSNFResponse
+      description: "Environment | \nURL | \n\nProduction | \nhttps://api.pverify.com/API/GETSNFResponse\
+        \ | \n\nThis GET call is intended to retrieve the SNF response initiated by the SNFInquiry POST\
+        \ call. By adding the requestId received in the POST call, users can retrieve the SNFInquiry Response.\n\
+        \nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/GETSNFResponse | \n\nMethod | \nGET\
+        \ | \n\nHeaders | \nDescription | \n\nContent-Type | \napplication/json | \n\nAuthorization |\
+        \ \nAuthorization token from above preceded by the String \"Bearer\" | \n\nClient-API-Id* | \n\
+        Your pVerify client-api-id | \n\nBody | \nNone | \n\nURL Params | \nRequestId (see SNFInquiry)\
+        \ | \n\nGetSNFResponse Response Fields\n\nKey | \nType | \nDescription | \n\nrequestId | \nString\
+        \ | \nrequestId | \n\nProcessed | \nboolean | \nDetermines if processed | \n\nIsDataError | \n\
+        boolean | \nDetermines if error occurred | \n\nerrorMessage | \nString | \nError Message | \n\n\
+        Details | \nObject | \nDetails | \n\nDetails.Id | \nint | \nId | \n\nDetails.DOSStart | \nString\
+        \ | \nDate of Service Start (MM/DD/YYYY) | \n\nDetails.DOSEnd | \nString | \nDate of Service End\
+        \ (MM/DD/YYYY) | \n\nDetails.AdmitanceDate | \nString | \nAdmittance Date (MM/DD/YYYY) | \n\n\
+        Details.DischargedDate | \nString | \nDischarged Date (MM/DD/YYYY) | \n\nDetails.BillingAPI |\
+        \ \nString | \nBilling API | \n\nDetails.PatientStatus | \nString | \nPatient Status | \n\nDetails.Message\
+        \ | \nString | \nMessage | \n\nDetails.SNFRequestID | \nint | \nSNF request ID | \n\nDetails.CreatedOn\
+        \ | \nString | \nTime Stamp of date and time created | \n\nDetails.BillingType | \nString | \n\
+        Billing Type | \n\nmessage | \nString | \nMessage | \n\nstatus | \nString | \nStatus | \n\napiResponseCode\
+        \ | \nint | \nAPI Response Code | \n\napiResponseMessage | \nString | \nAPI Response Message |"
+      deprecated: true
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'OAuth2 access token returned by POST /Token, sent as `Authorization: Bearer <token>`.'
+    clientApiId:
+      type: apiKey
+      in: header
+      name: Client-API-Id
+      description: Client API identifier issued by pVerify. Required on every call; header keys are case
+        sensitive.
+    clientSecret:
+      type: apiKey
+      in: header
+      name: Client-Secret
+      description: Client secret issued by pVerify, used by the one-step (no-token) endpoints and the
+        premium report endpoints.

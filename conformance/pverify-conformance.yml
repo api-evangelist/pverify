@@ -1,0 +1,100 @@
+generated: '2026-08-14'
+method: searched
+source: https://pverify.com/api-developers/ + https://www.pverify.com/pverify-announces-successful-soc2-compliance-examination/
+  + https://trust.dosespot.com/ + openapi/_original/pverify-openapi.yml
+description: >-
+  Standards and compliance posture for pVerify. The healthcare EDI standards are load-bearing and
+  evidenced in the API surface itself (270/271 eligibility, 276/277 claim status, X12 service type
+  codes). The web-API cross-cutting standards are largely absent: no RFC 9457 problem details, no
+  OIDC discovery, no RFC 8594 sunset headers, no RFC 9116 security.txt.
+standards:
+- id: x12-270-271
+  name: ASC X12N 270/271 Health Care Eligibility Benefit Inquiry and Response
+  conforms: true
+  evidence: >-
+    Eligibility endpoints exchange 270 requests and return 271 responses; GET /API/GetEligibility271
+    returns the raw 271, and the published Service Code table is the X12 service type code set.
+- id: x12-276-277
+  name: ASC X12N 276/277 Health Care Claim Status Request and Response
+  conforms: true
+  evidence: ClaimStatusInquiry / GetClaimStatusResponse are documented as 276/277 transactions.
+- id: hipaa
+  name: HIPAA
+  conforms: true
+  evidence: >-
+    pVerify markets the API as HIPAA compliant and offers BAAs; PHI handling is the core of the
+    product. Claimed by the provider on https://pverify.com/api-developers/.
+  basis: provider-claimed
+- id: soc2-type-ii
+  name: SOC 2 Type II
+  conforms: true
+  evidence: >-
+    pVerify published its own announcement of a successful SOC 2 compliance examination at
+    https://www.pverify.com/pverify-announces-successful-soc2-compliance-examination/ (HTTP 200),
+    and its parent operates a Vanta trust center at https://trust.dosespot.com/ (HTTP 200).
+  basis: provider-published
+- id: oauth2-client-credentials
+  name: OAuth 2.0 client credentials grant (RFC 6749 §4.4)
+  conforms: partial
+  evidence: >-
+    POST /Token uses grant_type=client_credentials and returns access_token/token_type/expires_in,
+    but the credential parameters are named Client_Id / Client_Secret rather than the RFC's
+    client_id / client_secret, and no scope parameter is supported.
+- id: oidc-discovery
+  name: OpenID Connect Discovery
+  conforms: false
+  evidence: /.well-known/openid-configuration returns 404 on api.pverify.com and testapi.pverify.com.
+- id: rfc8414-oauth-metadata
+  name: OAuth 2.0 Authorization Server Metadata (RFC 8414)
+  conforms: false
+  evidence: /.well-known/oauth-authorization-server returns 404 on the API hosts.
+- id: rfc9457-problem-details
+  name: RFC 9457 Problem Details for HTTP APIs
+  conforms: false
+  evidence: >-
+    Errors are returned as HTTP 200 with an in-envelope APIResponseCode/APIResponseMessage pair;
+    no application/problem+json media type appears anywhere in the published surface.
+- id: rfc9116-security-txt
+  name: RFC 9116 security.txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on every pVerify host probed.
+- id: rfc8594-sunset-header
+  name: RFC 8594 Sunset HTTP header
+  conforms: false
+  evidence: >-
+    Discontinued products are marked in documentation folder names only; no Sunset or Deprecation
+    response header is published.
+- id: openapi
+  name: OpenAPI
+  conforms: false
+  evidence: >-
+    pVerify publishes no OpenAPI document. Its machine-readable contract is a public Postman
+    Collection v2.0.0 at https://postman.pverify.com/. The OpenAPI in openapi/ is derived from
+    that collection by API Evangelist, not published by pVerify.
+- id: postman-collection-v2
+  name: Postman Collection Format v2.0.0
+  conforms: true
+  evidence: >-
+    https://postman.pverify.com/api/collections/6948370/2s7ZE4NR6P returns a 296 KB collection with
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json".
+- id: fhir
+  name: HL7 FHIR
+  conforms: unverified
+  evidence: >-
+    pVerify's developer page advertises FHIR and HL7 alongside REST and X12, but no FHIR base URL,
+    CapabilityStatement or resource endpoint appears in any published documentation, and no FHIR
+    metadata endpoint was reachable. Recorded as a provider claim that could not be verified.
+  basis: provider-claimed
+- id: hl7-v2
+  name: HL7 v2
+  conforms: unverified
+  evidence: Advertised on https://pverify.com/api-developers/; no published interface specification found.
+  basis: provider-claimed
+- id: soap
+  name: SOAP / WSDL
+  conforms: unverified
+  evidence: Listed as an integration option on pVerify's developer page; no WSDL published or discoverable.
+  basis: provider-claimed
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

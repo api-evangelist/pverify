@@ -1,0 +1,73 @@
+generated: '2026-08-15'
+method: searched
+source: https://postman.pverify.com/ (SameOrSimilarInquiry, CMNInquiry and SNFInquiry request
+  documentation) + openapi/_original/pverify-openapi.yml
+spec_type: none
+asyncapi_published: false
+description: >-
+  pVerify publishes no AsyncAPI document and no event/streaming surface. The only push mechanism
+  documented anywhere on its public surface is an optional per-request callback URL on three
+  products — Same or Similar, CMN and SNF — and pVerify labels all three "(Discontinued)" in its
+  own collection. Every product pVerify currently sells is submit-then-poll: the client POSTs an
+  inquiry, receives a RequestID, and polls the matching GET. There is no subscription registration
+  endpoint, no event catalog, no signing secret, no delivery-retry contract and no replay surface.
+callbacks:
+- product: Same or Similar
+  status: discontinued
+  field: callBackUrl
+  field_case_variants: [callbackURL, callBackUrl]
+  operation: sameOrSimilarInquiry
+  spec: openapi/pverify-same-or-similar-api-openapi.yml
+  transport: HTTP POST to the client-supplied URL
+  content_type: application/json
+  payload: >-
+    The same JSON body the matching GetSameOrSimilarResponse retrieval endpoint would return.
+    pVerify publishes no separate callback payload schema.
+  published_text: >-
+    "JSON response will be posted to callbackURL when inquiry is processed and if callbackURL is
+    valid. This URL should support HTTP POST method and Content-Type = 'application/json'."
+- product: CMN
+  status: discontinued
+  field: callBackUrl
+  operation: cmnInquiry
+  spec: openapi/pverify-cmn-api-openapi.yml
+  transport: HTTP POST to the client-supplied URL
+  content_type: application/json
+  payload: The CMN response body; no separate callback schema is published.
+  published_text: '"callBackUrl | String | Optional | to Post response data on client side"'
+  published_example: http://www.test.com/api/PostData
+- product: SNF
+  status: discontinued
+  field: CallbackURL
+  operation: snfInquiry
+  spec: openapi/pverify-snf-api-openapi.yml
+  transport: HTTP POST to the client-supplied URL
+  content_type: application/json
+  payload: The SNF response body; no separate callback schema is published.
+  published_text: >-
+    "JSON response will be posted to callbackURL when inquiry is processed and if callbackURL is
+    valid."
+not_published:
+- an AsyncAPI document
+- a webhook subscription / registration endpoint
+- an event type catalog
+- signature or HMAC verification of the callback POST
+- delivery retry, backoff or dead-letter semantics
+- a delivery log or replay surface
+- callbacks on any currently-sold product (Eligibility, Dental Eligibility, Insurance Discovery,
+  MBI Lookup, Patient Demographic Validator, Claim Status, Estimation, CGX Widget)
+current_async_pattern:
+  style: submit-then-poll
+  detail: conventions/pverify-conventions.yml
+  pending_signal: APIResponseCode 3 (Pending) / 4 (New)
+  queue_inspection: GET /API/GetPendingInquiries?DOS=MM-DD-YYYY
+pointer_decision:
+  asyncapi: not emitted — pVerify publishes no AsyncAPI document.
+  webhooks: >-
+    NOT emitted. A `type: Webhooks` pointer asserts that the provider advertises an event surface
+    a consumer can adopt. Every callback-bearing product here is marked Discontinued by pVerify
+    itself, so no currently-sold pVerify product can push an event. Recording the callback fields
+    is accurate; scoring them as a live webhook surface would not be.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

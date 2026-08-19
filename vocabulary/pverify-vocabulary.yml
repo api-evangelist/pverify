@@ -1,0 +1,801 @@
+generated: '2026-08-14'
+method: searched
+source: https://postman.pverify.com/ — the "Tables" section of pVerify's published Postman collection
+description: The controlled vocabularies a caller must use to talk to pVerify. Service Type Codes are
+  the ASC X12 EB03 set pVerify accepts on the 1st-generation EligibilityInquiry endpoint; Practice Type
+  Codes are pVerify's own bundles of those service types, used on the 2nd-generation EligibilitySummary
+  endpoints, and they differ between the production and test environments. Both are published by pVerify
+  as HTML tables inside its Postman collection and are extracted here verbatim.
+vocabularies:
+- id: service-type-codes
+  name: Service Type Codes (STC)
+  standard: ASC X12 EB03 service type code set
+  used_by:
+  - eligibilityInquiry
+  note: 'pVerify: "please use the service type code (first column) in your eligibility queries. Common
+    eligibility information is in service type code 30, Health Benefit Plan Coverage." Used only for the
+    EligibilityInquiry endpoint.'
+  count: 187
+  terms:
+  - code: '1'
+    name: Medical Care
+  - code: '2'
+    name: Surgical
+  - code: '3'
+    name: Consultation
+  - code: '4'
+    name: Diagnostic X-Ray
+  - code: '5'
+    name: Diagnostic Lab
+  - code: '6'
+    name: Radiation Therapy
+  - code: '7'
+    name: Anesthesia
+  - code: '8'
+    name: Surgical Assistance
+  - code: '9'
+    name: Other Medical
+  - code: '10'
+    name: Blood Charges
+  - code: '11'
+    name: Used Durable Medical Equipment
+  - code: '12'
+    name: Durable Medical Equipment Purchase
+  - code: '13'
+    name: Ambulatory Service Center Facility
+  - code: '14'
+    name: Renal Supplies in the Home
+  - code: '15'
+    name: Alternate Method Dialysis
+  - code: '16'
+    name: Chronic Renal Disease (CRD) Equipment
+  - code: '17'
+    name: Pre-Admission Testing
+  - code: '18'
+    name: Durable Medical Equipment Rental
+  - code: '19'
+    name: Pneumonia Vaccine
+  - code: '20'
+    name: Second Surgical Opinion
+  - code: '21'
+    name: Third Surgical Opinion
+  - code: '22'
+    name: Social Work
+  - code: '23'
+    name: Diagnostic Dental
+  - code: '24'
+    name: Periodontics
+  - code: '25'
+    name: Restorative
+  - code: '26'
+    name: Endodontics
+  - code: '27'
+    name: Maxillofacial Prosthetics
+  - code: '28'
+    name: Adjunctive Dental Services
+  - code: '30'
+    name: Health Benefit Plan Coverage
+  - code: '32'
+    name: Plan Waiting Period
+  - code: '33'
+    name: Chiropractic
+  - code: '34'
+    name: Chiropractic Office Visits
+  - code: '35'
+    name: Dental Care
+  - code: '36'
+    name: Dental Crowns
+  - code: '37'
+    name: Dental Accident
+  - code: '38'
+    name: Orthodontics
+  - code: '39'
+    name: Prosthodontics
+  - code: '40'
+    name: Oral Surgery
+  - code: '41'
+    name: Routine (Preventive) Dental
+  - code: '42'
+    name: Home Health Care
+  - code: '43'
+    name: Home Health Prescriptions
+  - code: '44'
+    name: Home Health Visits
+  - code: '45'
+    name: Hospice
+  - code: '46'
+    name: Respite Care
+  - code: '47'
+    name: Hospital
+  - code: '48'
+    name: Hospital - Inpatient
+  - code: '49'
+    name: Hospital - Room and Board
+  - code: '50'
+    name: Hospital - Outpatient
+  - code: '51'
+    name: Hospital - Emergency Accident
+  - code: '52'
+    name: Hospital - Emergency Medical
+  - code: '53'
+    name: Hospital - Ambulatory Surgical
+  - code: '54'
+    name: Long Term Care
+  - code: '55'
+    name: Major Medical
+  - code: '56'
+    name: Medically Related Transportation
+  - code: '57'
+    name: Air Transportation
+  - code: '58'
+    name: Cabulance
+  - code: '59'
+    name: Licensed Ambulance Licensed Ambulance
+  - code: '60'
+    name: General Benefits
+  - code: '61'
+    name: In-vitro Fertilization
+  - code: '62'
+    name: MRI/CAT Scan
+  - code: '63'
+    name: Donor Procedures
+  - code: '64'
+    name: Acupuncture
+  - code: '65'
+    name: Newborn Care
+  - code: '66'
+    name: Pathology
+  - code: '67'
+    name: Smoking Cessation
+  - code: '68'
+    name: Well Baby Care
+  - code: '69'
+    name: Maternity
+  - code: '70'
+    name: Transplants
+  - code: '71'
+    name: Audiology Exam
+  - code: '72'
+    name: Inhalation Therapy
+  - code: '73'
+    name: Diagnostic Medical
+  - code: '74'
+    name: Private Duty Nursing
+  - code: '75'
+    name: Prosthetic Device
+  - code: '76'
+    name: Dialysis
+  - code: '77'
+    name: Otological Exam
+  - code: '78'
+    name: Chemotherapy
+  - code: '79'
+    name: Allergy Testing
+  - code: '80'
+    name: Immunizations
+  - code: '81'
+    name: Routine Physical
+  - code: '82'
+    name: Family Planning
+  - code: '83'
+    name: Infertility
+  - code: '84'
+    name: Abortion
+  - code: '85'
+    name: AIDS
+  - code: '86'
+    name: Emergency Services
+  - code: '87'
+    name: Cancer
+  - code: '88'
+    name: Pharmacy
+  - code: '89'
+    name: Free Standing Prescription Drug
+  - code: '90'
+    name: Mail Order Prescription Drug
+  - code: '91'
+    name: Brand Name Prescription Drug
+  - code: '92'
+    name: Generic Prescription Drug
+  - code: '93'
+    name: Podiatry
+  - code: '94'
+    name: Podiatry - Office Visits
+  - code: '95'
+    name: Podiatry - Nursing Home Visits
+  - code: '96'
+    name: Professional (Physician)
+  - code: '97'
+    name: Anesthesiologist
+  - code: '98'
+    name: Professional (Physician) Visit - Office
+  - code: '99'
+    name: Professional (Physician) Visit - Inpatient
+  - code: A0
+    name: Professional (Physician) Visit - Outpatient
+  - code: A1
+    name: Professional (Physician) Visit - Nursing Home
+  - code: A2
+    name: Professional (Physician) Visit - Skilled Nursing Facility
+  - code: A3
+    name: Professional (Physician) Visit - Home
+  - code: A4
+    name: Psychiatric
+  - code: A5
+    name: Psychiatric - Room and Board
+  - code: A6
+    name: Psychotherapy
+  - code: A7
+    name: Psychiatric - Inpatient
+  - code: A8
+    name: Psychiatric - Outpatient
+  - code: A9
+    name: Rehabilitation
+  - code: AA
+    name: Rehabilitation - Room and Board
+  - code: AB
+    name: Rehabilitation - Inpatient
+  - code: AC
+    name: Rehabilitation - Outpatient
+  - code: AD
+    name: Occupational Therapy
+  - code: AE
+    name: Physical Medicine
+  - code: AF
+    name: Speech Therapy
+  - code: AG
+    name: Skilled Nursing Care
+  - code: AH
+    name: Skilled Nursing Care - Room and Board
+  - code: AI
+    name: Substance Abuse
+  - code: AJ
+    name: Alcoholism
+  - code: AK
+    name: Drug Addiction
+  - code: AL
+    name: Vision (Optometry)
+  - code: AM
+    name: Frames
+  - code: AN
+    name: Routine Exam
+  - code: AO
+    name: Lenses
+  - code: AQ
+    name: Nonmedically Necessary Physical
+  - code: AR
+    name: Experimental Drug Therapy
+  - code: B1
+    name: Burn Care
+  - code: B2
+    name: Bran Name Prescription Drug - Formulary
+  - code: B3
+    name: Bran Name Prescription Drug - Non -Formulary
+  - code: BA
+    name: Independent Medical Evaluation
+  - code: BB
+    name: Partial Hospitalization (Psychiatric)
+  - code: BC
+    name: Day Care (Psychiatric)
+  - code: BD
+    name: Cognitive Therapy
+  - code: BE
+    name: Massage Therapy
+  - code: BF
+    name: Pulmonary Rehabilitation
+  - code: BG
+    name: Cardiac Rehabilitation
+  - code: BH
+    name: Pediatric
+  - code: BI
+    name: Nursery
+  - code: BJ
+    name: Skin
+  - code: BK
+    name: Orthopedic
+  - code: BL
+    name: Cardiac
+  - code: BM
+    name: Lymphatic
+  - code: BN
+    name: Gastrointestinal
+  - code: BP
+    name: Endocrine
+  - code: BQ
+    name: Neurology
+  - code: BR
+    name: Eye
+  - code: BS
+    name: Invasive Procedures
+  - code: BT
+    name: Gynecological
+  - code: BU
+    name: Obsterical
+  - code: BV
+    name: Obsterical/Gynecological
+  - code: BW
+    name: 'Mail Order Prescription Drug : Brand Name'
+  - code: BX
+    name: 'Mail Order Prescription Drug : Generic'
+  - code: BY
+    name: 'Physician Visit - Office : Sick'
+  - code: BZ
+    name: 'Physician Visit - Office : Well'
+  - code: C1
+    name: Coronary Care
+  - code: CA
+    name: Private Duty Nursing - Inpatient
+  - code: CB
+    name: Private Duty Nursing - Home
+  - code: CC
+    name: Surgical Benefits - professional (physician)
+  - code: CD
+    name: Surgical Benefits - Facility
+  - code: CE
+    name: Mental Health Provider - Inpatient
+  - code: CF
+    name: Mental Health Provider - Outpatient
+  - code: CG
+    name: Mental Health Facility - Inpatient
+  - code: CH
+    name: Mental Health Facility - Outpatient
+  - code: CI
+    name: Substance Abuse Facility - Inpatient
+  - code: CJ
+    name: Substance Abuse Facility - Outpatient
+  - code: CK
+    name: Screening X - Ray
+  - code: CL
+    name: Screening Laboratory
+  - code: CM
+    name: Mammomogram, High Risk Patient
+  - code: CN
+    name: Mammomogram, Low Risk Patient
+  - code: CO
+    name: Flu Vaccination
+  - code: CP
+    name: Eyewear And Eywear Accessories
+  - code: CQ
+    name: Case Management
+  - code: DG
+    name: Dermatology
+  - code: DM
+    name: Durable Medical Equipment
+  - code: DS
+    name: Diabetic Supplies
+  - code: GF
+    name: Generic Presciption Drug - Formulary
+  - code: GN
+    name: Generic Presciption Drug - Non -Formulary
+  - code: GY
+    name: Allergy
+  - code: IC
+    name: Intesive Care
+  - code: MH
+    name: Mental Health
+  - code: NI
+    name: Neonatal Intesive Care
+  - code: 'ON'
+    name: Oncology
+  - code: PT
+    name: Physical Therapy
+  - code: PU
+    name: Pulmonary
+  - code: RN
+    name: Renal
+  - code: RT
+    name: Residential Psychiatric Treatment
+  - code: TC
+    name: Transitional Care
+  - code: TN
+    name: Transitional Nursery Care
+  - code: UC
+    name: Urgent Care
+- id: practice-type-codes-production
+  name: Practice Type Codes — Production
+  used_by:
+  - eligibilitySummary
+  - easyEligibilitySummary
+  - dentalEligibilitySummary
+  request_field: PracticeTypeCode
+  note: 'pVerify: "the pVerify Practice Types available in production for EligibilitySummary endpoints.
+    Practice Types are built around Service Type Codes."'
+  count: 162
+  terms:
+  - code: '3'
+    name: DME
+  - code: '8'
+    name: Chemotherapy
+  - code: '9'
+    name: VisionOptometry
+  - code: '12'
+    name: Physical Therapy
+  - code: '17'
+    name: Primary Care
+  - code: '18'
+    name: Specialist - Office
+  - code: '21'
+    name: Mental Health
+  - code: '22'
+    name: Surgical -Office
+  - code: '23'
+    name: Urgent Care
+  - code: '24'
+    name: Diagnostic Lab
+  - code: '27'
+    name: Specialist(Office)_Surgical(Office)_Diagnostic Lab
+  - code: '28'
+    name: ASC Facility
+  - code: '30'
+    name: Chiropractic
+  - code: '31'
+    name: MRI/CAT Scan
+  - code: '32'
+    name: X-Ray
+  - code: '33'
+    name: Speech Therapy
+  - code: '34'
+    name: Occupational Therapy
+  - code: '35'
+    name: ASC_Specialist(Office)_VisionOptometry
+  - code: '36'
+    name: Specialist(Office)_Chemotherapy
+  - code: '37'
+    name: Physical Therapy_Chiropractic
+  - code: '38'
+    name: Physical Therapy_DME
+  - code: '39'
+    name: Physical Therapy_Occupational Therapy_DME
+  - code: '40'
+    name: Physical Therapy_Occupational Therapy_Speech Therapy
+  - code: '41'
+    name: Specialist(Office)_VisionOptometry
+  - code: '42'
+    name: Specialist(Office)_DME
+  - code: '43'
+    name: Specialist(Office)_Surgical(Office)
+  - code: '44'
+    name: Specialist(Office)_ASC Facility
+  - code: '45'
+    name: Physical Therapy_XRay
+  - code: '46'
+    name: XRay_MRI/CAT Scan
+  - code: '53'
+    name: Speech Therapy_Occupational Therapy
+  - code: '54'
+    name: Emergency Services
+  - code: '55'
+    name: Routine Physical
+  - code: '56'
+    name: Podiatry Office
+  - code: '57'
+    name: Professional - Outpatient Physician
+  - code: '58'
+    name: Anesthesia
+  - code: '59'
+    name: Substance Abuse
+  - code: '60'
+    name: Substance Abuse Facility-InPatient
+  - code: '61'
+    name: Substance Abuse Facility-OutPatient
+  - code: '62'
+    name: Telemedicine
+  - code: '63'
+    name: Flu Vaccination
+  - code: '64'
+    name: Mental Health_Sub Abuse Professional
+  - code: '65'
+    name: Mental Health_Sub Abuse_In&OutFacility
+  - code: '66'
+    name: Sub Abuse_In&OutFacility
+  - code: '67'
+    name: Mental Health_SubAbuse_In-NetFacility
+  - code: '68'
+    name: Specialist(Office)_ASC_Professional OutPatient
+  - code: '69'
+    name: ASC Facility_Professional OutPatient
+  - code: '70'
+    name: General_Office_Benefits(30)
+  - code: '71'
+    name: Podiatry_XRay_DME
+  - code: '72'
+    name: Podiatry_DME
+  - code: '73'
+    name: Hospital-InPatient
+  - code: '74'
+    name: Emergency Services_Hospital-InPatient
+  - code: '75'
+    name: Speech Therapy_Occupational Therapy_MentalHealth
+  - code: '76'
+    name: DME_Diagnostic Lab
+  - code: '77'
+    name: Pharmacy
+  - code: '78'
+    name: Specialist(Office)_Pharmacy
+  - code: '79'
+    name: Physical Therapy_Occupational Therapy_Mental Health
+  - code: '80'
+    name: Specialist(Office)_DME_ASC Facility
+  - code: '81'
+    name: Specialist(Office)_DME_Surgical(Office)
+  - code: '82'
+    name: Specialist(Office)_DME_Hospital-OutPatient
+  - code: '83'
+    name: Hospital-OutPatient
+  - code: '84'
+    name: Physical Therapy_Occupational Therapy
+  - code: '85'
+    name: Specialist(Office)_Surgery(Office)_DME
+  - code: '87'
+    name: SpecialistOffice_DME_X-Ray
+  - code: '88'
+    name: SpecialistOffice_Physical Therapy
+  - code: '89'
+    name: Telemedicine-Primary Care
+  - code: '90'
+    name: Telemedicine-Specialist Services
+  - code: '91'
+    name: Telemedicine-Urgent Care
+  - code: '92'
+    name: Telemedicine-Physical Therapy
+  - code: '93'
+    name: Telemedicine-Mental Health
+  - code: '94'
+    name: Psychotherapy
+  - code: '95'
+    name: Telemedicine Primary + Telemedicine Specialist
+  - code: '96'
+    name: Telemedicine Primary + Telemedicine Specialist+Telemedicine Urgent care
+  - code: '97'
+    name: Specialist(Office)_Psychotherapy
+  - code: '100'
+    name: Hospital-Outpatient_Surgical(Office)_Specialist(Office)
+  - code: '101'
+    name: SNF(AG)
+  - code: '102'
+    name: SNF-Room_and_Board(AH)
+  - code: '103'
+    name: SNF_SNF-Room_and_Board
+  - code: '104'
+    name: Specialist(Office)_Mental Health
+  - code: '105'
+    name: Specialist(office)_Primary Care_Chiropractic
+  - code: '106'
+    name: Occupational Therapy_DME
+  - code: '107'
+    name: Professional (Physician) Visit - Inpatient(99)
+  - code: '108'
+    name: Home Health Care(42)
+  - code: '109'
+    name: Hospice(45)
+  - code: '110'
+    name: Home Health (42)_Hospice (45)
+  - code: '111'
+    name: Mental Health_Telemedicine- Mental Health (MH)
+  - code: '112'
+    name: Allergies
+  - code: '113'
+    name: Diagnostic Medical
+  - code: '114'
+    name: Maternity
+  - code: '115'
+    name: Immunizations
+  - code: '116'
+    name: Primary Care_Diagnostic Lab
+  - code: '117'
+    name: Routine Physical_Immunizations_Diagnostic Medical
+  - code: '118'
+    name: Physical Therapy & Telemedicine physical therapy
+  - code: '119'
+    name: Telemedicine-Occupational Therapy(AD)
+  - code: '120'
+    name: Telemedicine-Speech Therapy(AF)
+  - code: '121'
+    name: Occupational Therapy & Telemedicine Occupational Therapy
+  - code: '122'
+    name: Speech Therapy & Telemedicine Speech Therapy
+  - code: '123'
+    name: PrimaryCare_Immunizations_Diagnostic Lab
+  - code: '124'
+    name: PrimaryCare_Immunizations_Diagnostic Medical
+  - code: '125'
+    name: Physical Therapy_Mental Health
+  - code: '126'
+    name: Radiation Therapy
+  - code: '127'
+    name: Specialist(Office)_Chemotherapy_RadiationTherapy
+  - code: '130'
+    name: Infertility(83)
+  - code: '131'
+    name: Allergy Testing(79)
+  - code: '132'
+    name: Specialist Office(98)_Allergy Testing(79)
+  - code: '133'
+    name: Specialist Office(98)_Infertility(83)
+  - code: '134'
+    name: In-vitro Fertilization(61)
+  - code: '135'
+    name: In-vitro Fertilization(61)_Infertility(83)_Specialist Office(98)
+  - code: '136'
+    name: Psychiatric (A4)
+  - code: '137'
+    name: Mental Health_Telemedicine-Mental Health(MH)_Psychotherapy(A6)_Psychiatric (A4)
+  - code: '138'
+    name: Primary Care (30)_Urgent Care (UC)_Diagnostic Lab (5)
+  - code: '139'
+    name: SNF(AG)_SNF-RoomAndBoard(AH)_PhysicalTherapy(PT)
+  - code: '140'
+    name: Acupuncture(64)
+  - code: '141'
+    name: Acupuncture(64)_PhysicalTherapy(PT)
+  - code: '142'
+    name: Gynecological(BT)
+  - code: '143'
+    name: Obstetrical(BU)
+  - code: '144'
+    name: Obstetrical/Gynecological(BV)
+  - code: '145'
+    name: Family Planning(82)
+  - code: '146'
+    name: Surgical Benefits-Professional Physician(CC)
+  - code: '147'
+    name: Surgical Benefits-Facility(CD)
+  - code: '148'
+    name: GeneralOfficeBenefits_Maternity
+  - code: '149'
+    name: Dialysis(76)
+  - code: '150'
+    name: Mental Health Facility-Outpatient(CH)
+  - code: '151'
+    name: SpecialistOffice_DME_X-Ray_Surgical(office)
+  - code: '152'
+    name: Mental Health_SubAbuse_Out Net Facility
+  - code: '153'
+    name: Mental Health_Mental Health OP Facility _Sub_Abuse_In&Out Net Facility
+  - code: '154'
+    name: Mental Health (MH)_Mental Health Facility Outpatient(CH)
+  - code: '155'
+    name: Telemedicine-Primary Care (30)_Diagnostic Medical (73)_Allergy Testing (79)
+  - code: '156'
+    name: Primary Care(30)_Routine Physical(81)
+  - code: '157'
+    name: XRay (4)_VisionOptometry (AL)
+  - code: '158'
+    name: Diagnostic Medical(73)_Allergy Testing(79)_Specialist Office Visit(98)
+  - code: '159'
+    name: Acupuncture(64)_Allergies(GY)
+  - code: '160'
+    name: Acupuncture(64)_Chiropractic (33)_Physical Therapy (PT)
+  - code: '161'
+    name: Mental Health (MH)_Pharmacy (88)__Psychiatric (A4)Psychotherapy(A6)
+  - code: '162'
+    name: Podiatry Office (93)_Specialist - Office (98)_Surgical Benefits-Professional Physician(CC)_Surgical
+      -Office (2)
+  - code: '163'
+    name: Occupational Therapy (AD)_Physical Therapy (PT)_SNF(AG)_Speech Therapy (AF)
+  - code: '164'
+    name: Specialist - Office (98)_Surgical -Office (2)_VisionOptometry (AL)(*)
+  - code: '165'
+    name: Chemotherapy (78)_DME (12)_Specialist - Office (98)
+  - code: '166'
+    name: DME (12)_Pharmacy (88)(*)_SNF(AG)
+  - code: '167'
+    name: Mental Health (MH)_Mental Health Facility-Outpatient(CH)_Professional - Outpatient Physician
+      (A0)(*)
+  - code: '168'
+    name: Diagnostic Lab (5)_Primary Care (30)_X-Ray (4)(*)
+  - code: '169'
+    name: DME (12)_Pharmacy (88)(*)
+  - code: '171'
+    name: Diagnostic Lab (5)_Telemedicine-Specialist Services(98)
+  - code: '172'
+    name: Primary Care_Allergy Testing_Diagnostic Medical
+  - code: '173'
+    name: Diagnostic Lab (5)_Telemedicine-Primary Care(30)
+  - code: '174'
+    name: Chiropractic (33)_Physical Therapy (PT)_Specialist - Office (98)
+  - code: '175'
+    name: Specialist - Office (98)_Surgical -Office (2)_VisionOptometry (AL)(*)_X-Ray (4)(*)
+  - code: '176'
+    name: Mental Health (MH)_Primary Care (30)_Specialist - Office (98)
+  - code: '177'
+    name: Diagnostic Medical(73)_Specialist - Office (98)_Surgical -Office (2)_VisionOptometry (AL)(*)
+  - code: '178'
+    name: DME (12)_Home Health Care(42)(*)
+  - code: '179'
+    name: Allergy Testing(79)_Diagnostic Lab
+  - code: '180'
+    name: Diagnostic Lab (5)_Pharmacy (88)(*)
+  - code: '181'
+    name: DME (12)_Specialist - Office (98)_Telemedicine-Specialist Services(98)
+  - code: '182'
+    name: Mental Health Facility-Inpatient(CG)
+  - code: '183'
+    name: MRI/CAT Scan(62)_Chemotherapy (78)_Diagnostic Lab (5)_Radiation Therapy (6)
+  - code: '184'
+    name: Mental Health (MH)_Substance Abuse (AI)(*)_Substance Abuse Facility-InPatient (CI)(*)_Substance
+      Abuse Facility-OutPatient (CJ)(*)
+  - code: '185'
+    name: ASC Facility (13)_Surgical -Office (2)
+  - code: '186'
+    name: ASC Facility (13)_Hospital-OutPatient (50)(*)_Professional - Outpatient Physician (A0)(*)_Specialist
+      - Office (98)
+  - code: '187'
+    name: Diagnostic Medical(73)_Specialist - Office (98)_VisionOptometry (AL)(*)
+  - code: '188'
+    name: Hospital-InPatient (48)(*)_Hospital-OutPatient (50)(*)_Specialist - Office (98)_Surgical -Office
+      (2)
+  - code: '189'
+    name: ASC Facility (13)_Hospital-InPatient (48)(*)_Hospital-OutPatient (50)(*)_Surgical -Office (2)
+  - code: '190'
+    name: Medically Related Transportation
+  - code: '191'
+    name: Maternity(69)_Specialist - Office (98)
+- id: practice-type-codes-test
+  name: Practice Type Codes — Test
+  used_by:
+  - eligibilitySummary
+  request_field: PracticeTypeCode
+  note: Practice types available under the test endpoint (testapi.pverify.com). A strict subset of production
+    — a sandbox integration cannot exercise most practice types.
+  count: 6
+  terms:
+  - code: '3'
+    name: DME
+  - code: '12'
+    name: Physical Therapy
+  - code: '18'
+    name: Specialist OV-Professional Services
+  - code: '27'
+    name: OV_DxLab_Sx(Office)
+  - code: '38'
+    name: PT_DME
+  - code: '40'
+    name: PT_OT_ST
+- id: api-response-codes
+  name: API Response Codes
+  used_by:
+  - all endpoints
+  response_field: APIResponseCode
+  note: Full catalog with meanings and remediation lives in errors/pverify-error-codes.yml.
+  count: 7
+  terms:
+  - code: '0'
+    name: Processed
+  - code: '1'
+    name: Rejected
+  - code: '2'
+    name: NoFunds
+  - code: '3'
+    name: Pending
+  - code: '4'
+    name: InvalidRequest (New, on the eligibility family)
+  - code: '5'
+    name: InvalidFormat (InvalidPayer, on Claim Status)
+  - code: '6'
+    name: LocationError
+- id: payer-status
+  name: Payer Status values
+  used_by:
+  - getPayerStatus
+  response_field: payerStatus
+  count: 4
+  terms:
+  - code: Payer Up
+    name: Payer is Active and running transactions.
+  - code: Payer Active
+    name: Payer is Active but no recent transactions.
+  - code: Payer Inactive
+    name: This is marked as inactive in our system.
+  - code: Payer Down
+    name: Payer is Active but more transactions are failing from the past one hour.
+external_lists:
+- name: pVerify Payer Code List
+  url: https://pverify.com/payer-list/
+  api: GET https://api.pverify.com/API/GetAllPayers
+  note: Payer codes are the third controlled vocabulary and are large and volatile, so they are not copied
+    here — pVerify publishes them as a live list and as an API call. Back-office (non-EDI) payers carry
+    a BO prefix, e.g. BO00018.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,51 @@
+generated: '2026-08-14'
+method: probed
+source: live GET of each /.well-known/ path on every pVerify host in apis.yml and openapi servers[]
+summary: >-
+  pVerify serves no /.well-known/ discovery documents. The API hosts (api.pverify.com,
+  testapi.pverify.com) return a real IIS 404 for every path. The marketing site
+  (www.pverify.com / pverify.com) answers HTTP 200 with the WordPress homepage HTML for
+  EVERY /.well-known/* path — a catch-all soft-200, not a document — so those 200s are
+  recorded as misses, and no WellKnown or SecurityTxt pointer is emitted.
+documents: []
+probes:
+- host: https://api.pverify.com
+  results:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+- host: https://testapi.pverify.com
+  results:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+- host: https://www.pverify.com
+  results:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 200, document: false, note: WordPress catch-all returns the homepage HTML}
+  - {path: /.well-known/oauth-authorization-server, status: 200, document: false, note: WordPress catch-all returns the homepage HTML}
+  - {path: /.well-known/api-catalog, status: 200, document: false, note: WordPress catch-all returns the homepage HTML}
+  - {path: /.well-known/ai-plugin.json, status: 200, document: false, note: WordPress catch-all returns the homepage HTML}
+  - {path: /.well-known/agent-card.json, status: 200, document: false, note: WordPress catch-all returns the homepage HTML}
+  - {path: /.well-known/agent.json, status: 200, document: false, note: WordPress catch-all returns the homepage HTML}
+  - {path: /llms.txt, status: 404}
+- host: https://postman.pverify.com
+  results:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /llms.txt, status: 404}
+- host: https://apimgmt.pverify.com
+  results:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+- host: https://premium.pverify.com
+  results:
+  - {path: /.well-known/security.txt, status: 200, document: false, note: portal SPA catch-all returns the login page HTML}
+  - {path: /.well-known/agent-card.json, status: 200, document: false, note: portal SPA catch-all returns the login page HTML}
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

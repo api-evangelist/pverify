@@ -1,0 +1,29 @@
+generated: '2026-08-14'
+method: searched
+probe: true
+url: https://trust.dosespot.com/
+title: Interra Health Trust Center
+platform: Vanta trust report
+description: >-
+  pVerify links its trust center and status dashboard from the footer of its own site
+  (https://pverify.com/), but both are operated under the parent brand: pVerify is a DoseSpot
+  company, and DoseSpot merged with Arrive Health to form Interra Health — which is why a
+  pverify.com link lands on a dosespot.com host. That is the stated corporate relationship, not a
+  third-party page: pVerify's own homepage and developer page are the referring surface.
+certifications:
+- name: SOC 2 Type II
+  source: https://www.pverify.com/pverify-announces-successful-soc2-compliance-examination/
+  basis: pVerify's own published announcement (HTTP 200)
+- name: HIPAA
+  source: https://pverify.com/api-developers/
+  basis: provider-claimed on its own developer page; BAAs offered to customers
+evidence:
+- {source: 'https://trust.dosespot.com/', status: 200, keywords: [trust center, interra health], note: 'Vanta-hosted trust report; the certification list renders client-side and the document index sits behind https://app.vanta.com/doc?s=... — the page itself was confirmed live but its cert list is not machine-readable anonymously.'}
+- {source: 'https://pverify.com/', status: 200, note: links trust.dosespot.com and status.dosespot.com from the site footer}
+- {source: 'https://www.pverify.com/pverify-announces-successful-soc2-compliance-examination/', status: 200, note: pVerify's own SOC 2 announcement}
+related:
+  status_page: https://status.dosespot.com/posts/dashboard
+  conformance: conformance/pverify-conformance.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

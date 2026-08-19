@@ -1,0 +1,142 @@
+{
+  "item": [
+    {
+      "id": "4a9baab4-cac0-4119-af97-5f5de777a6d3",
+      "name": "Claim Status",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a97d6cbd-a07d-4145-9dc9-4354ef355f8a",
+          "name": "Real-time 276/277 claim status",
+          "request": {
+            "name": "Real-time 276/277 claim status",
+            "description": {
+              "content": "Posts a real-time 276 claim status inquiry and returns the current 277 processing state, dates, and amounts for a submitted claim.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "ClaimStatus"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payerCode\": \"<string>\",\n  \"provider\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"npi\": \"<string>\",\n    \"pin\": \"<string>\"\n  },\n  \"subscriber\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"dob\": \"<string>\",\n    \"memberID\": \"<string>\"\n  },\n  \"claimNumber\": \"<string>\",\n  \"claimChargeAmount\": \"<string>\",\n  \"serviceStartDate\": \"<string>\",\n  \"serviceEndDate\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b95b7512-dae2-443b-b818-5761a27745be",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "API",
+                    "ClaimStatus"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payerCode\": \"<string>\",\n  \"provider\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"npi\": \"<string>\",\n    \"pin\": \"<string>\"\n  },\n  \"subscriber\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"dob\": \"<string>\",\n    \"memberID\": \"<string>\"\n  },\n  \"claimNumber\": \"<string>\",\n  \"claimChargeAmount\": \"<string>\",\n  \"serviceStartDate\": \"<string>\",\n  \"serviceEndDate\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"requestId\": \"string\",\n  \"APIResponseCode\": \"string\",\n  \"APIResponseMessage\": \"string\",\n  \"claimStatusCategoryCode\": \"string\",\n  \"claimStatusCode\": \"string\",\n  \"claimStatusDescription\": \"string\",\n  \"totalClaimChargeAmount\": \"string\",\n  \"claimPaymentAmount\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.pverify.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "fbbdcdb3-5680-4dc2-bffd-48db3ce326fb",
+    "name": "pVerify Authentication Claim Status API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Real-time healthcare insurance eligibility and revenue-cycle API. pVerify exchanges EDI 270/271 eligibility transactions, returns plan and benefit summaries, checks 276/277 claim status, lists supported payers, and estimates patient financial responsibility. All API calls require an OAuth2 bearer token obtained from the /Token endpoint and a Client-API-Id header.\n\nContact Support:\n Name: pVerify Support",
+      "type": "text/plain"
+    }
+  }
+}

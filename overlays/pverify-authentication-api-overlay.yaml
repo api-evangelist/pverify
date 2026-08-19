@@ -1,0 +1,45 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for pVerify Authentication API
+  version: 1.0.0
+extends: openapi/pverify-authentication-api-openapi.yml
+x-generated: '2026-08-15'
+x-method: generated
+x-source: API Evangelist enrichment pipeline — derived from the artifacts in all/pverify/
+actions:
+- target: $.info
+  update:
+    x-apievangelist-slug: pverify
+    x-apievangelist-source: https://postman.pverify.com/
+    x-apievangelist-contract-provenance: derived-from-postman-collection
+    x-apievangelist-note: pVerify publishes no OpenAPI. This document was derived operation-for-operation
+      from the public Postman Collection v2.0.0 pVerify serves at https://postman.pverify.com/.
+    x-apievangelist-artifacts:
+      authentication: authentication/pverify-authentication.yml
+      conventions: conventions/pverify-conventions.yml
+      errors: errors/pverify-error-codes.yml
+      lifecycle: lifecycle/pverify-lifecycle.yml
+      sandbox: sandbox/pverify-sandbox.yml
+      data-model: data-model/pverify-data-model.yml
+      vocabulary: vocabulary/pverify-vocabulary.yml
+- target: $
+  update:
+    x-apievangelist-error-semantics:
+      style: in-envelope
+      http_status_on_business_error: 200
+      status_field: APIResponseCode
+      message_field: APIResponseMessage
+      note: Business failures are HTTP 200 with a non-zero APIResponseCode. Never treat a 200 as success
+        without reading APIResponseCode. See errors/pverify-error-codes.yml.
+    x-apievangelist-idempotency:
+      supported: false
+      note: pVerify publishes no idempotency key. Re-POSTing an inquiry creates a new billable transaction;
+        retry after timeout is NOT safe. Poll GET /API/GetPendingInquiries instead.
+    x-apievangelist-rate-limits:
+      published: false
+      response_headers: none published
+      detail: rate-limits/pverify-rate-limits.yml
+    x-apievangelist-environments:
+      production: https://api.pverify.com
+      test: https://testapi.pverify.com
+      separation: host-based; no test/live key prefix

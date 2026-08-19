@@ -1,0 +1,142 @@
+{
+  "item": [
+    {
+      "id": "24c0f118-1d8b-4f33-b66c-6660f6bda559",
+      "name": "Batch",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "0a7a852a-98c3-4945-800b-e661e6d0c378",
+          "name": "Submit a batch of eligibility verifications",
+          "request": {
+            "name": "Submit a batch of eligibility verifications",
+            "description": {
+              "content": "Submits multiple eligibility verifications in a single request for asynchronous processing; results are retrieved later by batch reference.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "BatchEligibility"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requests\": [\n    {\n      \"payerCode\": \"<string>\",\n      \"provider\": {\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"npi\": \"<string>\",\n        \"pin\": \"<string>\"\n      },\n      \"subscriber\": {\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"dob\": \"<string>\",\n        \"memberID\": \"<string>\"\n      },\n      \"payerName\": \"<string>\",\n      \"dependent\": {\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"dob\": \"<string>\",\n        \"gender\": \"<string>\",\n        \"patientRelationship\": \"<string>\"\n      },\n      \"isSubscriberPatient\": \"<string>\",\n      \"doS_StartDate\": \"<string>\",\n      \"doS_EndDate\": \"<string>\",\n      \"PracticeTypeCode\": \"<string>\",\n      \"referenceId\": \"<string>\",\n      \"Location\": \"<string>\",\n      \"IncludeTextResponse\": \"<boolean>\",\n      \"InternalId\": \"<string>\",\n      \"CustomerID\": \"<string>\"\n    },\n    {\n      \"payerCode\": \"<string>\",\n      \"provider\": {\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"npi\": \"<string>\",\n        \"pin\": \"<string>\"\n      },\n      \"subscriber\": {\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"dob\": \"<string>\",\n        \"memberID\": \"<string>\"\n      },\n      \"payerName\": \"<string>\",\n      \"dependent\": {\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"dob\": \"<string>\",\n        \"gender\": \"<string>\",\n        \"patientRelationship\": \"<string>\"\n      },\n      \"isSubscriberPatient\": \"<string>\",\n      \"doS_StartDate\": \"<string>\",\n      \"doS_EndDate\": \"<string>\",\n      \"PracticeTypeCode\": \"<string>\",\n      \"referenceId\": \"<string>\",\n      \"Location\": \"<string>\",\n      \"IncludeTextResponse\": \"<boolean>\",\n      \"InternalId\": \"<string>\",\n      \"CustomerID\": \"<string>\"\n    }\n  ],\n  \"batchReferenceId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "48ac2cf4-4c95-46c5-bd78-4354ca055709",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "API",
+                    "BatchEligibility"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"requests\": [\n    {\n      \"payerCode\": \"<string>\",\n      \"provider\": {\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"npi\": \"<string>\",\n        \"pin\": \"<string>\"\n      },\n      \"subscriber\": {\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"dob\": \"<string>\",\n        \"memberID\": \"<string>\"\n      },\n      \"payerName\": \"<string>\",\n      \"dependent\": {\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"dob\": \"<string>\",\n        \"gender\": \"<string>\",\n        \"patientRelationship\": \"<string>\"\n      },\n      \"isSubscriberPatient\": \"<string>\",\n      \"doS_StartDate\": \"<string>\",\n      \"doS_EndDate\": \"<string>\",\n      \"PracticeTypeCode\": \"<string>\",\n      \"referenceId\": \"<string>\",\n      \"Location\": \"<string>\",\n      \"IncludeTextResponse\": \"<boolean>\",\n      \"InternalId\": \"<string>\",\n      \"CustomerID\": \"<string>\"\n    },\n    {\n      \"payerCode\": \"<string>\",\n      \"provider\": {\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"npi\": \"<string>\",\n        \"pin\": \"<string>\"\n      },\n      \"subscriber\": {\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"dob\": \"<string>\",\n        \"memberID\": \"<string>\"\n      },\n      \"payerName\": \"<string>\",\n      \"dependent\": {\n        \"firstName\": \"<string>\",\n        \"lastName\": \"<string>\",\n        \"dob\": \"<string>\",\n        \"gender\": \"<string>\",\n        \"patientRelationship\": \"<string>\"\n      },\n      \"isSubscriberPatient\": \"<string>\",\n      \"doS_StartDate\": \"<string>\",\n      \"doS_EndDate\": \"<string>\",\n      \"PracticeTypeCode\": \"<string>\",\n      \"referenceId\": \"<string>\",\n      \"Location\": \"<string>\",\n      \"IncludeTextResponse\": \"<boolean>\",\n      \"InternalId\": \"<string>\",\n      \"CustomerID\": \"<string>\"\n    }\n  ],\n  \"batchReferenceId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"batchId\": \"string\",\n  \"accepted\": 1027,\n  \"status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.pverify.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "243dd26c-b3e7-4320-bcee-17950ac96ae9",
+    "name": "pVerify Authentication Batch API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Real-time healthcare insurance eligibility and revenue-cycle API. pVerify exchanges EDI 270/271 eligibility transactions, returns plan and benefit summaries, checks 276/277 claim status, lists supported payers, and estimates patient financial responsibility. All API calls require an OAuth2 bearer token obtained from the /Token endpoint and a Client-API-Id header.\n\nContact Support:\n Name: pVerify Support",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,191 @@
+generated: '2026-08-15'
+method: derived
+status: candidate
+source: openapi/ (derived from pVerify's published Postman collection at https://postman.pverify.com/)
+description: >-
+  pVerify ships NO MCP server. Searches of pVerify's own site, developer hub, GitHub organization
+  (github.com/pVerify), npm, PyPI and the public MCP server directories returned nothing, and no
+  MCP endpoint is named anywhere in pVerify's documentation. The tools below are a CANDIDATE
+  surface derived by API Evangelist from the OpenAPI documents in openapi/ — one tool per real
+  operationId. They are a design proposal for what a pVerify MCP server would expose, not something
+  an agent can call today.
+search:
+  checked:
+  - {source: 'https://pverify.com/api-developers/', result: no MCP mentioned}
+  - {source: 'https://postman.pverify.com/', result: no MCP mentioned}
+  - {source: 'https://github.com/pVerify', result: no MCP repository}
+  - {source: npm, query: '@pverify/mcp, pverify-mcp', result: not found}
+  - {source: pypi, query: 'pverify-mcp', result: not found}
+  - {source: web search, query: 'pVerify MCP server model context protocol', result: no first-party server}
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: derived
+  note: >-
+    mode is `none` because nobody — pVerify or a third party — ships a pVerify MCP server, remote
+    or stdio. No endpoint URL is guessed here; a fabricated path that happened to answer 200 would
+    read as a verified agent surface, which is the worst possible outcome for this artifact.
+pointer_decision:
+  mcp_server: >-
+    NO `type: MCPServer` pointer is emitted in apis.yml. The pointer asserts the provider operates
+    an MCP server; pVerify does not. This file records a derived candidate and an honest absence.
+prerequisites_for_a_real_server:
+  auth: >-
+    Every tool except get_payer_status needs an OAuth2 client-credentials bearer token from
+    POST /Token PLUS the account's Client-API-Id header. There are no scopes — entitlements are
+    attached to the account contract, so an MCP server cannot narrow a token per tool.
+  billing: >-
+    Every inquiry tool is separately billable per transaction and there is no idempotency key,
+    so an agent retry creates a duplicate charge. Any real server must gate the inquiry_* tools
+    behind confirmation and correlate with GetPendingInquiries rather than re-POSTing.
+  phi: >-
+    Every request and response carries PHI. A server would need a BAA with pVerify and must not
+    log payloads.
+tools:
+- name: create_token
+  description: Obtain an OAuth2 client-credentials access token.
+  source_operation: openapi/pverify-authentication-api-openapi.yml#createToken
+  consequence: read
+- name: eligibility_summary
+  description: Submit a real-time 270 eligibility inquiry and return the parsed benefit summary.
+  source_operation: openapi/pverify-eligibility-api-openapi.yml#eligibilitySummary
+  consequence: billable-write
+- name: easy_eligibility_summary
+  description: One-step eligibility summary authenticated with Client-API-Id + Client-Secret.
+  source_operation: openapi/pverify-eligibility-api-openapi.yml#easyEligibilitySummary
+  consequence: billable-write
+- name: get_eligibility_summary
+  description: Retrieve a previously submitted eligibility result by RequestID.
+  source_operation: openapi/pverify-eligibility-api-openapi.yml#getEligibilitySummary
+  consequence: read
+- name: get_eligibility_271
+  description: Retrieve the raw X12 271 response for a RequestID.
+  source_operation: openapi/pverify-eligibility-api-openapi.yml#getEligibility271
+  consequence: read
+- name: get_eligibility_pdf_report
+  description: Retrieve the PDF eligibility report for a RequestID.
+  source_operation: openapi/pverify-eligibility-api-openapi.yml#getEligibilityPdfReport
+  consequence: read
+- name: get_eligibility_details_url
+  description: Get a hosted details URL for an eligibility transaction.
+  source_operation: openapi/pverify-eligibility-api-openapi.yml#getEligibilityDetailsUrl
+  consequence: read
+- name: get_pending_inquiries
+  description: List inquiries still pending for a date of service — the safe alternative to retrying.
+  source_operation: openapi/pverify-eligibility-api-openapi.yml#getPendingInquiries
+  consequence: read
+- name: cancel_transaction
+  description: Cancel a pending transaction.
+  source_operation: openapi/pverify-eligibility-api-openapi.yml#cancelTransaction
+  consequence: write
+- name: dental_eligibility_summary
+  description: Submit a dental eligibility inquiry (v1).
+  source_operation: openapi/pverify-dental-eligibility-api-openapi.yml#dentalEligibilitySummary
+  consequence: billable-write
+- name: dental_eligibility_summary_v2
+  description: Submit a dental eligibility inquiry (v2, the only version-prefixed path in the API).
+  source_operation: openapi/pverify-dental-eligibility-api-openapi.yml#dentalEligibilitySummaryV2
+  consequence: billable-write
+- name: dental_eligibility_benefit_summary
+  description: Submit a dental benefit summary inquiry.
+  source_operation: openapi/pverify-dental-eligibility-api-openapi.yml#dentalEligibilityBenefitSummary
+  consequence: billable-write
+- name: get_dental_eligibility_summary
+  description: Retrieve a dental eligibility result by RequestID.
+  source_operation: openapi/pverify-dental-eligibility-api-openapi.yml#getDentalEligibilitySummary
+  consequence: read
+- name: insurance_discovery
+  description: Search for unknown active insurance coverage for a patient.
+  source_operation: openapi/pverify-insurance-discovery-api-openapi.yml#insuranceDiscovery
+  consequence: billable-write
+- name: get_insurance_discovery_response
+  description: Retrieve an insurance discovery result by RequestID.
+  source_operation: openapi/pverify-insurance-discovery-api-openapi.yml#getInsuranceDiscoverySummaryResponse
+  consequence: read
+- name: get_insurance_discovery_details_url
+  description: Get a hosted details URL for an insurance discovery transaction.
+  source_operation: openapi/pverify-insurance-discovery-api-openapi.yml#getInsuranceDiscoveryDetailsUrl
+  consequence: read
+- name: get_insurance_discovery_report
+  description: Retrieve the insurance discovery PDF report.
+  source_operation: openapi/pverify-insurance-discovery-api-openapi.yml#getInsuranceDiscoveryReport
+  consequence: read
+- name: mbi_inquiry
+  description: Look up a Medicare Beneficiary Identifier.
+  source_operation: openapi/pverify-mbi-lookup-api-openapi.yml#mbiInquiry
+  consequence: billable-write
+- name: get_mbi_response
+  description: Retrieve an MBI lookup result by RequestID.
+  source_operation: openapi/pverify-mbi-lookup-api-openapi.yml#getMBIResponse
+  consequence: read
+- name: patient_finder_inquiry
+  description: Validate / complete patient demographics (pDV).
+  source_operation: openapi/pverify-patient-demographic-validator-api-openapi.yml#patientFinderInquiry
+  consequence: billable-write
+- name: patient_finder_inquiry_results
+  description: Retrieve patient demographic validator results.
+  source_operation: openapi/pverify-patient-demographic-validator-api-openapi.yml#patientFinderInquiryResults
+  consequence: read
+- name: get_patient_finder_response
+  description: Retrieve a patient demographic validator result by RequestID.
+  source_operation: openapi/pverify-patient-demographic-validator-api-openapi.yml#getPatientFinderResponse
+  consequence: read
+- name: claim_status_inquiry
+  description: Submit a 276 claim status inquiry.
+  source_operation: openapi/pverify-claim-status-api-openapi.yml#claimStatusInquiry
+  consequence: billable-write
+- name: get_claim_status_response
+  description: Retrieve the 277 claim status response by RequestID.
+  source_operation: openapi/pverify-claim-status-api-openapi.yml#getClaimStatusResponse
+  consequence: read
+- name: estimate_calculation
+  description: Estimate patient financial responsibility for a service.
+  source_operation: openapi/pverify-estimation-api-openapi.yml#estimateCalculation
+  consequence: billable-write
+- name: get_all_payers
+  description: List every payer pVerify supports.
+  source_operation: openapi/pverify-payers-api-openapi.yml#getAllPayers
+  consequence: read
+- name: get_payer_status
+  description: Live up/down status per payer. The only pVerify operation that needs no authentication.
+  source_operation: openapi/pverify-payers-api-openapi.yml#getPayerStatus
+  consequence: read
+- name: get_payer_status_statistics
+  description: Recently rejecting payers over the last N hours.
+  source_operation: openapi/pverify-payers-api-openapi.yml#getPayerStatusStatistics
+  consequence: read
+- name: create_widget_setup
+  description: Provision the CGX eligibility and estimates widget.
+  source_operation: openapi/pverify-cgx-widget-api-openapi.yml#createWidgetSetup
+  consequence: write
+- name: cgx_inquiry
+  description: Run a combined estimate + eligibility inquiry for the CGX widget.
+  source_operation: openapi/pverify-cgx-widget-api-openapi.yml#cgxInquiry
+  consequence: billable-write
+excluded_operations:
+  reason: pVerify labels these products "(Discontinued)" in its own documentation.
+  operations:
+  - sameOrSimilarInquiry
+  - getSameOrSimilarResponse
+  - getSameOrSimilarReport
+  - getSameOrSimilarDetailsUrl
+  - cmnInquiry
+  - getCMNResponse
+  - getCmnReport
+  - snfInquiry
+  - getSNFResponse
+coverage:
+  tools_derived: 30
+  rest_operations_total: 40
+  rest_operation_ids_unique: 39
+  rest_operations_discontinued: 9
+  note: >-
+    40 operations across the 13 per-API documents; getEligibilitySummary appears in both the
+    Eligibility and Dental Eligibility documents, so 39 operationIds are unique. 30 tools = 39
+    unique operationIds minus the 9 discontinued ones.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

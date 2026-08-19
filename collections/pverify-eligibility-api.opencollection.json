@@ -1,0 +1,98 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "pVerify Authentication Eligibility API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Eligibility",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Real-time eligibility summary",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.pverify.com/API/EligibilitySummary",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Posts a single real-time eligibility request to the payer and returns a condensed, practice-type-specific summary of plan, coverage, copay, coinsurance, deductible, and out-of-pocket benefits."
+        },
+        {
+          "info": {
+            "name": "Real-time 270/271 eligibility inquiry",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.pverify.com/API/EligibilityInquiry",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Posts a full 270 eligibility request and returns the detailed 271 response, including a unique requestId that can be used with GetEligibilityResponse to retrieve the same result asynchronously."
+        },
+        {
+          "info": {
+            "name": "Retrieve a prior eligibility response",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.pverify.com/API/GetEligibilityResponse",
+            "params": [
+              {
+                "name": "requestId",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns the same response produced by an EligibilityInquiry POST using the unique requestId returned in that inquiry's response."
+        },
+        {
+          "info": {
+            "name": "List pending inquiries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.pverify.com/API/GetPendingInquiries"
+          },
+          "docs": "Returns the list of eligibility inquiries still in a Pending state."
+        },
+        {
+          "info": {
+            "name": "Cancel a pending transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.pverify.com/API/CancelTransaction",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets a pending inquiry's state to Cancel and removes it from the processing queue."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

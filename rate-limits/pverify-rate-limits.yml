@@ -4,7 +4,26 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: pVerify
 providerId: pverify
 created: '2026-06-21'
-modified: '2026-06-21'
+modified: '2026-08-15'
+generated: '2026-08-15'
+method: searched
+source: https://postman.pverify.com/ + https://pverify.com/api-developers/ + https://www.pverify.com/rest-api/
+limit_count: 0
+limit_count_note: >-
+  limit_count is 0 by measurement. pVerify publishes NO numeric rate limit anywhere: no
+  requests-per-second/minute/day figure, no concurrency ceiling, no burst allowance and no quota
+  appears in its developer hub, its REST API page or the request documentation of its own Postman
+  collection. It also publishes no rate-limit RESPONSE HEADERS — there is no X-RateLimit-*,
+  RateLimit-* or Retry-After documented on any endpoint, so a client has no runtime signal of how
+  close it is to a ceiling. The `limits[]` entries below name the DIMENSIONS a contract is written
+  against; not one of them carries a published value.
+response_headers:
+  published: none
+  checked: [X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, RateLimit-Limit,
+    RateLimit-Remaining, RateLimit-Reset, Retry-After]
+  note: >-
+    None of these headers is documented by pVerify on any operation. Header behaviour on
+    exhaustion was not observed live because every real endpoint requires issued credentials.
 reconciled: false
 tags:
 - Healthcare
@@ -17,42 +36,52 @@ tags:
 - Quotas
 - Throttling
 description: >-
-  pVerify's real-time API enforces per-account throughput controls on
-  synchronous eligibility, claim status, and estimation calls, and routes
-  high-volume work through its Batch API to avoid overloading the real-time
-  exchange. OAuth2 access tokens expire and must be refreshed periodically.
-  Specific request-per-minute and concurrency values are account- and
-  contract-specific and are not published; they are not reconciled in this
-  artifact.
+  pVerify publishes no rate limits. Its commercial model is per-transaction rather than
+  quota-based, and throughput allowances — where they exist — are written into the account
+  contract, which is why no figure appears publicly. The only runtime signals a client actually
+  gets are the token's expires_in from POST /Token and the in-envelope APIResponseCode 2
+  (NoFunds), which is a BALANCE condition rather than a throttle. The dimensions in limits[]
+  below are the axes a pVerify contract is negotiated on; none carries a published value.
+  pVerify markets a batch eligibility product for high-volume work, but no batch endpoint
+  appears in its public Postman collection, so no batch throughput contract could be read either.
 notes: >-
-  Confirm concurrency, per-minute, and daily limits, plus token lifetime,
-  with pVerify during onboarding and reconciliation.
+  Confirm concurrency, per-minute and daily limits, batch throughput and token lifetime with
+  pVerify during onboarding. Nothing in this file should be treated as a published ceiling.
 sources:
 - https://www.pverify.com/rest-api/
 - https://docs.pverify.io/
 - https://pverify.com/api-developers/
 responseCodes:
-  throttled: 429
+  throttled: null
+  throttled_note: >-
+    CORRECTED 2026-08-15. An earlier round of this artifact asserted 429 on exhaustion. pVerify
+    documents no throttling status code, and its error model is in-envelope (HTTP 200 with a
+    non-zero APIResponseCode — see errors/pverify-error-codes.yml), so 429 was an unsupported
+    assumption rather than an observed or published fact. Recorded as null: unknown.
 limits:
 - name: Real-Time Requests
   scope: account
   metric: requests
-  limit: see provider documentation
+  limit: null
+  limit_basis: not-published — value is contract-specific and appears in no public pVerify document
   notes: Synchronous eligibility / claim status / estimation throughput, account specific.
 - name: Concurrency
   scope: account
   metric: concurrent_requests
-  limit: see provider documentation
+  limit: null
+  limit_basis: not-published — value is contract-specific and appears in no public pVerify document
   notes: Maximum simultaneous in-flight real-time transactions, account specific.
 - name: Batch Eligibility
   scope: account
   metric: transactions
-  limit: see provider documentation
+  limit: null
+  limit_basis: not-published — value is contract-specific and appears in no public pVerify document
   notes: High-volume verifications routed through the Batch API for async processing.
 - name: Access Token Lifetime
   scope: account
   metric: seconds
-  limit: see provider documentation
+  limit: null
+  limit_basis: not-published — value is contract-specific and appears in no public pVerify document
   notes: OAuth2 bearer tokens expire (expires_in) and must be re-requested from /Token.
 policies:
 - name: Tiered Limits
@@ -60,7 +89,12 @@ policies:
 - name: Batch Routing
   description: High-volume eligibility should use the Batch API rather than real-time calls.
 - name: Backoff Strategy
-  description: Clients should implement retry with backoff on 429 responses and refresh expired tokens.
+  description: >-
+    API Evangelist guidance, not a pVerify-published policy. Because there is no idempotency key,
+    a retry of an inquiry POST is a NEW billable transaction — clients must poll
+    GET /API/GetPendingInquiries and the matching retrieval endpoint instead of resubmitting, and
+    refresh the bearer token when expires_in elapses.
+  basis: derived
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

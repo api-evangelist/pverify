@@ -1,0 +1,516 @@
+{
+  "item": [
+    {
+      "id": "54849aa1-01c7-47e7-8151-076da98956a0",
+      "name": "Eligibility",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "0085f489-2acb-4647-b9b9-84e7f92b004d",
+          "name": "Real-time eligibility summary",
+          "request": {
+            "name": "Real-time eligibility summary",
+            "description": {
+              "content": "Posts a single real-time eligibility request to the payer and returns a condensed, practice-type-specific summary of plan, coverage, copay, coinsurance, deductible, and out-of-pocket benefits.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "EligibilitySummary"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payerCode\": \"<string>\",\n  \"provider\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"npi\": \"<string>\",\n    \"pin\": \"<string>\"\n  },\n  \"subscriber\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"dob\": \"<string>\",\n    \"memberID\": \"<string>\"\n  },\n  \"payerName\": \"<string>\",\n  \"dependent\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"dob\": \"<string>\",\n    \"gender\": \"<string>\",\n    \"patientRelationship\": \"<string>\"\n  },\n  \"isSubscriberPatient\": \"<string>\",\n  \"doS_StartDate\": \"<string>\",\n  \"doS_EndDate\": \"<string>\",\n  \"PracticeTypeCode\": \"<string>\",\n  \"referenceId\": \"<string>\",\n  \"Location\": \"<string>\",\n  \"IncludeTextResponse\": \"<boolean>\",\n  \"InternalId\": \"<string>\",\n  \"CustomerID\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "792f3320-2f6a-4098-96fc-aeec2f86e4ec",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "API",
+                    "EligibilitySummary"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payerCode\": \"<string>\",\n  \"provider\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"npi\": \"<string>\",\n    \"pin\": \"<string>\"\n  },\n  \"subscriber\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"dob\": \"<string>\",\n    \"memberID\": \"<string>\"\n  },\n  \"payerName\": \"<string>\",\n  \"dependent\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"dob\": \"<string>\",\n    \"gender\": \"<string>\",\n    \"patientRelationship\": \"<string>\"\n  },\n  \"isSubscriberPatient\": \"<string>\",\n  \"doS_StartDate\": \"<string>\",\n  \"doS_EndDate\": \"<string>\",\n  \"PracticeTypeCode\": \"<string>\",\n  \"referenceId\": \"<string>\",\n  \"Location\": \"<string>\",\n  \"IncludeTextResponse\": \"<boolean>\",\n  \"InternalId\": \"<string>\",\n  \"CustomerID\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"requestId\": \"string\",\n  \"APIResponseCode\": \"string\",\n  \"APIResponseMessage\": \"string\",\n  \"PayerName\": \"string\",\n  \"PlanCoverageSummary\": {\n    \"key_0\": \"string\",\n    \"key_1\": false,\n    \"key_2\": 280,\n    \"key_3\": true,\n    \"key_4\": 501\n  },\n  \"HBPC_Deductible_OOP_Summary\": {\n    \"key_0\": true,\n    \"key_1\": 4241.605656549572,\n    \"key_2\": false\n  },\n  \"DemographicInfo\": {\n    \"key_0\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "dca78dac-6953-4b88-b6b3-be8bd4282ae8",
+          "name": "Real-time 270/271 eligibility inquiry",
+          "request": {
+            "name": "Real-time 270/271 eligibility inquiry",
+            "description": {
+              "content": "Posts a full 270 eligibility request and returns the detailed 271 response, including a unique requestId that can be used with GetEligibilityResponse to retrieve the same result asynchronously.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "EligibilityInquiry"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payerCode\": \"<string>\",\n  \"provider\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"npi\": \"<string>\",\n    \"pin\": \"<string>\"\n  },\n  \"subscriber\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"dob\": \"<string>\",\n    \"memberID\": \"<string>\"\n  },\n  \"payerName\": \"<string>\",\n  \"dependent\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"dob\": \"<string>\",\n    \"gender\": \"<string>\",\n    \"patientRelationship\": \"<string>\"\n  },\n  \"isSubscriberPatient\": \"<string>\",\n  \"doS_StartDate\": \"<string>\",\n  \"doS_EndDate\": \"<string>\",\n  \"PracticeTypeCode\": \"<string>\",\n  \"referenceId\": \"<string>\",\n  \"Location\": \"<string>\",\n  \"IncludeTextResponse\": \"<boolean>\",\n  \"InternalId\": \"<string>\",\n  \"CustomerID\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b175ae3f-d20b-4725-8f3f-bb7d54b32ab1",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "API",
+                    "EligibilityInquiry"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payerCode\": \"<string>\",\n  \"provider\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"npi\": \"<string>\",\n    \"pin\": \"<string>\"\n  },\n  \"subscriber\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"dob\": \"<string>\",\n    \"memberID\": \"<string>\"\n  },\n  \"payerName\": \"<string>\",\n  \"dependent\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"dob\": \"<string>\",\n    \"gender\": \"<string>\",\n    \"patientRelationship\": \"<string>\"\n  },\n  \"isSubscriberPatient\": \"<string>\",\n  \"doS_StartDate\": \"<string>\",\n  \"doS_EndDate\": \"<string>\",\n  \"PracticeTypeCode\": \"<string>\",\n  \"referenceId\": \"<string>\",\n  \"Location\": \"<string>\",\n  \"IncludeTextResponse\": \"<boolean>\",\n  \"InternalId\": \"<string>\",\n  \"CustomerID\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"requestId\": \"string\",\n  \"APIResponseCode\": \"string\",\n  \"APIResponseMessage\": \"string\",\n  \"Status\": \"string\",\n  \"EDIResponse\": \"string\",\n  \"ServiceDetails\": [\n    {\n      \"key_0\": 1916,\n      \"key_1\": \"string\",\n      \"key_2\": 1478\n    },\n    {\n      \"key_0\": 1283\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cebfd3d7-58a0-4dd6-ba24-a67e8142c820",
+          "name": "Retrieve a prior eligibility response",
+          "request": {
+            "name": "Retrieve a prior eligibility response",
+            "description": {
+              "content": "Returns the same response produced by an EligibilityInquiry POST using the unique requestId returned in that inquiry's response.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "GetEligibilityResponse"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "requestId",
+                  "value": "<string>",
+                  "description": "(Required) "
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1150c9d2-0f5d-4e79-a7ed-16a07c1e4373",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "API",
+                    "GetEligibilityResponse"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "requestId",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"requestId\": \"string\",\n  \"APIResponseCode\": \"string\",\n  \"APIResponseMessage\": \"string\",\n  \"Status\": \"string\",\n  \"EDIResponse\": \"string\",\n  \"ServiceDetails\": [\n    {\n      \"key_0\": 2027.5514731057842,\n      \"key_1\": false\n    },\n    {\n      \"key_0\": \"string\",\n      \"key_1\": true\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8b1ca6fd-2ddf-4022-8f29-deb437a5f445",
+          "name": "List pending inquiries",
+          "request": {
+            "name": "List pending inquiries",
+            "description": {
+              "content": "Returns the list of eligibility inquiries still in a Pending state.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "GetPendingInquiries"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6a7449f3-db17-45ce-a0ac-bec4586e2585",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "API",
+                    "GetPendingInquiries"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"requestId\": \"string\",\n    \"status\": \"string\",\n    \"submittedDate\": \"string\",\n    \"payerCode\": \"string\"\n  },\n  {\n    \"requestId\": \"string\",\n    \"status\": \"string\",\n    \"submittedDate\": \"string\",\n    \"payerCode\": \"string\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b47a1c1c-b444-44f4-9d69-4ddd62ea402b",
+          "name": "Cancel a pending transaction",
+          "request": {
+            "name": "Cancel a pending transaction",
+            "description": {
+              "content": "Sets a pending inquiry's state to Cancel and removes it from the processing queue.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "API",
+                "CancelTransaction"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "eb8e893f-a767-43da-ae74-6f04afa41938",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "API",
+                    "CancelTransaction"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"requestId\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"APIResponseCode\": \"string\",\n  \"APIResponseMessage\": \"string\",\n  \"Status\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.pverify.com",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "2a652b0f-c447-4896-be5b-c095a626e671",
+    "name": "pVerify Authentication Eligibility API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Real-time healthcare insurance eligibility and revenue-cycle API. pVerify exchanges EDI 270/271 eligibility transactions, returns plan and benefit summaries, checks 276/277 claim status, lists supported payers, and estimates patient financial responsibility. All API calls require an OAuth2 bearer token obtained from the /Token endpoint and a Client-API-Id header.\n\nContact Support:\n Name: pVerify Support",
+      "type": "text/plain"
+    }
+  }
+}

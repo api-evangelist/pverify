@@ -1,0 +1,82 @@
+generated: '2026-08-14'
+method: searched
+source: https://postman.pverify.com/ — "APIResponseCode Meaning" / "API Response Codes" tables published
+  in the ClaimStatusInquiry, SameOrSimilarInquiry, CMNInquiry, EligibilitySummary and
+  InsuranceDiscovery request documentation
+format: in-envelope
+description: >-
+  pVerify does not use HTTP status codes or RFC 9457 problem+json to signal business errors.
+  Every endpoint returns HTTP 200 with an envelope carrying an integer APIResponseCode and a
+  human-readable APIResponseMessage; a transaction that the payer rejected or that is still
+  processing is a 200 with a non-zero code. pVerify's own docs instruct clients to "always
+  check for apiResponseCode property value before processing". Payer-side detail arrives in
+  EDIErrorMessage, ErrorCode / ErrorDescription, FollowUpAction and PossibleResolution.
+envelope:
+  status_field: APIResponseCode
+  message_field: APIResponseMessage
+  payer_error_field: EDIErrorMessage
+  transaction_error_code_field: ErrorCode
+  transaction_error_description_field: ErrorDescription
+  remediation_fields: [FollowUpAction, PossibleResolution]
+  processed_with_error_flag: ProcessedWithError
+  http_status_on_business_error: 200
+error_codes:
+- code: 0
+  name: Processed
+  meaning: Transaction was processed successfully by the payer.
+  action: Read the response payload normally.
+  terminal: true
+- code: 1
+  name: Rejected
+  meaning: Payer rejected the transaction.
+  action: Inspect EDIErrorMessage, FollowUpAction and PossibleResolution, correct the request and resubmit.
+  terminal: true
+- code: 2
+  name: NoFunds
+  meaning: Insufficient account balance on the pVerify account to run the transaction.
+  action: Top up / review the pVerify account before retrying. This is a billing condition, not a data error.
+  terminal: true
+- code: 3
+  name: Pending
+  meaning: >-
+    Transaction is still being processed (back-office / non-EDI payer workflow). A RequestID is
+    returned that the client stores and retrieves later.
+  action: >-
+    Save the RequestID and poll the matching GET (GetEligibilitySummary, GetClaimStatusResponse,
+    GetSameOrSimilarResponse, GetCMNResponse, GetSNFResponse, GetMBIResponse, GetPatientFinderResponse).
+  terminal: false
+- code: 4
+  name: InvalidRequest / New
+  meaning: >-
+    Required data missing (claim status, same-or-similar, CMN, SNF). On the eligibility endpoints
+    pVerify documents code 4 as "New" rather than InvalidRequest — the code space is not uniform
+    across products, and this is recorded as pVerify publishes it.
+  action: Supply the missing required fields; for eligibility, treat 4 as a not-yet-processed state.
+  terminal: false
+- code: 5
+  name: InvalidFormat / InvalidPayer
+  meaning: >-
+    Data fields or data format are wrong (same-or-similar, CMN, SNF). On the Claim Status product
+    pVerify documents 5 as "InvalidPayer — payer does not support Claim Status electronically /
+    inactive".
+  action: Validate field formats (dates are MM/dd/yyyy) or select a payer that supports the product.
+  terminal: true
+- code: 6
+  name: LocationError
+  meaning: The location supplied on the request is not configured on the pVerify account.
+  action: Configure the location in the pVerify portal or omit it to use the account default.
+  terminal: true
+notes:
+- >-
+  The code space diverges by product: Claim Status documents 0-6 with InvalidPayer at 5, while
+  Same or Similar / CMN / SNF document 0-6 with InvalidFormat at 5, and the eligibility family
+  documents 0-4 with "New" at 4. Agents must not assume one shared enum.
+- >-
+  Transport-level failures (401/403 on a bad or expired bearer token, IIS 404 on an unknown path)
+  are not documented by pVerify; only the in-envelope codes above are published.
+related:
+- openapi/_original/pverify-openapi.yml
+- conventions/pverify-conventions.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,89 @@
+generated: '2026-08-14'
+method: searched
+source: https://postman.pverify.com/ + https://pverify.com/api-developers/ + https://status.dosespot.com/posts/dashboard
+description: >-
+  pVerify publishes no written versioning or deprecation policy. What it does publish is a dated
+  documentation set (the Postman collection carries "Last Updated 03/01/2026") in which retired
+  products are marked "(Discontinued)" in the folder name while remaining fully documented, and a
+  status dashboard operated by its parent, DoseSpot / Interra Health.
+versioning:
+  scheme: path-segment, per endpoint, opt-in
+  current: unversioned paths, with one /api/v2/ endpoint
+  policy_url: null
+  note: >-
+    Only /api/v2/DentalEligibilitySummary is version-prefixed. Everything else is unversioned.
+    Generations are named in prose in the docs ("Our 1st Generation Methods", "Our 2nd Generation
+    Methods", "1 Step Easy Methods") rather than in the URL, so a client cannot pin a generation.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  mechanism: >-
+    Products are retired by relabelling the documentation folder "(Discontinued)". No Sunset or
+    Deprecation response header, no dated removal schedule, and no migration guide is published.
+    Discontinued endpoints remain documented in full.
+  note: >-
+    No `type: Deprecation` pointer is emitted for this provider: marking a folder Discontinued is
+    a deprecation SIGNAL, not a deprecation POLICY, and the operational-transparency check reads
+    a published policy.
+deprecated_operations:
+- {operationId: sameOrSimilarInquiry, spec: openapi/pverify-same-or-similar-api-openapi.yml}
+- {operationId: getSameOrSimilarResponse, spec: openapi/pverify-same-or-similar-api-openapi.yml}
+- {operationId: getSameOrSimilarReport, spec: openapi/pverify-same-or-similar-api-openapi.yml}
+- {operationId: getSameOrSimilarDetailsUrl, spec: openapi/pverify-same-or-similar-api-openapi.yml}
+- {operationId: cmnInquiry, spec: openapi/pverify-cmn-api-openapi.yml}
+- {operationId: getCMNResponse, spec: openapi/pverify-cmn-api-openapi.yml}
+- {operationId: getCmnReport, spec: openapi/pverify-cmn-api-openapi.yml}
+- {operationId: snfInquiry, spec: openapi/pverify-snf-api-openapi.yml}
+- {operationId: getSNFResponse, spec: openapi/pverify-snf-api-openapi.yml}
+status_page:
+  url: https://status.dosespot.com/posts/dashboard
+  title: DoseSpot Application Health
+  operator: DoseSpot / Interra Health (pVerify's parent — pVerify links this dashboard from its own developer page)
+  probe: {status: 200, checked: '2026-08-14'}
+payer_status_api:
+  note: >-
+    pVerify also exposes machine-readable availability for the payer network itself, which is the
+    dependency most likely to fail for a caller: GET /api/GetPayerStatus (unauthenticated) returns
+    Payer Up / Payer Active / Payer Inactive / Payer Down per payer, and
+    GET /API/GetPayerStatusStatistics?status=Rejected&checkForLastNumberOfHours=1 returns recently
+    failing payers.
+  endpoints:
+  - /api/GetPayerStatus
+  - /API/GetPayerStatusStatistics
+sla:
+  url: https://pverify.com/wp-content/uploads/2025/04/Exhibit-B-SLA.docx
+  page: https://pverify.com/pverify-legal-documentation/
+  uptime_target: null
+  format: .docx
+  probe: {status: 200, checked: '2026-08-15'}
+  note: >-
+    CORRECTED 2026-08-15 — an earlier round recorded "no public SLA". pVerify DOES publish one:
+    "Exhibit B – SLA" is downloadable from https://pverify.com/pverify-legal-documentation/
+    alongside "Exhibit A – Terms of Service". It is a Word .docx, not an HTML page, so it is
+    human-readable but not machine-readable, and no uptime percentage could be extracted without
+    downloading and parsing the binary. Recorded as present-but-unreadable rather than absent.
+legal:
+  page: https://pverify.com/pverify-legal-documentation/
+  documents:
+  - {name: Exhibit A – Terms of Service, url: 'https://pverify.com/wp-content/uploads/2025/04/Exhibit-A-Terms-of-Service.docx',
+    format: .docx, status: 200}
+  - {name: Exhibit B – SLA, url: 'https://pverify.com/wp-content/uploads/2025/04/Exhibit-B-SLA.docx',
+    format: .docx, status: 200}
+  - {name: Privacy Policy, url: 'https://pverify.com/privacy-policy/', format: html, status: 200}
+  - {name: Portal Terms and Conditions, url: 'https://premium.pverify.com/TermsAndConditions/TermsAndConditions.html',
+    format: html, status: 200}
+  - {name: HIPAA User Agreement, url: 'https://www.pverify.com/hipaa-user-agreement/', format: html,
+    status: 200}
+changelog:
+  url: null
+  note: >-
+    No dated changelog is published. The only version marker on the documentation is the
+    "Last Updated 03/01/2026" line at the top of the Postman collection.
+corporate:
+  note: >-
+    pVerify is part of DoseSpot, which merged with Arrive Health to form Interra Health; the trust
+    center and status page pVerify links from its own site are branded accordingly.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,39 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "pVerify Authentication Claim Status API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Claim Status",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Real-time 276/277 claim status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.pverify.com/API/ClaimStatus",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Posts a real-time 276 claim status inquiry and returns the current 277 processing state, dates, and amounts for a submitted claim."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

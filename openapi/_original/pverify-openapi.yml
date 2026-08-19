@@ -1,540 +1,2755 @@
-openapi: 3.0.1
+# Derived from pVerify's published Postman collection: https://postman.pverify.com/
+# method: derived  generated: 2026-08-14
+openapi: 3.0.3
 info:
   title: pVerify API
-  description: >-
-    Real-time healthcare insurance eligibility and revenue-cycle API. pVerify
-    exchanges EDI 270/271 eligibility transactions, returns plan and benefit
-    summaries, checks 276/277 claim status, lists supported payers, and
-    estimates patient financial responsibility. All API calls require an OAuth2
-    bearer token obtained from the /Token endpoint and a Client-API-Id header.
-  termsOfService: https://www.pverify.com/terms-of-use/
+  description: Real-time healthcare insurance eligibility and revenue-cycle API. Derived operation-for-operation
+    from the public Postman collection pVerify publishes at https://postman.pverify.com/ (collection 6ceb8797-50ff-42fd-98a3-64beefaa6c94,
+    last updated 03/01/2026). Covers eligibility (270/271), dental eligibility, insurance discovery, MBI
+    lookup, patient demographic validation, claim status (276/277), patient cost estimation, payer lists
+    and the CGX widget.
+  version: '1.0'
+  termsOfService: https://pverify.com/privacy-policy/
   contact:
     name: pVerify Support
+    email: support@pverify.com
     url: https://pverify.com/contact-support/
-  version: '1.0'
 servers:
-  - url: https://api.pverify.com
-    description: Production
-security:
-  - bearerAuth: []
-    clientApiId: []
+- url: https://api.pverify.com
+  description: Production
+- url: https://testapi.pverify.com
+  description: Test environment published by pVerify
 tags:
-  - name: Authentication
-  - name: Eligibility
-  - name: Batch
-  - name: Claim Status
-  - name: Payers
-  - name: Estimation
+- name: Authentication
+- name: Insurance Discovery
+- name: Eligibility
+- name: Dental Eligibility
+- name: Estimation
+- name: MBI Lookup
+- name: Patient Demographic Validator
+- name: Claim Status
+- name: Payers
+- name: CGX Widget
+- name: Same or Similar
+- name: CMN
+- name: SNF
 paths:
   /Token:
     post:
       operationId: createToken
       tags:
-        - Authentication
-      summary: Generate an OAuth2 access token
-      description: >-
-        Exchanges Client_Id and Client_Secret for an OAuth2 bearer access token
-        using the client_credentials grant. The returned access_token is sent as
-        an Authorization bearer header on all subsequent API calls.
-      security: []
+      - Authentication
+      summary: Token
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/Token | \n\nProduction\
+        \ | \nhttps://api.pverify.com/Token | \n\nThe first step to using the system is a call to the\
+        \ Token endpoint at /Token. It will return a token when you use in the subsequent calls.\n\nToken\
+        \ Authorization Request\n\nHeader | \nDescription | \n\nMethod | \nPOST | \n\nURL | \nhttps://api.pverify.com/Token\
+        \ | \n\nContent-Type | \napplication/x-www-form-urlencoded | \n\nURL Params | \nNone | \n\nBody\
+        \ | \nDescription | \n\nData Params* | \n\"Client_Id=\" + clientID + \"&client_secret=\" + ClientSecret\
+        \ + \"&grant_type=client_credentials\" | \n\n*Note: The Client-API-Id header is required. Header\
+        \ keys are case sensitive.\n\nThe /Token response includes the following fields:\n\nField | \n\
+        Type | \nDescription | \n\naccess_token | \n{string} | \nAuthorization token unique to you which\
+        \ is used to verify your authorization for subsequent calls. | \n\ntoken_type | \n{string} | \n\
+        this is the token type which will be included before the access token in your subsequent method\
+        \ calls. | \n\nexpires_in | \n{int} | \nThis is the amount of time that your token is valid for\
+        \ (in seconds). |"
       requestBody:
         required: true
         content:
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/TokenRequest'
+              type: object
+              properties:
+                Client_Id:
+                  type: string
+                Client_Secret:
+                  type: string
+                grant_type:
+                  type: string
+              required:
+              - Client_Id
+              - Client_Secret
+              - grant_type
+            example:
+              Client_Id: '{{client-api-id}}'
+              Client_Secret: '{{client-secret}}'
+              grant_type: client_credentials
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TokenResponse'
-  /API/EligibilitySummary:
+      security: []
+  /api/InsuranceDiscovery:
+    post:
+      operationId: insuranceDiscovery
+      tags:
+      - Insurance Discovery
+      summary: InsuranceDiscovery
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/InsuranceDiscovery\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/InsuranceDiscovery | \n\npVerify’s Insurance\
+        \ Discovery allows Hospitals and Providers to find a patient’s insurance coverage to collect potentially\
+        \ millions from insurance companies, allow prompt claim submission, increase patient payment collection,\
+        \ and drastically decrease Account Receivables.\n\nPatient StatesTo run insurance discovery a\
+        \ patient state or patient state ID is required. As part of the setup, pVerify will work with\
+        \ you to create Patient States.\n\nMedicareWe will return a new object for Medicare called MedicareInfoSummary\
+        \ which will return Medicare specific information such as Part A/B deductible, pharmacy payer\
+        \ name, MCA payer name, and more information. This object will only be returned for Medicare,\
+        \ for all other payers it is null. Please use this object when sending Medicare patients to retrieve\
+        \ Medicare specific information.\n\nHeaders\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/InsuranceDiscovery\
+        \ | \n\nMethod | \nPOST | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token\
+        \ from above preceded by the String \"Bearer\" | \n\nClient-API-Id | \nAPI ID provided by pVerify\
+        \ | \n\nContent-Type | \napplication/json | \n\n*Note: The Client-API-Id is required. Header keys\
+        \ are case sensitive.\n\nInsuranceDiscovery Request Fields\n\nProperty Name | \nData Type | \n\
+        Usage | \nDescription | \n\npatientStateId | \nInteger | \nConditional | \nPlease get it from\
+        \ pverify Team. Either patientSateId or patientState is required. | \n\npatientState | \nString\
+        \ | \nConditional | \nPlease get it from pverify Team. Either patientSateId or patientState is\
+        \ required. | \n\npatientFirstName | \nString | \nRequired | \nFirst Name of patient required\
+        \ for inquiry | \n\npatientLastName | \nString | \nRequired | \nLast Name of patient required\
+        \ for inquiry | \n\npatientDOB | \nString | \nRequired | \nRequired for self-inquiry for better\
+        \ matching result. (Expected format: MM/dd/YYYY ie 01/01/2000) | \n\npatientSSN | \nString | \n\
+        Conditional | \nSSN of Patient(To MBI lookup) | \n\npatientGender | \nString | \nConditional |\
+        \ \nGender will be mandatory for Medicaid patients | \n\ndoS_StartDate | \nString | \nRequired\
+        \ | \nDate of service start date (Expected format: MM/dd/YYYY ie 01/01/2000) | \n\ndoS_EndDate\
+        \ | \nString | \nRequired | \nDate of service end date (Expected format: MM/dd/YYYY ie 01/01/2000)\
+        \ | \n\nreferenceId | \nString | \nOptional | \nPatient MRN or account Number | \n\nNotes | \n\
+        String | \nOptional | \nany free-text related patient | \n\nlocation | \nString | \nRequired |\
+        \ \nLocation is the practice location. Note by setting this, you will lock the patient to one\
+        \ location, so that users that login in via our portal who are not authorized to see that location\
+        \ will not see the patient. | \n\nverifyMedicare | \nBoolean | \nOptional | \nDefault is false.\
+        \ If true, then Medicare transaction will takes place when the patient's age is >30 years. | \n\
+        \npatientHasDisability | \nBoolean | \nOptional | \nDefault is false. If true, then Medicare transaction\
+        \ will takes place. | \n\nInsuranceDiscovery Response Fields\n\nKey | \nType | \nDescription |\
+        \ \n\nRequestID | \nInteger | \nEligibility Transaction ID | \n\nAPIResponseCode | \nString |\
+        \ \n0-Processed,1-Rejected,2-NoFunds,3-Pending | \n\nAPIResponseMessage | \nString | \nMessage\
+        \ about the transaction | \n\nEDIErrorMessage | \nString | \nMessage from Payer about errors |\
+        \ \n\nPayerName | \nString | \nPayer Name as defined by pVerify | \n\nPverifyPayerCode | \nString\
+        \ | \nPverify Payer Code | \n\nClientPayerName | \nString | \nIt contains client practice payer\
+        \ map name to the pverify payer. | \n\nVerificationType | \nString | \nVerification Type –Subscriber\
+        \ or dependent | \n\nDOS | \nString | \nDate of service start date – DOS end date | \n\nIsHMOPlan\
+        \ | \nBoolean | \nIf true then Patient has HMO plan | \n\nExceptionNotes | \nString | \nException\
+        \ Notes if any. If response demographic info is not matched with that of Request | \n\nAddtionalInfo\
+        \ | \nString | \nIf there is any other info | \n\nLocation | \nString | \nLocation in which trans\
+        \ ran | \n\nReferrenceId | \nString | \nReferencid passed in request | \n\nResultPracticeType\
+        \ | \nString | \nPractice type Name | \n\nAreAllSTCsProcessed* | \nBoolean | \nTrue when all service\
+        \ codes are processed by payer else false, This is helpful to determine to whether transaction\
+        \ needs to be reverify or not. | \n\nSTCsStatusMessage* | \nString | \nContains message when AreAllSTCsProcessed=false.\
+        \ Message contains list of not processed service codes | \n\nNotes | \nString | \n | \n\nDemographicInfo\
+        \ | \nObject | \nIt contains the subscriber info or dependent info . | \n\nServiceDetails | \n\
+        Object | \nIt contains all Service type details info | \n\nPreventiveServices | \nObject | \n\
+        Contains Preventive codes details | \n\nOtherPayerInfo | \nObject | \nIt contains Other Payer\
+        \ info. It is null then there is no payer change. | \n\nPlanCoverageSummary | \nobject | \nIt\
+        \ contains Plan realted info. | \n\nPCPAuthInfoSummary | \nObject | \nIt contains PCP auth info.\
+        \ | \n\nHBPC_Deductible_OOP_Summary | \nObject | \nIt contains Deductible and OOP in from Health\
+        \ benefit Plan Coverage service type .It is null for Medicare Payer Inquiries. | \n\nMedicareInfoSummary\
+        \ | \nObject | \nIt contains Medicare info summary. It is null for other payers and other summary\
+        \ details are empty for Medicare payer transaction. | \n\nSpecialistOfficeSummary | \nPracticeTypeSummary\
+        \ | \nIt contains Specialist Consultation specific Summary (Co-Pay,Co-ins,Ded,OOP) and exclusive\
+        \ values of practice type . | \n\nComboPayerResponses | \nArray of Object | \nIt conatins Combo\
+        \ Group payer responses.. This response has been appended with Address,DOB,FullName,MemberId.\
+        \ | \n\nComboPayerResponses.Address | \nString | \nIt contains Address | \n\nComboPayerResponses.DOB\
+        \ | \nString | \nIt contains DOB | \n\nComboPayerResponses.FullName | \nString | \nIt contains\
+        \ FullName | \n\nComboPayerResponses.MemberId | \nString | \nIt contains MemberId | \n\nComboPayerResponses.City\
+        \ | \nString | \nIt contains City | \n\nComboPayerResponses.State | \nString | \nIt contains State\
+        \ | "
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                doS_EndDate:
+                  type: string
+                  example: 04/28/2023
+                doS_StartDate:
+                  type: string
+                  example: 04/28/2023
+                patientStateId:
+                  type: integer
+                  example: 10
+                patientState:
+                  type: string
+                patientSSN:
+                  type: string
+                patientLastName:
+                  type: string
+                  example: TEST
+                patientFirstName:
+                  type: string
+                  example: TEST
+                patientDOB:
+                  type: string
+                  example: 01/01/1950
+                patientGender:
+                  type: string
+                  example: M
+                location:
+                  type: string
+                  example: CA
+                notes:
+                  type: string
+                verifyMedicare:
+                  type: boolean
+                  example: false
+                patientHasDisability:
+                  type: boolean
+                  example: false
+            example:
+              doS_EndDate: 04/28/2023
+              doS_StartDate: 04/28/2023
+              patientStateId: 10
+              patientState: ''
+              patientSSN: ''
+              patientLastName: TEST
+              patientFirstName: TEST
+              patientDOB: 01/01/1950
+              patientGender: M
+              location: CA
+              notes: ''
+              verifyMedicare: false
+              patientHasDisability: false
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /api/GetInusuranceDiscoverySummaryResponse/{requestId}:
+    get:
+      operationId: getInsuranceDiscoverySummaryResponse
+      tags:
+      - Insurance Discovery
+      summary: InsuranceDiscovery GET
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/GetInusuranceDiscoverySummaryResponse/{id}\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/GetInusuranceDiscoverySummaryResponse/{id}\
+        \ | \n\nGetInusuranceDiscoverySummaryResponse returns the response from the InsuranceDiscovery\
+        \ POST call using a unique request id provided in the InsuranceDiscovery response.\n\nHeaders\n\
+        \nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/GetInusuranceDiscoverySummaryResponse/{id}\
+        \ | \n\nMethod | \nGET | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token\
+        \ from above preceded by the String \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id\
+        \ | \n\nClient-API-Id | \nAPI ID provided by pVerify | \n\nContent-Type | \napplication/json |\
+        \ \n\nURL Parameters | \nRequestId returned in InsuranceDiscovery response | \n\n*Note: The Client-API-Id\
+        \ header is required. Header keys are case sensitive.\n\nGetInusuranceDiscoverySummaryResponse\
+        \ Response Fields\n\nSee InsuranceDiscovery response."
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetInsuranceDiscoveryDetailsURL/{requestId}:
+    get:
+      operationId: getInsuranceDiscoveryDetailsUrl
+      tags:
+      - Insurance Discovery
+      summary: ID Details URL
+      description: "Environment | \nURL | \n\nTest | \n/API/GetInsuranceDiscoveryDetailsURL/{id} | \n\n\
+        Production | \n/API/GetInsuranceDiscoveryDetailsURL/{id} | \n\nThis GET method will return details\
+        \ URL with Insurance Discovery Request ID as a parameter.\n\nGetInsuranceDiscoveryDetailsURL Request\n\
+        \nKey | \nValue | \n\nURL | \n/API/GetInsuranceDiscoveryDetailsURL/{id} | \n\nMethod | \nGET |\
+        \ \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token from above preceded\
+        \ by the String \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id | \n\nContent-Type\
+        \ | \napplication/json | \n\n*Note: The Client-API-Id header is required. Header keys are case\
+        \ sensitive.\n\nGetInsuranceDiscoveryDetailsURL Resposne\n\nKey | \nValue | \n\nisDetailsURLGenerated\
+        \ | \nTrue or false | \n\nurl | \nstring URL | \n\nerrorMessage | \nMessage when isDetailsURLGenerated\
+        \ is false | \n\nJSON Response\n\n{\n\n\"isDetailsURLGenerated\": true,\n\n\"url\": \"https://premium.pverify.com/Details\"\
+        ,\n\n\"errorMessage\": null\n\n}"
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /PDFReport/InsuranceDiscovery/{id}:
+    get:
+      operationId: getInsuranceDiscoveryReport
+      tags:
+      - Insurance Discovery
+      summary: Insurance Discovery Report
+      description: "This returns a PDF report of the Insurance Discovery request.\n\nNote two things:\n\
+        \nThe endpoint is premium.pverify.com\n\nAuthentication token is not used, instead pass your API\
+        \ ID and Secret. \n\nReplace {id} with the requestid you receive from the Insurance Discovery\
+        \ request."
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - clientApiId: []
+        clientSecret: []
+  /api/EligibilitySummary:
     post:
       operationId: eligibilitySummary
       tags:
-        - Eligibility
-      summary: Real-time eligibility summary
-      description: >-
-        Posts a single real-time eligibility request to the payer and returns a
-        condensed, practice-type-specific summary of plan, coverage, copay,
-        coinsurance, deductible, and out-of-pocket benefits.
+      - Eligibility
+      summary: EligibilitySummary
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/EligibilitySummary\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/EligibilitySummary | \n\nEligibility summary\
+        \ is our 2nd gen eligibility endpoint designed to cover the vast majority of payers and return\
+        \ simplified objects with key data such as copay for your practice type. For example, when you\
+        \ send as practice type PT, we will return a Physical Therapy object with key PT benefits.\n\n\
+        Key benefits are:\n\nEasy and discrete eligibility information, allowing easy coding to obtain\
+        \ pertinent data.\n\nSupport for nearly all types of medical practices with key benefits such\
+        \ as surgical benefits, DME benefits, or PT benefits.\n\nSupport for nearly all payers, electronic\
+        \ and non electronic. We have tested all payers available to us and over 90% are returning parsed\
+        \ information correctly\n\nTo see the currently supported practice types please see the Practice\
+        \ Type tables.\n\nMedicareWe will return a new object for Medicare called MedicareInfoSummary\
+        \ which will return Medicare specific information such as Part A/B deductible, pharmacy payer\
+        \ name, MCA payer name, and more information. This object will only be returned for Medicare,\
+        \ for all other payers it is null. Please use this object when sending Medicare patients to retrieve\
+        \ Medicare specific information.\n\nRecursive Medicare Advantage LookupThis will need to be enabled\
+        \ by us, so please contact us at support@pverify.com. When enabled, we will automatically perform\
+        \ a eligibility check (using Eligibility Summary) on selected MCA payers that allow lookup by\
+        \ MBI or Name & DOB. If the can be done, the result is returned in a field RecursiveRequestId.\n\
+        \nThus the workflow is this:\n\nSubmit eligibility call to Medicare via Eligibility Summary. \n\
+        \nCapture RecursiveRequestId. \n\nRun a GET call (GetEligibilitySummary) using this Id.\n\nHeaders\n\
+        \nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/EligibilitySummary | \n\nMethod | \n\
+        POST | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token from above preceded\
+        \ by the String \"Bearer\" | \n\nClient-API-Id | \nAPI ID provided by pVerify | \n\nContent-Type\
+        \ | \napplication/json | \n\n*Note: The Client-API-Id is required. Header keys are case sensitive.\n\
+        \nEligibilitySummary Request Details\n\nProperty Name | \nData Type | \nUsage | \nDescription\
+        \ | \n\npayerCode | \nString | \nRequired | \npVerify Payer Code(ie Aetna 00001) | \n\npayerName\
+        \ | \nString | \nOptional | \nPayer Name | \n\nprovider.firstName | \nString | \nOptional | \n\
+        Provider First Name | \n\nprovider.middleName | \nString | \nOptional | \nProvider Middle Name\
+        \ | \n\nprovider.lastName | \nString | \nRequired | \nProvider Last Name | \n\nprovider.npi |\
+        \ \nString | \nRequired | \n10-Digit NPI Value | \n\nprovider.pin | \nString | \nConditional |\
+        \ \nRequired for payer Medi-Cal | \n\nprovider.taxonomy | \nString | \nOptional | \nTaxonomy |\
+        \ \n\nsubscriber.firstName | \nString | \nConditional | \nFirst Name of subscriber required for\
+        \ self inquiry | \n\nsubscriber.lastName | \nString | \nConditional | \nLast Name of subscriber\
+        \ required for self inquiry | \n\nsubscriber.memberId | \nString | \nRequired | \nMember Id required\
+        \ for both type inquiries(self,dependent) | \n\nsubscriber.dob | \nString | \nConditional | \n\
+        Required for self-inquiry for better matching result. (Expected format: MM/dd/YYYY ie 01/01/2000)\
+        \ | \n\nsubscriber.ssn | \nString | \nOptional | \nSSN of Subscriber | \n\nisSubscriberPatient\
+        \ | \nString | \nRequired | \nTrue for self and False for Dependent Query | \n\ndoS_StartDate\
+        \ | \nString | \nRequired | \nDate of service start date (Expected format: MM/dd/YYYY ie 01/01/2000)\
+        \ | \n\ndoS_EndDate | \nString | \nRequired | \nDate of service end date (Expected format: MM/dd/YYYY\
+        \ ie 01/01/2000) | \n\ndependent.patient.firstName | \nString | \nConditional | \nFirst Name of\
+        \ dependent | \n\ndependent.patient.middleName | \nString | \nOptional | \nMiddle Name of dependent\
+        \ | \n\ndependent.patient.lastName | \nString | \nConditional | \nLast Name of dependent | \n\n\
+        dependent.patient.dob | \nString | \nConditional | \nRequired for dependent inquiry. (Expected\
+        \ format: MM/dd/YYYY ie 01/01/2000) | \n\ndependent.patient.gender | \nString | \nOptional | \n\
+        Gender of dependent | \n\ndependent.relationWithSubscriber | \nString | \nOptional | \nRelation\
+        \ With Subscriber | \n\npracticeTypeCode | \nString | \nOptional | \nPlease consult Practice Type\
+        \ Code table - sets which practice type to use, i.e. 12 for physical therapy, which will return\
+        \ an object with PT benefits in the results. If you do not select a practice type, the default\
+        \ for your account will be used. Contact pVerify for more info. | \n\nincludeTextResponse | \n\
+        Boolean | \nOptional | \nIndicates whether to return the full text of the eligibility response\
+        \ | \n\nreferenceId | \nString | \nOptional | \nPatient MRN or account Number | \n\nlocation |\
+        \ \nString | \nRequired | \nLocation is the practice location. Note by setting this, you will\
+        \ lock the patient to one location, so that users that login in via our portal who are not authorized\
+        \ to see that location will not see the patient. | \n\ninternalId | \nString | \nOptional | \n\
+        Field from customer with their InternalId | \n\ncustomerId | \nString | \nOptional | \nField from\
+        \ customer with their CustomerId | \n\nPlaceOfService | \nstring | \noptional | \nPlace of service\
+        \ | \n\nEligibilitySummary Response Fields\n\nKey | \nType | \nDescription | \n\nRequestID | \n\
+        Integer | \nEligibility Transaction ID | \n\nAPIResponseCode | \nString | \n0-Processed,1-Rejected,2-NoFunds,3-Pending,4-New\
+        \ | \n\nAPIResponseMessage | \nString | \nMessage about the transaction | \n\nProcessedWithError\
+        \ | \nBoolean | \ntrue when processed with error by the payer. | \n\nEDIErrorMessage | \nString\
+        \ | \nMessage from Payer about errors | \n\nFollowUpAction | \nString | \nResponse from the Payer\
+        \ | \n\nPossibleResolution | \nString | \nSuggested steps to be performed before resubmitting\
+        \ to resolve the issue. | \n\nPverifyPayerCode | \nString | \npVerify’s Payer Code | \n\nErrorCode\
+        \ | \nString | \nIt contains unique error Code when Processed with error or Rejected | \n\nErrorDescription\
+        \ | \nString | \nIt contians description of the error. | \n\nPayerN"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EligibilityRequest'
+              type: object
+              properties:
+                payerCode:
+                  type: string
+                  example: 00192
+                payerName:
+                  type: string
+                  example: UHC
+                provider:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                    middleName:
+                      type: string
+                    lastName:
+                      type: string
+                      example: ' provider last  name'
+                    npi:
+                      type: string
+                      example: '1234567890'
+                    pin:
+                      type: string
+                      example: '00000'
+                subscriber:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                      example: fname
+                    dob:
+                      type: string
+                      example: mm/dd/yyyy
+                    lastName:
+                      type: string
+                      example: lname
+                    memberID:
+                      type: string
+                      example: 123sfadfaf
+                dependent:
+                  nullable: true
+                isSubscriberPatient:
+                  type: string
+                  example: 'True'
+                doS_StartDate:
+                  type: string
+                  example: 02/02/2021
+                doS_EndDate:
+                  type: string
+                  example: 02/02/2021
+                PracticeTypeCode:
+                  type: string
+                  example: '3'
+                referenceId:
+                  type: string
+                  example: Pat MRN
+                Location:
+                  type: string
+                  example: Any location Name
+                IncludeTextResponse:
+                  type: string
+                  example: 'false'
+                InternalId:
+                  type: string
+                CustomerID:
+                  type: string
+                PlaceOfService:
+                  type: string
+                  example: '01'
+            example:
+              payerCode: 00192
+              payerName: UHC
+              provider:
+                firstName: ''
+                middleName: ''
+                lastName: ' provider last  name'
+                npi: '1234567890'
+                pin: '00000'
+              subscriber:
+                firstName: fname
+                dob: mm/dd/yyyy
+                lastName: lname
+                memberID: 123sfadfaf
+              dependent: null
+              isSubscriberPatient: 'True'
+              doS_StartDate: 02/02/2021
+              doS_EndDate: 02/02/2021
+              PracticeTypeCode: '3'
+              referenceId: Pat MRN
+              Location: Any location Name
+              IncludeTextResponse: 'false'
+              InternalId: ''
+              CustomerID: ''
+              PlaceOfService: '01'
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EligibilitySummaryResponse'
-  /API/EligibilityInquiry:
-    post:
-      operationId: eligibilityInquiry
-      tags:
-        - Eligibility
-      summary: Real-time 270/271 eligibility inquiry
-      description: >-
-        Posts a full 270 eligibility request and returns the detailed 271
-        response, including a unique requestId that can be used with
-        GetEligibilityResponse to retrieve the same result asynchronously.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EligibilityRequest'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EligibilityInquiryResponse'
-  /API/GetEligibilityResponse:
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetEligibilitySummary/{requestId}:
     get:
-      operationId: getEligibilityResponse
+      operationId: getEligibilitySummary
       tags:
-        - Eligibility
-      summary: Retrieve a prior eligibility response
-      description: >-
-        Returns the same response produced by an EligibilityInquiry POST using
-        the unique requestId returned in that inquiry's response.
+      - Dental Eligibility
+      summary: GetEligibilitySummary
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/GetEligibilitySummary\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/GetEligibilitySummary | \n\nGetEligibilitySummary\
+        \ returns the response from the EligibilitySummary POST call using a unique request id provided\
+        \ in the EligibilitySummary response. EligibilitySummary is not supported for back office payers.\n\
+        \nHeaders\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/GetEligibilitySummary | \n\
+        \nMethod | \nGET | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token from\
+        \ above preceded by the String \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id\
+        \ | \n\nClient-API-Id | \nAPI ID provided by pVerify | \n\nContent-Type | \napplication/json |\
+        \ \n\nURL Parameters | \nRequestId returned in EligibilitySummary response | \n\n*Note: The Client-API-Id\
+        \ header is required. Header keys are case sensitive.\n\nGetEligibilitySummary Response Fields\n\
+        \nKey | \nType | \nDescription | \n\nRequestID | \nInteger | \nEligibility Transaction ID | \n\
+        \nAPIResponseCode | \nInteger | \n0-Processed,1-Rejected | \n\nAPIResponseMessage | \nString |\
+        \ \nMessage about the transaction | \n\nVerificationType | \nString | \nVerification Type –Subscriber\
+        \ or dependent | \n\nVerificationStatus | \nString | \nEligibility Transaction Status- Values\
+        \ : Processed, Pending, Rejected | \n\nDOS | \nString | \nDate of service start date – DOS end\
+        \ date | \n\nIs HMO Plan | \nBoolean | \nIf true then Patient has HMO plan | \n\nExceptionNotes\
+        \ | \nString | \nException Notes if any. If response demographic info is not matched with that\
+        \ of Request | \n\nAddtionalInformation | \nString | \nIf there is any other info | \n\nDemographicInfo\
+        \ | \nObject | \nIt contains the subscriber info or dependent info | \n\nServiceDetails | \nObject\
+        \ | \nIt contains all Service type details info | \n\nOtherPayerInfo | \nObject | \nIt contains\
+        \ Other Payer info. It is null then there is no payer change. | \n\nPlanCoverageSummary | \nobject\
+        \ | \nIt contains Plan realted info. | \n\nDentalInfo | \nObject | \nIt contains response as formatted\
+        \ HTML response when IncludeHTMLResponse of request is true. |"
       parameters:
-        - name: requestId
-          in: query
-          required: true
-          schema:
-            type: string
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EligibilityInquiryResponse'
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetEligibility271/{requestId}:
+    get:
+      operationId: getEligibility271
+      tags:
+      - Eligibility
+      summary: GetEligibility271
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/GetEligibility271/{id}\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/GetEligibility271/{id} | \n\nThis GET method\
+        \ will return EDI 271 Raw response with Eligibility Request ID as a parameter.\n\nGetEligibility271\
+        \ Request\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/GetEligibility271/{id} |\
+        \ \n\nMethod | \nGET | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token\
+        \ from above preceded by the String \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id\
+        \ | \n\n*Note: The Client-API-Id header is required. Header keys are case sensitive.\n\nGetEligibility271\
+        \ Response\n\nKey | \nValue | \n\nEDI271ANSI | \nANSI String for request or Error Message |"
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/EasyEligibilitySummary:
+    post:
+      operationId: easyEligibilitySummary
+      tags:
+      - Eligibility
+      summary: EasyEligibilitySummary
+      description: "Environment | \nURL | \n\nProduction | \nhttps://api.pverify.com/API/EasyEligibilitySummary\
+        \ | \n\nThe Easy Eligibility Summary call is intended to generate an Eligibility Summary Response\
+        \ in just one step. With EasyEligibilitySummary, simply pass your credentials (no need to generate\
+        \ a token) and the body parameters (specified below) to return an Eligibility Summary Response\
+        \ in just one step.\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/EasyEligibilitySummary\
+        \ | \n\nMethod | \nPOST | \n\nHeader | \nDescription | \n\nClient-API-Id | \npVerify client-api-id\
+        \ | \n\nClient-Secret | \npVerify client-secret | \n\nContent-Type | \napplication/json | \n\n\
+        Body | \nSee below | \n\nEasyEligibilitySummary Request Fields\n\nField | \nType | \nUsage | \n\
+        Description | \n\npayerCode | \nString | \nRequired | \nPayer Code | \n\npayerName | \nString\
+        \ | \nOptional | \nPayerName | \n\nProvider_LastName | \nString | \nRequired | \nProvider last\
+        \ name | \n\nProvider_NPI | \nString | \nRequired | \nProvider NPI | \n\nProvider_PIN | \nString\
+        \ | \nConditional | \nProvider PIN | \n\nProvider_TaxId | \nString | \nConditional | \nProvider\
+        \ TaxId | \n\nPatient_First | \nString | \nConditional | \nPatient First Name | \n\nPatient_DOB\
+        \ | \nString | \nConditional | \nPatient Date of Birth (in format MM-DD-YYYY) | \n\nPatient_Last\
+        \ | \nString | \nConditional | \nPatient Last Name | \n\nmemberID | \nString | \nConditional |\
+        \ \nMember ID | \n\nDate_Of_Service | \nString | \nRequired | \nDate of Service (in format MM-DD-YYYY)\
+        \ | \n\nDate_Of_Service_To | \nString | \nOptional | \nDate of Service To (in format MM-DD-YYYY).\
+        \ Default date is Date of Service Start date | \n\nreferenceId | \nString | \nOptional | \nPatient\
+        \ MRN or account Number | \n\nLocation | \nString | \nOptional | \nLocation is the practice location.\
+        \ Note by setting this, you will lock the patient to one location, so that users that login in\
+        \ via our portal who are not authorized to see that location will not see the patient. | \n\n\
+        PracticeTypeCode | \nString | \nOptional | \nPlease consult Practice Type Code table - sets which\
+        \ practice type to use, i.e. 12 for physical therapy, which will return an object with PT benefits\
+        \ in the results. If you do not select a practice type, the default for your account will be used.\
+        \ Contact pVerify for more info. | \n\nIncludeTextResponse | \nBoolean | \nOptional | \nBoolean\
+        \ value to determine if text response should be included | \n\nInternalId | \nString | \nOptional\
+        \ | \nNo | \n\nCustomerId | \nString | \nOptional | \nNo | \n\nEasyEligibilitySummary Response\
+        \ Fields\n\nKey | \nType | \nDescription | \n\nRequestID | \nInteger | \nEligibility Transaction\
+        \ ID | \n\nAPIResponseCode | \nString | \n0-Processed,1-Rejected,2-NoFunds,3-Pending,4-New | \n\
+        \nAPIResponseMessage | \nString | \nMessage about the transaction | \n\nProcessedWithError | \n\
+        Boolean | \ntrue when processed with error by the payer. | \n\nEDIErrorMessage | \nString | \n\
+        Message from Payer about errors | \n\nFollowUpAction | \nString | \nResponse from the Payer |\
+        \ \n\nPossibleResolution | \nString | \nSuggested steps to be performed before resubmitting to\
+        \ resolve the issue. | \n\nPverifyPayerCode | \nString | \npVerify’s Payer Code | \n\nPayerName\
+        \ | \nString | \nPayer Name as defined by pVerify | \n\nVerificationType | \nString | \nVerification\
+        \ Type –Subscriber or dependent | \n\nIsPayerBackOffice | \nString | \nIf it is TRUE-NON EDI Payer,\
+        \ FALSE –EDI Payer | \n\nVerificationStatus | \nString | \nEligibility Transaction Status- Values\
+        \ : Processed, Pending, Rejected | \n\nDOS | \nString | \nDate of service start date – DOS end\
+        \ date | \n\nIs HMO Plan | \nBoolean | \nIf true then Patient has HMO plan | \n\nExceptionNotes\
+        \ | \nString | \nException Notes if any. If response demographic info is not matched with that\
+        \ of Request | \n\nAddtionalInfo | \nString | \nIf there is any other info | \n\nLocation | \n\
+        String | \nLocation in which trans ran | \n\nReferrenceId | \nString | \nReferencid passed in\
+        \ request | \n\nResultPracticeType | \nString | \nPractice type Name | \n\nAreAllSTCsProcessed*\
+        \ | \nBoolean | \nTrue when all service codes are processed by payer else false, This is helpful\
+        \ to determine to whether transaction needs to be reverify or not. | \n\nSTCsStatusMessage* |\
+        \ \nString | \nContains message when AreAllSTCsProcessed=false. Message contains list of not processed\
+        \ service codes | \n\nIsProviderInNetwork | \nBoolean | \nIf true then Provider is InNetwork.\
+        \ Based on Provider Payer Settings* Null, if NO Provider Payer Settings* (*Requires set up in\
+        \ Premium Portal) | \n\nRecursiveRequestId | \nInteger | \nRequestID of secondary lookup for MCA\
+        \ | \n\nRecursiveAPIResponseCode | \nString | \n0-Processed,1-Rejected, Status of Recursive Inquiry.\
+        \ | \n\nRecursiveAPIResponseMessage | \nString | \nMessage about the Recursive transaction. |\
+        \ \n\nInternalId | \nString | \nField from customer with their InternalId | \n\nCustomerId | \n\
+        String | \nField from customer with their CustomerId | \n\nNotes | \nString | \n | \n\nDemographicInfo\
+        \ | \nObject | \nIt contains the subscriber info or dependent info . | \n\nServiceDetails | \n\
+        Object | \nIt contains all Service type details info | \n\nPreventiveServices | \nObject | \n\
+        Contains Preventive codes details | \n\nOtherPayerInfo | \nObject | \nIt contains Other Payer\
+        \ info. It is null then there is no payer change. | \n\nPlanCoverageSummary | \nobject | \nIt\
+        \ contains Plan realted info. | \n\nPCPAuthInfoSummary | \nObject | \nIt contains PCP auth info.\
+        \ | \n\nHBPC_Deductible_OOP_Summary | \nObject | \nIt contains Deductible and OOP in from Health\
+        \ benefit Plan Coverage service type .It is null for Medicare Payer Inquiries. | \n\nMedicareInfoSummary\
+        \ | \nObject | \nIt contains Medicare info summary. It is null for other payers and other summary\
+        \ details are empty for Medicare payer transaction. | \n\nMiscellaneousInfoSummary | \nObject\
+        \ | \n | \n\nSpecialistOfficeSummary | \nPracticeTypeSummary | \nIt contains Specialist Consultation\
+        \ specific Summary (Co-Pay,Co-ins,Ded,OOP) and exclusive values of practice type . | \n\nDiagnosticLabSummary\
+        \ | \nPracticeTypeSummary | \nIt contains Diagnostic Lab specific Summary | \n\nSurgicalSummary\
+        \ | \nPracticeTypeSummary | \nIt contains Surgical specific Summary | \n\nASC_FacilitySummary\
+        \ | \nPracticeT"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payerCode:
+                  type: string
+                  example: '00001'
+                payerName:
+                  type: string
+                  example: Aetna
+                Provider_LastName:
+                  type: string
+                  example: SAM MD
+                Provider_NPI:
+                  type: string
+                  example: '1234567890'
+                Provider_PIN:
+                  type: string
+                  example: '00000'
+                Patient_First:
+                  type: string
+                  example: John
+                Patient_DOB:
+                  type: string
+                  example: 10/02/2010
+                Patient_Last:
+                  type: string
+                  example: Deo
+                memberID:
+                  type: string
+                  example: 123456789A
+                Date_Of_Service:
+                  type: string
+                  example: 07/17/2020
+                referenceId:
+                  type: string
+                Location:
+                  type: string
+                PracticeTypeCode:
+                  type: string
+                  example: '18'
+                IncludeTextResponse:
+                  type: boolean
+                  example: false
+                InternalId:
+                  type: string
+                CustomerID:
+                  type: string
+            example:
+              payerCode: '00001'
+              payerName: Aetna
+              Provider_LastName: SAM MD
+              Provider_NPI: '1234567890'
+              Provider_PIN: '00000'
+              Patient_First: John
+              Patient_DOB: 10/02/2010
+              Patient_Last: Deo
+              memberID: 123456789A
+              Date_Of_Service: 07/17/2020
+              referenceId: ''
+              Location: ''
+              PracticeTypeCode: '18'
+              IncludeTextResponse: false
+              InternalId: ''
+              CustomerID: ''
+      responses:
+        '200':
+          description: OK
+      security:
+      - clientApiId: []
+        clientSecret: []
   /API/GetPendingInquiries:
     get:
       operationId: getPendingInquiries
       tags:
-        - Eligibility
-      summary: List pending inquiries
-      description: Returns the list of eligibility inquiries still in a Pending state.
+      - Eligibility
+      summary: GetPendingInquiries
+      description: "Environment | \nURL | \n\nProduction | \nhttps://api.pverify.com/API/GetPendingInquiries?DOS=01-01-2018\
+        \ | \n\nThis endpoint will retrieve a list of pending transactions. It is intended to show which\
+        \ back office eligibility transactions are not complete yet, given the DOS as an input.\n\nGetPendingInquiries\
+        \ Request\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/GetPendingInquiries?DOS=01-01-2018\
+        \ | \n\nMethod | \nGET | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token\
+        \ from above preceded by the String \"Bearer\" | \n\nClient-API-Id | \nYour pVerify client-api-id\
+        \ | \n\nURL Parameters | \nDate of Service (format is MM-DD-YYYY) |"
+      parameters:
+      - name: DOS
+        in: query
+        required: false
+        schema:
+          type: string
+        example: 01-01-2018
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PendingInquiry'
+      security:
+      - bearerAuth: []
+        clientApiId: []
   /API/CancelTransaction:
     post:
       operationId: cancelTransaction
       tags:
-        - Eligibility
-      summary: Cancel a pending transaction
-      description: >-
-        Sets a pending inquiry's state to Cancel and removes it from the
-        processing queue.
+      - Eligibility
+      summary: CancelTransaction
+      description: "Environment | \nURL | \n\nProduction | \nhttps://api.pverify.com/API/CancelTransaction\
+        \ | \n\nThis POST call will cancel a transaction. It is intended for use with back office transactions,\
+        \ to cancel a transaction that is not able to be completed in time for the patients visit.\n\n\
+        CancelTransaction Request\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/CancelTransaction\
+        \ | \n\nMethod | \nPOST | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token\
+        \ from above preceded by the String \"Bearer\" | \n\nClient-API-Id* | \npVerify client-api-id\
+        \ | \n\nContent-Type | \napplication/json | \n\nBody | \nDescription | \n\ntransactionId | \n\
+        Transaction ID for transaction you wish to cancel | \n\n*Note: The Client-API-Id is required in\
+        \ header. Header keys are case sensitive."
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CancelTransactionRequest'
+              type: object
+              properties:
+                transactionId:
+                  type: integer
+                  example: 12345455
+            example:
+              transactionId: 12345455
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StatusResponse'
-  /API/BatchEligibility:
-    post:
-      operationId: batchEligibility
-      tags:
-        - Batch
-      summary: Submit a batch of eligibility verifications
-      description: >-
-        Submits multiple eligibility verifications in a single request for
-        asynchronous processing; results are retrieved later by batch reference.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BatchEligibilityRequest'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BatchSubmissionResponse'
-  /API/ClaimStatus:
-    post:
-      operationId: claimStatus
-      tags:
-        - Claim Status
-      summary: Real-time 276/277 claim status
-      description: >-
-        Posts a real-time 276 claim status inquiry and returns the current
-        277 processing state, dates, and amounts for a submitted claim.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClaimStatusRequest'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ClaimStatusResponse'
-  /API/Payers:
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /Report/EligibilityPDFReport/{requestId}:
     get:
-      operationId: getPayers
+      operationId: getEligibilityPdfReport
       tags:
-        - Payers
-      summary: List supported payers
-      description: >-
-        Returns the current pVerify payer list with codes, names, and
-        capability flags used to map a request to a supported insurer.
+      - Eligibility
+      summary: EligibilityPDFReport
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Payer'
-  /API/EstimationInquiry:
-    post:
-      operationId: estimationInquiry
+      security:
+      - clientApiId: []
+        clientSecret: []
+  /API/GetEligibilityDetailsURL/{requestId}:
+    get:
+      operationId: getEligibilityDetailsUrl
       tags:
-        - Estimation
-      summary: Patient cost estimation
-      description: >-
-        Combines real-time benefits with contracted/fee data to estimate the
-        patient's financial responsibility for a planned service.
+      - Eligibility
+      summary: Details URL
+      description: "Environment | \nURL | \n\nTest | \n/API/GetEligibilityDetailsURL/{id} | \n\nProduction\
+        \ | \n/API/GetEligibilityDetailsURL/{id} | \n\nThis GET method will return details URL with Eligibility\
+        \ Request ID as a parameter.\n\nGetEligibilityDetailsURL Request\n\nKey | \nValue | \n\nURL |\
+        \ \n/API/GetEligibilityDetailsURL/{id} | \n\nMethod | \nGET | \n\nHeaders | \nDescription | \n\
+        \nAuthorization | \nAuthorization token from above preceded by the String \"Bearer\" | \n\nClient-API-Id*\
+        \ | \nYour pVerify client-api-id | \n\nContent-Type | \napplication/json | \n\n*Note: The Client-API-Id\
+        \ header is required. Header keys are case sensitive.\n\nGetEligibilityDetailsURL Resposne\n\n\
+        Key | \nValue | \n\nisDetailsURLGenerated | \nTrue or false | \n\nurl | \nstring URL | \n\nerrorMessage\
+        \ | \nMessage when isDetailsURLGenerated is false | \n\nJSON Response\n\n{\n\n\"isDetailsURLGenerated\"\
+        : true,\n\n\"url\": \"https://premium.pverify.com/Details\",\n\n\"errorMessage\": null\n\n}"
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /api/DentalEligibilitySummary:
+    post:
+      operationId: dentalEligibilitySummary
+      tags:
+      - Dental Eligibility
+      summary: DentalEligibilitySummary
+      description: "There two type of verifications Self and Dependent.\n\nDentalEligibilitySummary Request\
+        \ Details\n\nProperty Name | \nData Type | \nUsage | \nDescription | \n\nPayerCode | \nString\
+        \ | \nRequired | \npVerify payer Code or Client payer map code (i.e. Delta Dental of WH-DE0171)\
+        \ | \n\nPayerName | \nString | \nOptional | \nPayer Name | \n\nProvider.FirstName | \nString |\
+        \ \nOptional | \nProvider first name | \n\nProvider.LastName | \nString | \nRequired | \nProvider\
+        \ last name | \n\nProvider.NPI | \nString | \nRequired | \n10-digit NPI value | \n\nProvider.TaxId\
+        \ | \nString | \nRequired | \nTax Id | \n\nSubscriber.FirstName | \nString | \nConditional | \n\
+        First Name of subscriber required for self-inquiry | \n\nSubscriber.LastName | \nString | \nConditional\
+        \ | \nLast Name of subscriber required for self-inquiry | \n\nSubscriber.MemberId | \nString |\
+        \ \nRequired | \nMember Id required for both type inquiries (self, dependent) | \n\nSubscriber.DOB\
+        \ | \nString | \nConditional | \nRequired for self-inquiry for better matching result Format is\
+        \ MM/dd/yyyy | \n\nSubscriber.SSN | \nString | \nOptional | \nSSN of subscriber | \n\nisSubscriberPatient\
+        \ | \nString | \nRequired | \nTrue for self and False for Dependent inquiry | \n\ndoS_StartDate\
+        \ | \nString | \nRequired | \nDate of service start date in MM/dd/yyyy format | \n\ndoS_EndDate\
+        \ | \nString | \nRequired | \nDate of service end date in MM/dd/yyyy format | \n\nPracticeTypeCode\
+        \ | \nNumber | \nOptional | \nDefault practice type is 86 | \n\nLocation | \nString | \nOptional\
+        \ | \nDefault is clients default location. | \n\nReferenceId | \nString | \nOptional | \nAny refence\
+        \ Id,for ex: Patient MRN | \n\nIncludeHTMLResponse | \nBoolean | \nOptional | \nDefault is false,\
+        \ if true then Entire response will be returned as formatted text in Response Test along with\
+        \ Summary details. | \n\nDependent | \nObject | \nConditional | \nRequired for dependent inquiry\
+        \ | \n\nDependent.Patient.FirstName | \nString | \nConditional | \nFirst Name of dependent required\
+        \ for dependent inquiry | \n\nDependent.Patient.LastName | \nString | \nConditional | \nLast Name\
+        \ of dependent required for dependent inquiry | \n\nDependent.Patient.DOB | \nString | \nConditional\
+        \ | \nRequired for dependent inquiry for better matching result Format is MM/dd/yyyy | \n\nDCodes\
+        \ | \nObject | \nConditional | \nDental Diagnosis Codes to get coinsurance and Deductible values\
+        \ | \n\nDentalEligibilitySummary Response details\n\nKey | \nType | \nDescription | \n\nRequestID\
+        \ | \nInteger | \nEligibility Transaction ID | \n\nAPIResponseCode | \nString | \n0-Processed,1-Rejected,3-Pending\
+        \ | \n\nAPIResponseMessage | \nString | \nMessage about the transaction | \n\nVerificationType\
+        \ | \nString | \nVerification Type –Subscriber or dependent | \n\nDOS | \nString | \nDate of service\
+        \ start date – DOS end date | \n\nIs HMO Plan | \nBoolean | \nIf true then Patient has HMO plan\
+        \ | \n\nExceptionNotes | \nString | \n\"Exception Notes if any . If response demographic info\
+        \ is not matched with that of Request\" | \n\nAdditionalInformation | \nString | \nIf there is\
+        \ any other info | \n\nDemographicInfo | \nObject | \nIt contains the subscriber info or dependent\
+        \ info . | \n\nServiceDetails | \nObject | \n\"It contains all Service type details info\" | \n\
+        \nPreventiveServices | \nObject | \nContains Preventive codes details | \n\nOtherPayerInfo | \n\
+        Object | \nIt contains Other Payer info. It is null then there is no payer change. | \n\nPlanCoverageSummary\
+        \ | \nobject | \nIt contains Plan related info. | \n\nDentalInfo | \nObject | \nIt contains response\
+        \ as formatted HTML response when IncludeHTMLResponse of request is true. | \n\nResponseText |\
+        \ \nString | \n | \n\nDCodes | \nObject | \nIt contains the dental diagnosis codes used for deductible\
+        \ and coinsurance values |"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EstimationRequest'
+              type: object
+              properties:
+                payerCode:
+                  type: string
+                  example: DE0171
+                payerName:
+                  type: string
+                  example: Delta Dental of Washington
+                provider:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                    middleName:
+                      type: string
+                    lastName:
+                      type: string
+                      example: ' test name'
+                    npi:
+                      type: string
+                      example: '1427006147'
+                    TaxId:
+                      type: string
+                      example: '123456789'
+                subscriber:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                    dob:
+                      type: string
+                      example: 01/01/1950
+                    lastName:
+                      type: string
+                    memberID:
+                      type: string
+                      example: '1234567890'
+                dependent:
+                  nullable: true
+                isSubscriberPatient:
+                  type: string
+                  example: 'True'
+                doS_StartDate:
+                  type: string
+                  example: 02/02/2021
+                doS_EndDate:
+                  type: string
+                  example: 02/02/2021
+                PracticeTypeCode:
+                  type: string
+                  example: '86'
+                referenceId:
+                  type: string
+                  example: Pat MRN
+                Location:
+                  type: string
+                  example: Any location Name
+                IncludeHtmlResponse:
+                  type: boolean
+                  example: false
+                dCodes:
+                  type: array
+                  items:
+                    type: string
+                    example: D0120
+            example:
+              payerCode: DE0171
+              payerName: Delta Dental of Washington
+              provider:
+                firstName: ''
+                middleName: ''
+                lastName: ' test name'
+                npi: '1427006147'
+                TaxId: '123456789'
+              subscriber:
+                firstName: ''
+                dob: 01/01/1950
+                lastName: ''
+                memberID: '1234567890'
+              dependent: null
+              isSubscriberPatient: 'True'
+              doS_StartDate: 02/02/2021
+              doS_EndDate: 02/02/2021
+              PracticeTypeCode: '86'
+              referenceId: Pat MRN
+              Location: Any location Name
+              IncludeHtmlResponse: false
+              dCodes:
+              - D0120
+              - D0145
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EstimationResponse'
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /api/DentalEligibilityBenefitSummary:
+    post:
+      operationId: dentalEligibilityBenefitSummary
+      tags:
+      - Dental Eligibility
+      summary: DentalEligibilityBenefitSummary
+      description: "There two type of verifications Self and Dependent.\n\nDentalEligibilityBenefitSummary\
+        \ Request Details\n\nProperty Name | \nData Type | \nUsage | \nDescription | \n\nPayerCode | \n\
+        String | \nRequired | \npVerify payer Code or Client payer map code (i.e. Delta Dental of WH-DE0171)\
+        \ | \n\nPayerName | \nString | \nOptional | \nPayer Name | \n\nProvider.FirstName | \nString |\
+        \ \nOptional | \nProvider first name | \n\nProvider.LastName | \nString | \nRequired | \nProvider\
+        \ last name | \n\nProvider.NPI | \nString | \nRequired | \n10-digit NPI value | \n\nProvider.TaxId\
+        \ | \nString | \nRequired | \nTax Id | \n\nSubscriber.FirstName | \nString | \nConditional | \n\
+        First Name of subscriber required for self-inquiry | \n\nSubscriber.LastName | \nString | \nConditional\
+        \ | \nLast Name of subscriber required for self-inquiry | \n\nSubscriber.MemberId | \nString |\
+        \ \nRequired | \nMember Id required for both type inquiries (self, dependent) | \n\nSubscriber.DOB\
+        \ | \nString | \nConditional | \nRequired for self-inquiry for better matching result Format is\
+        \ MM/dd/yyyy | \n\nSubscriber.SSN | \nString | \nOptional | \nSSN of subscriber | \n\nisSubscriberPatient\
+        \ | \nString | \nRequired | \nTrue for self and False for Dependent inquiry | \n\ndoS_StartDate\
+        \ | \nString | \nRequired | \nDate of service start date in MM/dd/yyyy format | \n\ndoS_EndDate\
+        \ | \nString | \nRequired | \nDate of service end date in MM/dd/yyyy format | \n\nPracticeTypeCode\
+        \ | \nNumber | \nOptional | \nDefault practice type is 86 | \n\nLocation | \nString | \nOptional\
+        \ | \nDefault is clients default location. | \n\nReferenceId | \nString | \nOptional | \nAny refence\
+        \ Id,for ex: Patient MRN | \n\nIncludeHTMLResponse | \nBoolean | \nOptional | \nDefault is false,\
+        \ if true then Entire response will be returned as formatted text in Response Test along with\
+        \ Summary details. | \n\nDependent | \nObject | \nConditional | \nRequired for dependent inquiry\
+        \ | \n\nDependent.Patient.FirstName | \nString | \nConditional | \nFirst Name of dependent required\
+        \ for dependent inquiry | \n\nDependent.Patient.LastName | \nString | \nConditional | \nLast Name\
+        \ of dependent required for dependent inquiry | \n\nDependent.Patient.DOB | \nString | \nConditional\
+        \ | \nRequired for dependent inquiry for better matching result Format is MM/dd/yyyy | \n\nDentalEligibilityBenefitSummary\
+        \ Response details\n\nKey | \nType | \nDescription | \n\nRequestID | \nInteger | \nEligibility\
+        \ Transaction ID | \n\nAPIResponseCode | \nString | \n0-Processed,1-Rejected,3-Pending | \n\n\
+        APIResponseMessage | \nString | \nMessage about the transaction | \n\nVerificationType | \nString\
+        \ | \nVerification Type –Subscriber or dependent | \n\nDOS | \nString | \nDate of service start\
+        \ date – DOS end date | \n\nIs HMO Plan | \nBoolean | \nIf true then Patient has HMO plan | \n\
+        \nExceptionNotes | \nString | \n\"Exception Notes if any . If response demographic info is not\
+        \ matched with that of Request\" | \n\nAdditionalInformation | \nString | \nIf there is any other\
+        \ info | \n\nDemographicInfo | \nObject | \nIt contains the subscriber info or dependent info\
+        \ . | \n\nBenefitDetails | \nObject | \nIt contains all details info group by Benefit type. Ex\
+        \ ; Dedcutible, Co-pay. | \n\nPreventiveServices | \nObject | \nContains Preventive codes details\
+        \ | \n\nOtherPayerInfo | \nObject | \nIt contains Other Payer info. It is null then there is no\
+        \ payer change. | \n\nPlanCoverageSummary | \nobject | \nIt contains Plan related info. | \n\n\
+        DentalInfo | \nObject | \nIt contains response as formatted HTML response when IncludeHTMLResponse\
+        \ of request is true. | \n\nResponseText | \nString | \n |"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payerCode:
+                  type: string
+                  example: DE0171
+                payerName:
+                  type: string
+                  example: Delta Dental of Washington
+                provider:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                    middleName:
+                      type: string
+                    lastName:
+                      type: string
+                      example: ' test name'
+                    npi:
+                      type: string
+                      example: '1427006147'
+                    TaxId:
+                      type: string
+                      example: '123456789'
+                subscriber:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                    dob:
+                      type: string
+                      example: 01/01/1950
+                    lastName:
+                      type: string
+                    memberID:
+                      type: string
+                      example: '1234567890'
+                dependent:
+                  nullable: true
+                isSubscriberPatient:
+                  type: string
+                  example: 'True'
+                doS_StartDate:
+                  type: string
+                  example: 02/02/2021
+                doS_EndDate:
+                  type: string
+                  example: 02/02/2021
+                PracticeTypeCode:
+                  type: string
+                  example: '86'
+                referenceId:
+                  type: string
+                  example: Pat MRN
+                Location:
+                  type: string
+                  example: Any location Name
+                IncludeHtmlResponse:
+                  type: boolean
+                  example: false
+            example:
+              payerCode: DE0171
+              payerName: Delta Dental of Washington
+              provider:
+                firstName: ''
+                middleName: ''
+                lastName: ' test name'
+                npi: '1427006147'
+                TaxId: '123456789'
+              subscriber:
+                firstName: ''
+                dob: 01/01/1950
+                lastName: ''
+                memberID: '1234567890'
+              dependent: null
+              isSubscriberPatient: 'True'
+              doS_StartDate: 02/02/2021
+              doS_EndDate: 02/02/2021
+              PracticeTypeCode: '86'
+              referenceId: Pat MRN
+              Location: Any location Name
+              IncludeHtmlResponse: false
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /api/v2/DentalEligibilitySummary:
+    post:
+      operationId: dentalEligibilitySummaryV2
+      tags:
+      - Dental Eligibility
+      summary: V2 DentalEligibilitySummary
+      description: "There two type of verifications Self and Dependent.\n\nV2 DentalEligibilitySummary\
+        \ Request Details\n\nProperty Name | \nData Type | \nUsage | \nDescription | \n\nPayerCode | \n\
+        String | \nRequired | \npVerify payer Code or Client payer map code (i.e. Delta Dental of WH-DE0171)\
+        \ | \n\nPayerName | \nString | \nOptional | \nPayer Name | \n\nProvider.FirstName | \nString |\
+        \ \nOptional | \nProvider first name | \n\nProvider.LastName | \nString | \nRequired | \nProvider\
+        \ last name | \n\nProvider.NPI | \nString | \nRequired | \n10-digit NPI value | \n\nProvider.TaxId\
+        \ | \nString | \nRequired | \nTax Id | \n\nSubscriber.FirstName | \nString | \nConditional | \n\
+        First Name of subscriber required for self-inquiry | \n\nSubscriber.LastName | \nString | \nConditional\
+        \ | \nLast Name of subscriber required for self-inquiry | \n\nSubscriber.MemberId | \nString |\
+        \ \nRequired | \nMember Id required for both type inquiries (self, dependent) | \n\nSubscriber.DOB\
+        \ | \nString | \nConditional | \nRequired for self-inquiry for better matching result Format is\
+        \ MM/dd/yyyy | \n\nSubscriber.SSN | \nString | \nOptional | \nSSN of subscriber | \n\nisSubscriberPatient\
+        \ | \nString | \nRequired | \nTrue for self and False for Dependent inquiry | \n\ndoS_StartDate\
+        \ | \nString | \nRequired | \nDate of service start date in MM/dd/yyyy format | \n\ndoS_EndDate\
+        \ | \nString | \nRequired | \nDate of service end date in MM/dd/yyyy format | \n\nPracticeTypeCode\
+        \ | \nNumber | \nOptional | \nDefault practice type is 86 | \n\nLocation | \nString | \nOptional\
+        \ | \nDefault is clients default location. | \n\nReferenceId | \nString | \nOptional | \nAny refence\
+        \ Id,for ex: Patient MRN | \n\nIncludeHTMLResponse | \nBoolean | \nOptional | \nDefault is false,\
+        \ if true then Entire response will be returned as formatted text in Response Test along with\
+        \ Summary details. | \n\nDependent | \nObject | \nConditional | \nRequired for dependent inquiry\
+        \ | \n\nDependent.Patient.FirstName | \nString | \nConditional | \nFirst Name of dependent required\
+        \ for dependent inquiry | \n\nDependent.Patient.LastName | \nString | \nConditional | \nLast Name\
+        \ of dependent required for dependent inquiry | \n\nDependent.Patient.DOB | \nString | \nConditional\
+        \ | \nRequired for dependent inquiry for better matching result Format is MM/dd/yyyy | \n\nDCodes\
+        \ | \nObject | \nConditional | \nDental Diagnosis Codes to get coinsurance and Deductible values\
+        \ | \n\nDentalEligibilitySummary Response details\n\nKey | \nType | \nDescription | \n\nRequestID\
+        \ | \nlong | \nEligibility Transaction ID | \n\nAPIResponseCode | \nString | \n0-Processed,1-Rejected,3-Pending\
+        \ | \n\nAPIResponseMessage | \nString | \nMessage about the transaction | \n\nEDIErrorMessage\
+        \ | \nString | \nEDI error messages if any | \n\nFollowUpAction | \nString | \nActions to be taken\
+        \ based on payer response | \n\nPossibleResolution | \nString | \nPossible solutions if any |\
+        \ \n\nProcessedWithError | \nBoolean | \nIf transaction verified with error, the value will be\
+        \ false | \n\nErrorCode | \nString | \nTransaction Error Code | \n\nErrorDescription | \nString\
+        \ | \nTransaction Error Description | \n\nPverifyPayerCode | \nString | \nPverify Payer Code |\
+        \ \n\nPayerName | \nString | \nPverify Payer Name | \n\nClientPayerName | \nString | \nClient\
+        \ Payer Name if any | \n\nVerificationType | \nString | \nVerification Type –Subscriber or dependent\
+        \ | \n\nDOS | \nString | \nDate of service start date – DOS end date | \n\nIs HMO Plan | \nBoolean\
+        \ | \nIf true then Patient has HMO plan | \n\nExceptionNotes | \nString | \n\"Exception Notes\
+        \ if any . If response demographic info is not matched with that of Request\" | \n\nAdditionalInformation\
+        \ | \nString | \nIf there is any other info | \n\nLocation | \nString | \nClient Location | \n\
+        \nReferenceId | \nString | \nReference Id of Practice | \n\nInternalId | \nString | \nInternal\
+        \ Id of Practice | \n\nCustomerId | \nString | \nCustomer Id in request | \n\nNotes | \nString\
+        \ | \nNotes if there are any in the response | \n\nResultPracticeType | \nString | \nPractice\
+        \ Type which is processed by payer | \n\nAreAllSTCsProcessed | \nBoolean | \nProcessed by | \n\
+        \nSTCsStatusMessage | \nString | \nService Codes status messages if any | \n\nIsProviderInNetwork\
+        \ | \nBoolean | \nIf provider is in with in network, it will return true | \n\nIsSkipped | \n\
+        Boolean | \nif transaction get skipped(same transaction if we verify multiple time, transaction\
+        \ will be skipped and return last successful verified response), it will be true | \n\nDetailsURL\
+        \ | \nString | \nDetails URL for view transaction results | \n\nIsPriorAuthRequired | \nString\
+        \ | \nIf any service require pre approval | \n\nDemographicInfo | \nObject | \nIt contains the\
+        \ subscriber info or dependent info . | \n\nServiceDetails | \nObject | \n\"It contains all Service\
+        \ type details info\" | \n\nOtherPayerInfo | \nObject | \nIt contains Other Payer info. It is\
+        \ null then there is no payer change. | \n\nPlanCoverageSummary | \nobject | \nIt contains Plan\
+        \ related info. | \n\nHBPC_Deductible_OOP_Summary | \nobject | \nIt contains HBPC related info.\
+        \ | \n\nMiscellaneousInfoSummary | \nobject | \nMiscellaneousInfoSummary | \n\nDentalSummary |\
+        \ \nPracticeTypeSummary | \nIt contains Dental Care Summary specific info | \n\nDentalAdjunctiveServiceSummary\
+        \ | \nPracticeTypeSummary | \nIt contains Dental Adjunctive Service Summary specific info | \n\
+        \nDentalAnesthesiaSummary | \nPracticeTypeSummary | \nIt contains Dental Anesthesia Summary specific\
+        \ info | \n\nDentalCrownSummary | \nPracticeTypeSummary | \nIt contains the Dental Crown Summary\
+        \ specific values | \n\nDentalDiagnosticSummary | \nPracticeTypeSummary | \nIt contains Dental\
+        \ Diagnostic Summary specific values | \n\nDentalDiagnosticXRaySummary | \nPracticeTypeSummary\
+        \ | \nIt contains Dental Diagnostic X-Ray Summary specific values | \n\nDentalEndodonticSummary\
+        \ | \nPracticeTypeSummary | \nIt contains Dental Endodontics Summary specific values | \n\nDentalMaxillofacialProstheticSummary\
+        \ | \nPracticeTypeSummary | \nIt contains Dental Maxillofacial Prosthetic Summary specific values\
+        \ | \n\nDentalOrthodonticSummary | \nPracticeTypeSummary | \nIt contains Dental Orthodontics Summary\
+        \ specific values | \n\nDentalPeriodonticSummary | \nPracticeTypeSummary | \nIt contains Dental\
+        \ Periodontics Summary specific values | \n\nDentalProsthodonticSummary | \nPr"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payerCode:
+                  type: string
+                  example: DE0171
+                payerName:
+                  type: string
+                  example: Delta Dental of Washington
+                provider:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                    middleName:
+                      type: string
+                    lastName:
+                      type: string
+                      example: ' test name'
+                    npi:
+                      type: string
+                      example: '1234567890'
+                    TaxId:
+                      type: string
+                      example: '123456789'
+                subscriber:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                      example: firstname
+                    dob:
+                      type: string
+                      example: 12/31/1967
+                    lastName:
+                      type: string
+                      example: lastname
+                    memberID:
+                      type: string
+                      example: 123456789A
+                dependent:
+                  nullable: true
+                isSubscriberPatient:
+                  type: string
+                  example: 'True'
+                doS_StartDate:
+                  type: string
+                  example: 05/20/2026
+                doS_EndDate:
+                  type: string
+                  example: 05/20/2026
+                PracticeTypeCode:
+                  type: string
+                  example: '211'
+                referenceId:
+                  type: string
+                  example: MRN001
+                Location:
+                  type: string
+                  example: TestLocation01
+                dCodes:
+                  type: array
+                  items:
+                    type: string
+                    example: D0140
+            example:
+              payerCode: DE0171
+              payerName: Delta Dental of Washington
+              provider:
+                firstName: ''
+                middleName: ''
+                lastName: ' test name'
+                npi: '1234567890'
+                TaxId: '123456789'
+              subscriber:
+                firstName: firstname
+                dob: 12/31/1967
+                lastName: lastname
+                memberID: 123456789A
+              dependent: null
+              isSubscriberPatient: 'True'
+              doS_StartDate: 05/20/2026
+              doS_EndDate: 05/20/2026
+              PracticeTypeCode: '211'
+              referenceId: MRN001
+              Location: TestLocation01
+              dCodes:
+              - D0140
+              - D0150
+              - D0170
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetDentalEligibilitySummary/{requestId}:
+    get:
+      operationId: getDentalEligibilitySummary
+      tags:
+      - Dental Eligibility
+      summary: GetDentalEligibilitySummary
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/V2/GetDentalEligibilitySummary\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/V2/GetDentalEligibilitySummary | \n\nGetEligibilitySummary\
+        \ returns the response from the EligibilitySummary POST call using a unique request id provided\
+        \ in the EligibilitySummary response. EligibilitySummary is not supported for back office payers.\n\
+        \nHeaders\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/Test/API/V2/DentalEligibilitySummary\
+        \ | \n\nMethod | \nGET | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token\
+        \ from above preceded by the String \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id\
+        \ | \n\nClient-API-Id | \nAPI ID provided by pVerify | \n\nContent-Type | \napplication/json |\
+        \ \n\nURL Parameters | \nRequestId returned in Dental EligibilitySummary response | \n\n*Note:\
+        \ The Client-API-Id header is required. Header keys are case sensitive.\n\nV2 GetDentalEligibilitySummary\
+        \ Response Fields\n\nKey | \nType | \nDescription | \n\nRequestID | \nlong | \nEligibility Transaction\
+        \ ID | \n\nAPIResponseCode | \nString | \n0-Processed,1-Rejected,3-Pending | \n\nAPIResponseMessage\
+        \ | \nString | \nMessage about the transaction | \n\nEDIErrorMessage | \nString | \nEDI error\
+        \ messages if any | \n\nFollowUpAction | \nString | \nActions to be taken based on payer response\
+        \ | \n\nPossibleResolution | \nString | \nPossible solutions if any | \n\nProcessedWithError |\
+        \ \nBoolean | \nIf transaction verified with error, the value will be false | \n\nErrorCode |\
+        \ \nString | \nTransaction Error Code | \n\nErrorDescription | \nString | \nTransaction Error\
+        \ Description | \n\nPverifyPayerCode | \nString | \nPverify Payer Code | \n\nPayerName | \nString\
+        \ | \nPverify Payer Name | \n\nClientPayerName | \nString | \nClient Payer Name if any | \n\n\
+        VerificationType | \nString | \nVerification Type –Subscriber or dependent | \n\nDOS | \nString\
+        \ | \nDate of service start date – DOS end date | \n\nIs HMO Plan | \nBoolean | \nIf true then\
+        \ Patient has HMO plan | \n\nExceptionNotes | \nString | \n\"Exception Notes if any . If response\
+        \ demographic info is not matched with that of Request\" | \n\nAdditionalInformation | \nString\
+        \ | \nIf there is any other info | \n\nLocation | \nString | \nClient Location | \n\nReferenceId\
+        \ | \nString | \nReference Id of Practice | \n\nInternalId | \nString | \nInternal Id of Practice\
+        \ | \n\nCustomerId | \nString | \nCustomer Id in request | \n\nNotes | \nString | \nNotes if there\
+        \ are any in the response | \n\nResultPracticeType | \nString | \nPractice Type which is processed\
+        \ by payer | \n\nAreAllSTCsProcessed | \nBoolean | \nProcessed by | \n\nSTCsStatusMessage | \n\
+        String | \nService Codes status messages if any | \n\nIsProviderInNetwork | \nBoolean | \nIf provider\
+        \ is in with in network, it will return true | \n\nIsSkipped | \nBoolean | \nif transaction get\
+        \ skipped(same transaction if we verify multiple time, transaction will be skipped and return\
+        \ last successful verified response), it will be true | \n\nDetailsURL | \nString | \nDetails\
+        \ URL for view transaction results | \n\nIsPriorAuthRequired | \nString | \nIf any service require\
+        \ pre approval | \n\nDemographicInfo | \nObject | \nIt contains the subscriber info or dependent\
+        \ info . | \n\nServiceDetails | \nObject | \n\"It contains all Service type details info\" | \n\
+        \nOtherPayerInfo | \nObject | \nIt contains Other Payer info. It is null then there is no payer\
+        \ change. | \n\nPlanCoverageSummary | \nobject | \nIt contains Plan related info. | \n\nHBPC_Deductible_OOP_Summary\
+        \ | \nobject | \nIt contains HBPC related info. | \n\nMiscellaneousInfoSummary | \nobject | \n\
+        MiscellaneousInfoSummary | \n\nDentalSummary | \nPracticeTypeSummary | \nIt contains Dental Care\
+        \ Summary specific info | \n\nDentalAdjunctiveServiceSummary | \nPracticeTypeSummary | \nIt contains\
+        \ Dental Adjunctive Service Summary specific info | \n\nDentalAnesthesiaSummary | \nPracticeTypeSummary\
+        \ | \nIt contains Dental Anesthesia Summary specific info | \n\nDentalCrownSummary | \nPracticeTypeSummary\
+        \ | \nIt contains the Dental Crown Summary specific values | \n\nDentalDiagnosticSummary | \n\
+        PracticeTypeSummary | \nIt contains Dental Diagnostic Summary specific values | \n\nDentalDiagnosticXRaySummary\
+        \ | \nPracticeTypeSummary | \nIt contains Dental Diagnostic X-Ray Summary specific values | \n\
+        \nDentalEndodonticSummary | \nPracticeTypeSummary | \nIt contains Dental Endodontics Summary specific\
+        \ values | \n\nDentalMaxillofacialProstheticSummary | \nPracticeTypeSummary | \nIt contains Dental\
+        \ Maxillofacial Prosthetic Summary specific values | \n\nDentalOrthodonticSummary | \nPracticeTypeSummary\
+        \ | \nIt contains Dental Orthodontics Summary specific values | \n\nDentalPeriodonticSummary |\
+        \ \nPracticeTypeSummary | \nIt contains Dental Periodontics Summary specific values | \n\nDentalProsthodonticSummary\
+        \ | \nPracticeTypeSummary | \nIt contains Dental Prosthodontics Summary specific values | \n\n\
+        DentalRestorativeSummary | \nPracticeTypeSummary | \nIt contains Dental Restorative Summary specific\
+        \ values | \n\nDentalRoutineSummary | \nPracticeTypeSummary | \nIt contains Dental Routine Summary\
+        \ specific values | \n\nDCodeBenefitsSummary | \nList | \nPer-D-code benefits summary, populated\
+        \ when D-codes are requested. | \n\nDCodesDetails | \nList | \nD-code-specific benefit details\
+        \ (populated by GetDCodesDetails(PboDentalEligibilityResponseSummary, List) when DCodes is provided).\
+        \ |"
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /api/EstimateCalculation:
+    post:
+      operationId: estimateCalculation
+      tags:
+      - Estimation
+      summary: EstimateCalculation
+      description: "Environment | \nURL | \n\nProduction | \nhttps://api.pverify.com/api/EstimateCalculation\
+        \ | \n\nThis POST call will get an estimated price from CMS (Medicare) non-facility price index.\
+        \ In order for you to use this, we must add the estimator service (which is free) to your account.\
+        \ Additionally, for the Zip code, use 0 for national pricing, and you can send an array of CPT\
+        \ codes per the Postman example. Please note, due to the nature of the EstimateCalculation call,\
+        \ no test credentials are available.\n\nEstimateCalculation Request\n\nKey | \nValue | \n\nURL\
+        \ | \nhttps://api.pverify.com/api/EstimateCalculation | \n\nMethod | \nPOST | \n\nHeaders | \n\
+        Description | \n\nClient-API-Id* | \nYour pVerify client-api-id | \n\nContent-Type | \napplication/json\
+        \ | \n\nBody | \nDescription | \n\nData Parameters | \nSee fields to the right | \n\n*Note: The\
+        \ Client-API-Id is required in header. Header keys are case sensitive.\n\nEstimateCalculation\
+        \ Request Fields\n\nField | \nType | \nDescription | \n\nzipCode | \nString | \nZip code of your\
+        \ location. Use 0 for national pricing. | \n\ncptCodes | \nString | \nArray of CPT codes needed\
+        \ for estimate. If there is a modifier include it as a dash. For example, 93024-TC would be the\
+        \ cardiac drug stress test technical component. | \n\ncoPay | \nString | \nDollar amount of patient\
+        \ copay. | \n\ncoinsPercentage | \nString | \nIn percent, coinsurance | \n\ndeductibleRemaining\
+        \ | \nString | \nDollar amount of deductible remaining | \n\noutofPocketRemaining | \nString |\
+        \ \nOut of pocket remaining- if this is blank we will not include this in the calculation. | \n\
+        \nisCopayIncludeInDeductible | \nBoolean | \nAdd copay to coinsurance or not. | \n\nisSecondaryStatusActive\
+        \ | \nBoolean | \nIf patient has secondary insurance- if this is true then patient responsibility\
+        \ is zero. | \n\nNonMedicareMultipleFactor | \nDecimal | \nNonMedicare Multiple factor to CPT\
+        \ values calculation | \n\nInternalId | \nString | \nInternal Id for patient | \n\nEstimateCalculation\
+        \ Response\n\nField | \nDescription | \n\npatientResponsibility | \nThe amount the patient owes.\
+        \ | \n\ncopay | \nPatient copay. | \n\ncoInsPercentage | \nCoinsurance percentage. | \n\ncoInsAmount\
+        \ | \nCoinsurance Amount. | \n\nestimatedAllowable | \nTHe sum of the charges (note: not all charges\
+        \ are approved by CMS) | \n\ndeductibleRemainging | \nAmount of deductible remaining.+ | \n\n\
+        outOfPocketRemaining | \nAmount remaining for out of pocket.++ | \n\namountPayable | \nAmount\
+        \ Payable | \n\nselected CPTs | \nSelected CPT codes | \n\nzipCode | \nZip code returned | \n\n\
+        apiResponseCode | \nAPI response code | \n\napiResponseMessage | \nAPI response message | \n\n\
+        InternalId | \nInternal Id for patient | \n\n+The deductible must be met before insurance applies.\
+        \ For example, if the deductible remaining is 1000, then the patient will have to pay out of pocket\
+        \ $1000 for next procedure as long as the procedure amount > $1000.++This is typically a high\
+        \ number. Once it reaches zero, the patient responsibility is zero. It is designed for catastrophic\
+        \ coverage ie: major surgery or chemotherapy."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                zipCode:
+                  type: string
+                  example: '27713'
+                cptCodes:
+                  type: array
+                  items:
+                    type: string
+                    example: '10061'
+                coPay:
+                  type: string
+                  example: '20'
+                coinsPercentage:
+                  type: string
+                  example: '30'
+                deductibleRemaining:
+                  type: string
+                  example: '40'
+                outofPocketRemaining:
+                  type: string
+                isCopayIncludeInDeductible:
+                  type: boolean
+                  example: false
+                isSecondryStatusActive:
+                  type: boolean
+                  example: false
+                NonMedicareMultipleFactor:
+                  type: number
+                  example: 1.2
+                InternalId:
+                  nullable: true
+            example:
+              zipCode: '27713'
+              cptCodes:
+              - '10061'
+              - 0191T
+              - '33300'
+              coPay: '20'
+              coinsPercentage: '30'
+              deductibleRemaining: '40'
+              outofPocketRemaining: ''
+              isCopayIncludeInDeductible: false
+              isSecondryStatusActive: false
+              NonMedicareMultipleFactor: 1.2
+              InternalId: null
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/MBIInquiry:
+    post:
+      operationId: mbiInquiry
+      tags:
+      - MBI Lookup
+      summary: MBIInquiry
+      description: "MBI Skip Mechanism:\n\nA transaction will be skipped if another transaction with same\
+        \ parameters(First Name, Last Name, Date of Birth (DOB), State, and SSN) is run in the current\
+        \ Calander month that is Processed/Processed with valid error\n\nMBI Request Fields\n\nProperty\
+        \ Name | \nData Type | \nUsage | \nDescription | \n\nPatientSSN | \nString | \nDeprecated | \n\
+        Patient’s SSN or HICN | \n\nPatientSSN_or_HICN | \nString | \nRequired | \nPatient’s SSN or HICN\
+        \ | \n\nPatientFirstName | \nString | \nRequired | \nPatient first name | \n\nPatientLastName\
+        \ | \nString | \nRequired | \nPatient last name | \n\nPatientDOB | \nString | \nRequired | \n\
+        Patient DOB in MM/dd/yyyy format | \n\nProviderLastName | \nString | \nRequired | \nProvider Last\
+        \ Name | \n\nProviderNPI | \nString | \nRequired | \nProvider NPI, format is 10 digits | \n\n\
+        MRN | \nString | \nOptional | \nMedical record number , 50 chars are allowed. | \n\nAddress.AddressLine1\
+        \ | \nString | \nOptional | \nPatient Street Address | \n\nAddress.City | \nString | \nOptional\
+        \ | \nPatient City | \n\nAddress.State | \nString | \nOptional | \nPatient State | \n\nAddress.ZipCode\
+        \ | \nString | \nOptional | \nPatient ZipCode |"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ProviderLastName:
+                  type: string
+                  example: ProviderLastName
+                ProviderNPI:
+                  type: string
+                  example: '1234567890'
+                PatientFirstName:
+                  type: string
+                  example: John
+                PatientDOB:
+                  type: string
+                  example: 07/15/1956
+                PatientLastName:
+                  type: string
+                  example: Doe
+                PatientSSN_or_HICN:
+                  type: string
+                PatientSSN:
+                  type: string
+                MRN:
+                  type: string
+                  example: '1234'
+                Location:
+                  type: string
+                Address:
+                  type: object
+                  properties:
+                    AddressLine1:
+                      nullable: true
+                    City:
+                      nullable: true
+                    State:
+                      type: string
+                      example: MD
+                    ZipCode:
+                      nullable: true
+            example:
+              ProviderLastName: ProviderLastName
+              ProviderNPI: '1234567890'
+              PatientFirstName: John
+              PatientDOB: 07/15/1956
+              PatientLastName: Doe
+              PatientSSN_or_HICN: ''
+              PatientSSN: ''
+              MRN: '1234'
+              Location: ''
+              Address:
+                AddressLine1: null
+                City: null
+                State: MD
+                ZipCode: null
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetMBIResponse/{requestId}:
+    get:
+      operationId: getMBIResponse
+      tags:
+      - MBI Lookup
+      summary: GetMBIResponse
+      description: "This call is used to get the transaction result later using unique request id which\
+        \ is returned in MBIInquiry API call.\n\nSample Response\n\n{ \n \"RequestId\": \"482672\",\n\
+        \ \"Status\":\"Processed\",\n\"ErrorMessage\": null,\n \"PatientSSN\": \"123XXXXXX\",\n\"PatientFirstName\"\
+        : \"PatientFirstName\",\n\"PatientLastName\": \"PatientLastName\",\n\"PatientDOB\": \"mm/dd/yyyy\"\
+        ,\n\"MBI\": \"234XXXXXXXXX\",\n\"MRN\": \"123435\",\n\"PartAStatus\": \"Active\",\n\"PartBStatus\"\
+        : \"Active\",\n\"PartADate\": \"02/01/2021\",\n\"PartBDate\": \"02/01/2021\",\n\"ExpiredDate\"\
+        : null,\n\"MedicareReason\":\"\",\n\"APIResponseCode\": 0,\n\"APIResponseMessage\": \"Processed\"\
+        ,\n\"ProcessedWithError\":false,\n\"address\": {\n \"city\": \"City\",\n \"state\": \"MD\",\n\
+        \ \"street\": \"310 main\",\n \"zip\": \"12345\"\n },\n\"recordCount\": \"1\",\n \"score\": \"\
+        96\"\n}"
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /api/PatientFinderInquiry:
+    post:
+      operationId: patientFinderInquiry
+      tags:
+      - Patient Demographic Validator
+      summary: PatientFinderInquiry
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/PatientFinderInquiry\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/PatientFinderInquiry | \n\nDescription:Returns\
+        \ only the top matching patient based on provided demographic information. This endpoint is optimized\
+        \ for use cases where only the most likely match is needed.\n\nUse Cases:Fast lookups for integrations\
+        \ where a single high-confidence match is sufficient.Scenarios where presenting a list of potential\
+        \ matches is not required.\n\nBehavior:Returns a maximum of 1 patient record (the best match).Uses\
+        \ match score to determine the top candidate.Ideal for a specific patient match.\n\nHeaders\n\n\
+        Key | \nValue | \n\nURL | \nhttps://api.pverify.com/API/PatientFinderInquiry | \n\nMethod | \n\
+        POST | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token from above preceded\
+        \ by the String \"Bearer\" | \n\nClient-API-Id | \nAPI ID provided by pVerify | \n\nContent-Type\
+        \ | \napplication/json | \n\n*Note: The Client-API-Id is required. Header keys are case sensitive.\n\
+        \nSearch Criterias\n\nSNo | \nSearch Criteria | \n\n1 | \nFirstName,LastName,Street Address,City,State\
+        \ | \n\n2 | \nFirstName,LastName,DOB,City,State | \n\n3 | \nFirstName,LastName,DOB,State | \n\n\
+        4 | \nLastName,DOB,Street Address,Zip Code | \n\n5 | \nFirstName,LastName, Last 4 SSN | \n\n6\
+        \ | \nFirstName,LastName, Full SSN | \n\n7 | \nFirstName,LastName, Zip Code | \n\n8 | \nFirstName,LastName,\
+        \ State | \n\nPatientFinderInquiry Request Fields\n\nProperty Name | \nData Type | \nUsage | \n\
+        Description | \n\nFirstName | \nString | \nOptional | \nFirst Name of patient for inquiry | \n\
+        \nMiddleName | \nString | \nOptional | \nMiddle Name of patient for inquiry | \n\nLastName | \n\
+        String | \nRequired | \nLast Name of patient required for inquiry | \n\nDOB | \nString | \nOptional\
+        \ | \n(Expected format: MM/dd/YYYY ie 01/01/2000) | \n\nSSN | \nString | \nOptional | \nSocial\
+        \ Security Number (Exported format XXX-XX-XXXX) | \n\nAddress.AddressLine1 | \nString | \nOptional\
+        \ | \nAddress1 | \n\nAddress.AddressLine2 | \nString | \nOptional | \nAddress2 | \n\nAddress.City\
+        \ | \nString | \nOptional | \nCity | \n\nAddress.State | \nString | \nOptional | \nState | \n\n\
+        Address.ZipCode | \nString | \nOptional | \nZip | \n\nLocation | \nString | \nRequired | \nLocation\
+        \ is the practice location. Note by setting this, you will lock the patient to one location, so\
+        \ that users that login in via our portal who are not authorized to see that location will not\
+        \ see the patient. | \n\nReferenceNumber | \nString | \nOptional | \nAny free text for patient\
+        \ identifier, ie MRN | \n\nPatientFinderInquiry Response Fields\n\nKey | \nType | \nDescription\
+        \ | \n\nRequestID | \nInteger | \nEligibility Transaction ID | \n\nAPIResponseCode | \nInteger\
+        \ | \n0-Processed,1-Rejected,2-NoFunds,3-Pending | \n\nAPIResponseMessage | \nString | \nMessage\
+        \ about the transaction | \n\nError | \nString | \nMessage from Payer about errors | \n\npatientsFound\
+        \ | \nInteger | \nNumber of patients found | \n\nRequestHasSSN | \nBoolean | \nTrue if request\
+        \ has SSN | \n\nIsMBIRegistered | \nBoolean | \nTrue if the request contains a registered MBI;\
+        \ otherwise, false | \n\nIsTRHasError | \nBoolean | \nTrue if there was an error during Thomson\
+        \ Reuters (TR) verification; otherwise, false | \n\nIsShowSSN | \nBoolean | \nIndicates whether\
+        \ the patient's SSN should be displayed in the response. True = show SSN, False = mask SSN | \n\
+        \nPatients | \nArray of Object | \nReturns the top-matched patient based on the request. (Note:\
+        \ Patients is an array, but it contains only one patient.) | \n\nPatients.FirstName | \nString\
+        \ | \nFirst name (Note Patients object is an array) | \n\nPatients.LastName | \nString | \nLast\
+        \ Name | \n\nPatients.MiddleName | \nString | \nMiddle name | \n\nPatients.DOB | \nString | \n\
+        ODB | \n\nPatients.SSN | \nString | \nSSN (this is masked unless request has SSN) | \n\nPatients.RecordCount\
+        \ | \nInteger | \nNumber of records with this information (usually | \n\nPatients.Score | \nInteger\
+        \ | \nFrom 1-99, higher is better. >90 is typical for a very likely chance of exact match | \n\
+        \nPatients.GroupId | \nString | \nGroupId | \n\nPatients.Emails | \nString | \n(not supported\
+        \ yet) | \n\nPatients.Address | \nObject | \nAddress object as request | \n\nPatients.Address.AddressLine1\
+        \ | \nString | \nAddress1 | \n\nPatients.Address.AddressLine2 | \nString | \nAddress2 | \n\nPatients.Address.City\
+        \ | \nString | \nCity | \n\nPatients.Address.State | \nString | \nState | \n\nPatients.Address.ZipCode\
+        \ | \nString | \nZip | \n\nPatients.Address.ReportedDate | \nString | \nThe date on which the\
+        \ patient's record was last updated. | \n\nPatients.PhoneNumber | \nString | \n(not supported\
+        \ yet) |"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                FirstName:
+                  type: string
+                  example: firstname
+                MiddleName:
+                  nullable: true
+                LastName:
+                  type: string
+                  example: lastname
+                DOB:
+                  nullable: true
+                SSN:
+                  nullable: true
+                PhoneNumber:
+                  nullable: true
+                Address:
+                  type: object
+                  properties:
+                    AddressLine1:
+                      type: string
+                      example: Address1
+                    AddressLine2:
+                      nullable: true
+                    City:
+                      type: string
+                      example: City
+                    State:
+                      type: string
+                      example: ST
+                    ZipCode:
+                      type: string
+                      example: '12345'
+                Location:
+                  type: string
+                  example: Somewhere
+                ReferenceNumber:
+                  nullable: true
+            example:
+              FirstName: firstname
+              MiddleName: null
+              LastName: lastname
+              DOB: null
+              SSN: null
+              PhoneNumber: null
+              Address:
+                AddressLine1: Address1
+                AddressLine2: null
+                City: City
+                State: ST
+                ZipCode: '12345'
+              Location: Somewhere
+              ReferenceNumber: null
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/PatientFinderInquiryResults:
+    post:
+      operationId: patientFinderInquiryResults
+      tags:
+      - Patient Demographic Validator
+      summary: PatientFinderInquiryResults
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/PatientFinderInquiryResults\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/PatientFinderInquiryResults | \n\nDescription:Returns\
+        \ all matching patient records based on the search criteria. This endpoint is intended for workflows\
+        \ that require presenting multiple potential matches for verification.\n\nUse Cases:Used in Patient\
+        \ Validator-Verification.\n\nBehavior:Returns all matched patient records that meet the criteria.\n\
+        \nHeaders\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/PatientFinderInquiryResults\
+        \ | \n\nMethod | \nPOST | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token\
+        \ from above preceded by the String \"Bearer\" | \n\nClient-API-Id | \nAPI ID provided by pVerify\
+        \ | \n\nContent-Type | \napplication/json | \n\n*Note: The Client-API-Id is required. Header keys\
+        \ are case sensitive.\n\nPatientFinderInquiryResults Request Fields\n\nProperty Name | \nData\
+        \ Type | \nUsage | \nDescription | \n\nFirstName | \nString | \nOptional | \nFirst Name of patient\
+        \ for inquiry | \n\nMiddleName | \nString | \nOptional | \nMiddle Name of patient for inquiry\
+        \ | \n\nLastName | \nString | \nRequired | \nLast Name of patient required for inquiry | \n\n\
+        DOB | \nString | \nOptional | \n(Expected format: MM/dd/YYYY ie 01/01/2000) | \n\nSSN | \nString\
+        \ | \nOptional | \nSocial Security Number (Exported format XXX-XX-XXXX) | \n\nAddress.AddressLine1\
+        \ | \nString | \nOptional | \nAddress1 | \n\nAddress.AddressLine2 | \nString | \nOptional | \n\
+        Address2 | \n\nAddress.City | \nString | \nOptional | \nCity | \n\nAddress.State | \nString |\
+        \ \nOptional | \nState | \n\nAddress.ZipCode | \nString | \nOptional | \nZip | \n\nLocation |\
+        \ \nString | \nRequired | \nLocation is the practice location. Note by setting this, you will\
+        \ lock the patient to one location, so that users that login in via our portal who are not authorized\
+        \ to see that location will not see the patient. | \n\nReferenceNumber | \nString | \nOptional\
+        \ | \nAny free text for patient identifier, ie MRN | \n\nPatientFinderInquiryResults Response\
+        \ Fields\n\nReturns a list of all matched patients. All other response fields are the same as\
+        \ the PatientFinderInquiry endpoint.\n\nKey | \nType | \nDescription | \n\nRequestID | \nInteger\
+        \ | \nEligibility Transaction ID | \n\nAPIResponseCode | \nString | \n0-Processed,1-Rejected,2-NoFunds,3-Pending\
+        \ | \n\nAPIResponseMessage | \nString | \nMessage about the transaction | \n\nError | \nString\
+        \ | \nMessage from Payer about errors | \n\npatientsFound | \nInteger | \nNumber of patients found\
+        \ | \n\nRequestHasSSN | \nBoolean | \nTrue if request has SSN | \n\nIsMBIRegistered | \nBoolean\
+        \ | \nTrue if the request contains a registered MBI; otherwise, false | \n\nIsTRHasError | \n\
+        Boolean | \nTrue if there was an error during Thomson Reuters (TR) verification; otherwise, false\
+        \ | \n\nIsShowSSN | \nBoolean | \nIndicates whether the patient's SSN should be displayed in the\
+        \ response. True = show SSN, False = mask SSN | \n\nPatients | \nArray of Objects | \nReturns\
+        \ a list of matched patients based on the request. If only one patient is matched, the array will\
+        \ still contain a single object. (Note: Patients is always returned as an array.) | \n\nPatients.FirstName\
+        \ | \nString | \nFirst name | \n\nPatients.LastName | \nString | \nLast Name | \n\nPatients.MiddleName\
+        \ | \nString | \nMiddle name | \n\nPatients.DOB | \nString | \nODB | \n\nPatients.SSN | \nString\
+        \ | \nSSN (this is masked unless request has SSN) | \n\nPatients.RecordCount | \nInteger | \n\
+        Number of records with this information (usually | \n\nPatients.Score | \nInteger | \nFrom 1-99,\
+        \ higher is better. >90 is typical for a very likely chance of exact match | \n\nPatients.GroupId\
+        \ | \nString | \nGroupId | \n\nPatients.Emails | \nString | \n(not supported yet) | \n\nPatients.Address\
+        \ | \nObject | \nAddress object as request | \n\nPatients.Address.AddressLine1 | \nString | \n\
+        Address1 | \n\nPatients.Address.AddressLine2 | \nString | \nAddress2 | \n\nPatients.Address.City\
+        \ | \nString | \nCity | \n\nPatients.Address.State | \nString | \nState | \n\nPatients.Address.ZipCode\
+        \ | \nString | \nZip | \n\nPatients.Address.ReportedDate | \nString | \nThe date on which the\
+        \ patient's record was last updated. | \n\nPatients.PhoneNumber | \nString | \n(not supported\
+        \ yet) |"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                FirstName:
+                  type: string
+                  example: JOHN
+                MiddleName:
+                  nullable: true
+                LastName:
+                  type: string
+                  example: WILLIAMS
+                DOB:
+                  type: string
+                  example: 07/12/1938
+                SSN:
+                  nullable: true
+                PhoneNumber:
+                  nullable: true
+                Address:
+                  type: object
+                  properties:
+                    AddressLine1:
+                      nullable: true
+                    AddressLine2:
+                      nullable: true
+                    City:
+                      nullable: true
+                    State:
+                      nullable: true
+                    ZipCode:
+                      nullable: true
+                Location:
+                  nullable: true
+                ReferenceNumber:
+                  nullable: true
+                SearchCriteriaId:
+                  nullable: true
+            example:
+              FirstName: JOHN
+              MiddleName: null
+              LastName: WILLIAMS
+              DOB: 07/12/1938
+              SSN: null
+              PhoneNumber: null
+              Address:
+                AddressLine1: null
+                AddressLine2: null
+                City: null
+                State: null
+                ZipCode: null
+              Location: null
+              ReferenceNumber: null
+              SearchCriteriaId: null
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetPatientFinderResponse/{requestId}:
+    get:
+      operationId: getPatientFinderResponse
+      tags:
+      - Patient Demographic Validator
+      summary: GetPatientFinderResponse
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/GetPatientFinderResponse/{id}\
+        \ | \n\nProduction | \nhttps://api.pverify.com/Test/API/GetPatientFinderResponse/{id} | \n\nThis\
+        \ GET method will return complete response of PatientFinderInquiry endpoint. This call allows\
+        \ you to get the patient demographicverification result by a unique transaction ID.\n\nGetPatientFinderResponse\
+        \ Request\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/GetEligibilityResponse/{id}\
+        \ | \n\nMethod | \nGET | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token\
+        \ from above preceded by the String \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id\
+        \ | \n\n*Note: The Client-API-Id header is required. Header keys are case sensitive.\n\nA successful\
+        \ GetPatientFinderResponse call will have the same format as the Patient Finder Inquiry response\
+        \ (above)."
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/ClaimStatusInquiry:
+    post:
+      operationId: claimStatusInquiry
+      tags:
+      - Claim Status
+      summary: ClaimStatusInquiry
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/ClaimStatusInquiry\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/ClaimStatusInquiry | \n\nThe ClaimStatusInquiry\
+        \ is the second step of the workflow for obtaining Claim status Information through pVerify. As\
+        \ demonstrated below, the ClaimStatusInquiry call takes in subscriber or dependent demographic\
+        \ information, along with the authorization token, and returns the claim status among other information.\
+        \ To use this or any other method, you must first generate a token via the Token endpoint (see\
+        \ above Token method).\n\nField | \nDescription | \n\nURL | \nhttps://api.pverify.com/API/ClaimStatusInquiry\
+        \ | \n\nMethod | \nPOST | \n\nHeaders | \nDescription | \n\nContent-Type | \napplication/json\
+        \ | \n\nAuthorization | \nBearer XXX | \n\nClient-API-Id* | \nclient-api-id provided by pVerify\
+        \ | \n\nBody | \nSee right | \n\n*Note: The Client-API-Id header is required. Header keys are\
+        \ case sensitive.\n\nNote: The ClaimStatusInquiry for dependents is the same for self. However,\
+        \ it uses different data parameters.\n\nClaimStatusInquiry Request Fields for Self\n\nProperty\
+        \ Name | \nData Type | \nUsage | \nDescription | \n\npayerCode | \nString | \nRequired | \npVerify\
+        \ payer Code (i.e. Aetna 00001) | \n\nProviderLastName | \nString | \nOptional | \nProvider Last\
+        \ Name | \n\nProviderNPI | \nString | \nConditional | \n10-digit NPI value (Not required when\
+        \ ProviderFederalTaxId is available) | \n\nProviderFederalTaxId | \nString | \nConditional | \n\
+        9 - digit Federal Tax Id (EIN) (not required when NPI is available) | \n\npayerClaimNumber | \n\
+        String | \nConditional | \nPayer claim number | \n\nchargeAmount | \nString | \nRequired | \n\
+        Charge Amount | \n\nserviceStartDate | \nString | \nRequired | \nStart date of service (Expected\
+        \ format: MM/dd/YYYY ie 01/01/2000) | \n\nserviceEndDate | \nString | \nRequired | \nEnd date\
+        \ of service (Expected format: MM/dd/YYYY ie 01/01/2000) | \n\nsubscriber | \nObject | \nRequired\
+        \ | \nSubscriber demographic information | \n\nsubscriber.FirstName | \nString | \nConditional\
+        \ | \nSubscriber first name | \n\nsubscriber.lastName | \nString | \nConditional | \nSubscriber\
+        \ last name | \n\nsubscriber.dob | \nString | \nConditional | \nSubscriber Date of Birth (Expected\
+        \ format: MM/dd/YYYY ie 01/01/2000) | \n\nsubscriber.memberID | \nString | \nConditional | \n\
+        Member ID of subscriber | \n\nsubscriber.gender | \nString | \nConditional | \nGender of subscriber.\
+        \ Allowed M, F or O | \n\nisPatientDependent | \nboolean | \nOptional | \nDetermines if the patient\
+        \ is dependent | \n\nClaimStatusInquiry Request Fields for Dependents\n\nProperty Name | \nData\
+        \ Type | \nRequired | \nDescription | \n\npayerCode | \nString | \nYes | \npVerify payer Code\
+        \ (i.e. Aetna 00001) | \n\nProviderLastName | \nString | \nNo | \nProvider Last Name | \n\nProviderNPI\
+        \ | \nString | \nConditional | \n10-digit NPI value (Not required when ProviderFederalTaxId is\
+        \ available) | \n\nProviderFederalTaxId | \nString | \nConditional | \n9 - digit Federal Tax Id\
+        \ (EIN) (not required when NPI is available) | \n\npayerClaimNumber | \nString | \nConditional\
+        \ | \nPayer claim number | \n\nchargeAmount | \nString | \nYes | \nCharge Amount | \n\nserviceStartDate\
+        \ | \nString | \nYes | \nStart date of service (Expected format: MM/dd/YYYY ie 01/01/2000) | \n\
+        \nserviceEndDate | \nString | \nYes | \nEnd date of service (Expected format: MM/dd/YYYY ie 01/01/2000)\
+        \ | \n\nsubscriber | \nObject | \nYes | \nSubscriber demographic information | \n\nsubscriber.FirstName\
+        \ | \nString | \nConditional | \nSubscriber first name | \n\nsubscriber.lastName | \nString |\
+        \ \nConditional | \nSubscriber last name | \n\nsubscriber.dob | \nString | \nConditional | \n\
+        Subscriber Date of Birth (Expected format: MM/dd/YYYY ie 01/01/2000) | \n\nsubscriber.memberID\
+        \ | \nString | \nConditional | \nMember ID of subscriber | \n\nsubscriber.gender | \nString |\
+        \ \nConditional | \nGender of subscriber.Allowed M, F or O | \n\nisPatientDependent | \nboolean\
+        \ | \nNo | \nDetermines if the patient is dependent | \n\ndependent | \nObject | \nConditional\
+        \ | \nDependent demographic information | \n\ndependent.FirstName | \nString | \nConditional |\
+        \ \nDependent first name | \n\ndependent.lastName | \nString | \nConditional | \nDependent last\
+        \ name | \n\ndependent.dob | \nString | \nNo | \nDependent Date of Birth (Expected format: MM/dd/YYYY\
+        \ ie 01/01/2000) | \n\ndependent.gender | \nString | \nConditional | \nGender of Dependent.Allowed\
+        \ M, F or O | \n\nClaimStatusInquiry Response Fields\n\nProperty Name | \nData Type | \nDescription\
+        \ | \n\nRequestID | \nLong | \nClaim Status Request ID | \n\napiResponseCode | \nint | \nAPI transaction\
+        \ response code. Please see apiResponseCode table | \n\napiResponseMessage | \nString | \nAPI\
+        \ transaction response message | \n\nProcessedWithError | \nString | \ntrue when processed with\
+        \ error by the payer. | \n\npayerClaimNo | \nString | \nPayer Claim Number (if returned in EDI\
+        \ 277) | \n\ncategoryCode | \nString | \nCategory code of claim status | \n\ncategory | \nString\
+        \ | \nCategory of claim status | \n\nclaimStatusReasonCode | \nString | \nClaim Status Code |\
+        \ \n\nclaimStatus | \nString | \nClaim status text | \n\npayer | \nPayer | \nContains payer info\
+        \ | \n\nproviderInfo | \nInfo | \nContains provider info | \n\nsubscriber | \nInfo | \nContains\
+        \ Subscriber info | \n\ndependent | \nInfo | \nContains dependent info | \n\nClaimStatuses | \n\
+        List | \nContains Claim Status Info | \n\nClaimStatuses.serviceLine | \nList | \nContains Claim\
+        \ Service line item info, ie: Code specific info | \n\nThe API Response Codes and there description\
+        \ are shown below.\n\nAPIResponseCode | \nDescription | \n\n0 | \nProcessed | \n\n1 | \nRejected\
+        \ | \n\n2 | \nNoFunds (insufficient account balance) | \n\n3 | \nInvalidRequest (Required data\
+        \ missing) | \n\n4 | \nInvalidFormat (data format or data fields are wrong) | \n\n5 | \nInvalidPayer\
+        \ (Payer does not support Claim Status electronically / inactive) | \n\n6 | \nLocationError (Location\
+        \ is not configured) |"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payerCode:
+                  type: string
+                  example: '00001'
+                ProviderLastName:
+                  type: string
+                  example: lastname
+                ProviderNPI:
+                  type: string
+                  example: '1234567890'
+                ProviderFederalTaxId:
+                  type: string
+                payerClaimNumber:
+                  type: string
+                chargeAmount:
+                  type: number
+                  example: 732.87
+                serviceStartDate:
+                  type: string
+                  example: 04/01/2020
+                serviceEndDate:
+                  type: string
+                  example: 04/01/2020
+                subscriber:
+                  type: object
+                  properties:
+                    FirstName:
+                      type: string
+                    lastName:
+                      type: string
+                      example: lastname
+                    dob:
+                      type: string
+                      example: 07/07/2010
+                    memberID:
+                      type: string
+                      example: memberID
+                    gender:
+                      nullable: true
+                isPatientDependent:
+                  type: boolean
+                  example: false
+            example:
+              payerCode: '00001'
+              ProviderLastName: lastname
+              ProviderNPI: '1234567890'
+              ProviderFederalTaxId: ''
+              payerClaimNumber: ''
+              chargeAmount: 732.87
+              serviceStartDate: 04/01/2020
+              serviceEndDate: 04/01/2020
+              subscriber:
+                FirstName: ''
+                lastName: lastname
+                dob: 07/07/2010
+                memberID: memberID
+                gender: null
+              isPatientDependent: false
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetClaimStatusResponse/{requestId}:
+    get:
+      operationId: getClaimStatusResponse
+      tags:
+      - Claim Status
+      summary: GetClaimStatusResponse
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/GetClaimStatusResponse/{requestId}\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/GetClaimStatusResponse/{requestId} | \n\nThis\
+        \ GET method is used to obtain the transaction result later using a unique request ID. Note: the\
+        \ data is deleted after 90 days.\n\nField | \nDescription | \n\nURL | \nhttps://api.pverify.com/API/GetClaimStatusResponse/{requestId}\
+        \ | \n\nMethod | \nGET | \n\nHeaders | \nDescription | \n\nAuthorization | \nBearer XXX | \n\n\
+        Client-API-Id | \nclient-api-id provided through pVerify | \n\nContent-Type | \napplication/json\
+        \ | \n\nURL Parameters | \nUnique Request id | \n\nData Parameters | \nNone | \n\nA successful\
+        \ GetClaimStatusResponse call will have the same format as the ClaimStatusInquiry response (above)."
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetAllPayers:
+    get:
+      operationId: getAllPayers
+      tags:
+      - Payers
+      summary: GetAllPayers
+      description: "Environment | \nURL | \n\nProduction | \nhttps://api.pverify.com/API/GetAllPayers\
+        \ | \n\nReturns the list of current pVerify payers (pVerify payer code & pVerify Payer Name).\
+        \ Note backoffice (non-EDI) payers are denoted with a payer code prefix of BO. For example BO00018\n\
+        \nGetAllPayers Request\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/GetAllPayers\
+        \ | \n\nMethod | \nGET | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token\
+        \ from above preceded by the String \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id\
+        \ | \n\nContent-Type | \napplication/json | \n\n*Note: The Client-API-Id header is required. Header\
+        \ keys are case sensitive.\n\nGetAllPayers Response\n\nKey | \nValue | \n\npayerCode | \nPayer\
+        \ Code | \n\npayerName | \nPayer Name | \n\nisActive | \nBoolean determines if payer is active\
+        \ | \n\nisSupportingEligibility | \nBoolean determines if payer is supporting eligibility | \n\
+        \nisSupportingClaims | \nBoolean to see if payer is supporting claims | \n\nisEDIPayer | \nBoolean\
+        \ to see if payer is EDI |"
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /api/GetPayerStatus:
+    get:
+      operationId: getPayerStatus
+      tags:
+      - Payers
+      summary: GetPayerStatus
+      description: "Environment | \nURL | \n\nProduction | \nhttps://api.pverify.com/API/GetPayerStatus\
+        \ | \n\nThis GET call will return the status of all pVerify payers. You can call this endpoint\
+        \ with an optional parameter of payerStatus and it will return payers from that status. By default\
+        \ the endpoint returns all payers and statuses. This API call does not require authentication.\n\
+        \nGetPayerStatus Request\n\nKey | \nValue | \n\nURL | \nhttp://api.pverify.com/api/GetPayerStatus\
+        \ | \n\nMethod | \nGET | \n\nURL Params | \nDescription | \n\nGetPayerStatus | \nAllows you to\
+        \ return specific payer status from response | \n\nHeaders | \nNone (this API call does not require\
+        \ authentication) | \n\nBody | \nNone | \n\nURL Parameter payerStatus value and description\n\n\
+        Value | \nDescription | \n\nPayer Up | \nPayer is Active and running transactions. | \n\nPayer\
+        \ Active | \nPayer is Active but no recent transactions. | \n\nPayer Inactive | \nThis is marked\
+        \ as inactive in our system. | \n\nPayer Down | \nPayer is Active but more transactions are failing\
+        \ from the past one hour. | \n\nGetPayerStatus Response\n\nKey | \nValue | \n\npayerName | \n\
+        Name of payer | \n\npayer_Code | \nPayer code | \n\npayerStatus | \nPayer Status (see URL parameters\
+        \ description) |"
+      responses:
+        '200':
+          description: OK
+  /API/GetPayerStatusStatistics:
+    get:
+      operationId: getPayerStatusStatistics
+      tags:
+      - Payers
+      summary: Down Payer List
+      description: This API will return an array of payers that are known to be temporarily down.
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+        example: Rejected
+      - name: checkForLastNumberOfHours
+        in: query
+        required: false
+        schema:
+          type: string
+        example: '1'
+      responses:
+        '200':
+          description: OK
+  /Widget/Setup:
+    post:
+      operationId: createWidgetSetup
+      tags:
+      - CGX Widget
+      summary: Setup
+      description: "Step 1 - Generate setupId to load widget in iframe\n\nSetupId will be required to\
+        \ load the widget in iframe. SetupId can be generated using Client ID and Client Secret. To generate\
+        \ SetupId, pass Client ID and Client Secret to following endpoint[POST] https://premium.pverify.com/Widget/Setupe.g.\n\
+        \n{\n\"clientApiId\":\"xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx\",\n\"clientSecret\":\"xxxxxxxxxxxxxxx\"\
+        \n}\n\nIt will generate a SetupId something like this XXXXxxXX-XXXX-XxXX-XxXX-XXxxXXXXxXX.\n\n\
+        Step 2 - Load iframe with following URL with setupIdIf you want to integrate Estimation widget,\
+        \ then set URL of iframe as shown belowhttps://premium.pverify.com/Component/EstimateInquiry?SetupId=setupId\n\
+        \nIf you want to integrate Eligibility widget, then set URL of iframe as shown belowhttps://premium.pverify.com/Component/ElgInquiry?SetupId=setupId\n\
+        \nDetails about SetupId \n\n1.Need to generate SetupId for each transaction \n\n2.SetupId is valid\
+        \ for 10 mins"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clientApiId:
+                  type: string
+                  example: xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx
+                clientSecret:
+                  type: string
+                  example: xxxxxxxxxxxxxxx
+            example:
+              clientApiId: xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx
+              clientSecret: xxxxxxxxxxxxxxx
+      responses:
+        '200':
+          description: OK
+  /api/CGXInquiry:
+    post:
+      operationId: cgxInquiry
+      tags:
+      - CGX Widget
+      summary: CGXInquiry - Estimates and Eligibility Combo
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/CGXInquiry | \n\
+        \nProduction | \nhttps://api.pverify.com/API/CGXInquiry | \n\nCGXInquiry is our combined Eligibility\
+        \ & Estimate endpoint.\n\nNote that only a handful of items are required. This allows very quick\
+        \ and easy coding to get a response. The NPI is hard coded to use the default NPI. The location\
+        \ can use the first/default location. Pricing is based either on payer/location specific pricing\
+        \ or the medicare price. If the former, then the CPT codes need to be imported into pVerify. If\
+        \ the later, then the location needs to have the state/ZIP code set, and the default medicare\
+        \ % needs to be set from Premium (Admin Setup). It is possible when configured to use remit data\
+        \ to power this estimate. The eligibility call is the same as the EligibilitySummary call. Either\
+        \ the practice type can be set from the body or it will use the default practice type set by client.\n\
+        \nHeaders\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/CGXInquiry | \n\nMethod |\
+        \ \nPOST | \n\nHeaders | \nDescription | \n\nAuthorization | \nAuthorization token from above\
+        \ preceded by the String \"Bearer\" | \n\nClient-API-Id | \nAPI ID provided by pVerify | \n\n\
+        Content-Type | \napplication/json | \n\n*Note: The Client-API-Id is required. Header keys are\
+        \ case sensitive.\n\nCGXInquiry Request Details\n\nProperty Name | \nData Type | \nUsage | \n\
+        Description | \n\nPayerCode | \nString | \nConditional | \npVerify Payer Code(ie Aetna 00001)\
+        \ | \n\nPayerName | \nString | \nConditional | \nYour payer name mapped through our system (note\
+        \ either PayerCode or PayerName is required) | \n\nMemberId | \nString | \nRequired | \nMember\
+        \ ID of Patient | \n\nPatientFirstName | \nString | \nRequired | \nPatient first name | \n\nPatientLastName\
+        \ | \nString | \nRequired | \nPatient last name | \n\nPatientDOB | \nString | \nRequired | \n\
+        Format must be MM/DD/YYYY | \n\nLocation | \nString | \nOptional | \nName of location - used to\
+        \ set the appointment pricing | \n\nZipCode | \nString | \nOptional | \n0 if default, else ZipCode\
+        \ - see notes below | \n\nAppointmentType | \nString | \nConditional | \nName of appointment |\
+        \ \n\nCPTList | \nArray of String | \nConditional | \nList of CPT codes - String array. Either\
+        \ this or AppointmentType is required. If both are set, the CPTList is used. | \n\nMRN | \nString\
+        \ | \nOptional | \nMRN or reference of patient - not used by pVerify | \n\nIsActiveSecondry |\
+        \ \nBoolean | \nOptional | \nFor use for estimate | \n\nSelfPay | \nBoolean | \nOptional | \n\
+        For estimate | \n\nPracticeTypeId | \nInteger | \nOptional | \nPlease consult Practice Type Code\
+        \ table - sets which practice type to use, i.e. 12 for physical therapy, which will return an\
+        \ object with PT benefits in the results. If you do not select a practice type, the default for\
+        \ your account will be used. Contact pVerify for more info. | \n\nEither PayerCode (preference)\
+        \ or your Payer Name mapped through our system can be used. The system will use the PayerCode\
+        \ if not empty.\n\nLocation is optional, it will pull the default location if not set. The location\
+        \ is used to power the Medicare pricing which relies on Zip Code. To overrride this, set the ZipCode\
+        \ field. If the Location field is a location that does not exist, it will be created. Note if\
+        \ this happens, the first user in the system must be role ClientAdmin else the API will not set\
+        \ the user to the location correctly. If this happens then the API call fails.\n\nEIther CPTList\
+        \ (string array) or AppointmentType (name) can be used. If both are present then CPTList will\
+        \ be used. This is used to pull the pricing and it's based on the following order.\n\nIF CptLIst\
+        \ is used, then this is the pricing order in the system:\n\nRemit Price (CPT/Payer specific) (based\
+        \ on EDI 835 data specific to client)\n\nPayer & CPT specific custom pricing (from your imported\
+        \ fee schedule)\n\nPayer & CPT specific medicare pricing (from your imported fee schedule)\n\n\
+        CPT specific custom pricing (from your imported fee schedule)\n\nMedicare custom pricing (from\
+        \ your imported fee schedule)\n\nMedicare pricing (from CMS)\n\nNote for #6 there is a client-wide\
+        \ medicare price that can be used to act as a multiplier for Medicare Pricing - it is set in Admin\
+        \ Profile from Premium.\n\nIf Appointment list is used - the pricing is the same as above except\
+        \ remit pricing is not factored in.\n\nCGXInquiry Response Fields\n\nProperty Name | \nData Type\
+        \ | \nDescription | \n\nrequestId | \nInteger | \nPrimary Key | \n\nisDataError | \nBoolean |\
+        \ \ntrue if error | \n\nerrorMessage | \nString | \nError message | \n\neligibilityRequestID |\
+        \ \nInteger | \nPrimary Key for request | \n\nelgStatus | \nString | \nActive if patient's insurance\
+        \ is active | \n\nelgResponseMessage | \nString | \nError from eligibility call | \n\napiResponseCode\
+        \ | \nInteger | \n0 if no error | \n\napiResponseMessage | \nString | \nProcessed if no error\
+        \ | \n\ndetailResponse.preAuthStatus | \nString | \nNot yet supported | \n\ndetailResponse.paFrom\
+        \ | \nString | \nNot yet supported | \n\ndetailResponse.locationName | \nString | \nName of location\
+        \ from request | \n\ndetailResponse.cptCode | \nString | \nCPT Code | \n\ndetailResponse.co_ins_Percentage\
+        \ | \nString | \nCoinsurance | \n\ndetailResponse.co_Pay | \nString | \nCopay | \n\ndetailResponse.deductible_remaining\
+        \ | \nString | \nDeductible Remaining | \n\ndetailResponse.out_of_Pocket_remaining | \nString\
+        \ | \nOOP Remaining | \n\ndetailResponse.estimatedAllowable | \nString | \nAllowed amount from\
+        \ payer | \n\ndetailResponse.EstPtResponsibilitywDeduc | \nString | \nEstimate for patient responsibility\
+        \ with Deductible | \n\ndetailResponse.EstPtResponsibilitywoDeduc | \nString | \nEstimate for\
+        \ patient responsibility without Deductible | \n\ndetailResponse.EstPtResponsibilityMessage |\
+        \ \nString | \nPatient Responsibility message | \n\ndetailResponse.amountPayable | \nString |\
+        \ \nAmount due by patient | \n\nResponse JSON:\n\nStartFragment\n\n{\"requestId\": 299,\"isDataError\"\
+        : false,\"errorMessage\": \" Location set by default location. \",\"detailResponse\": {\"preAuthStatus\"\
+        : null,\"paFrom\": null,\"locationName\": null,\"cptCode\": \"70553\",\"co_ins_Percentage\": \"\
+        0\",\"co_Pay\": \"225.00\",\"deductible_remaining\": \"0.00\",\"out_"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                PayerCode:
+                  type: string
+                  example: 00192
+                PayerName:
+                  type: string
+                  example: United HC
+                MemberId:
+                  type: string
+                  example: '1234'
+                PatientFirstName:
+                  type: string
+                  example: John
+                PatientLastName:
+                  type: string
+                  example: Doe
+                PatientDOB:
+                  type: string
+                  example: 01/01/2000
+                Location:
+                  type: string
+                  example: Brooklyn
+                AppointmentType:
+                  type: string
+                  example: MRI Brain
+                CPTList:
+                  type: array
+                  items:
+                    type: string
+                    example: '77001'
+                MRN:
+                  type: string
+                  example: '1234'
+                IsActiveSecondry:
+                  type: boolean
+                  example: false
+                SelfPay:
+                  type: boolean
+                  example: false
+                PracticeTypeId:
+                  type: integer
+                  example: 25
+            example:
+              PayerCode: 00192
+              PayerName: United HC
+              MemberId: '1234'
+              PatientFirstName: John
+              PatientLastName: Doe
+              PatientDOB: 01/01/2000
+              Location: Brooklyn
+              AppointmentType: MRI Brain
+              CPTList:
+              - '77001'
+              - '77002'
+              MRN: '1234'
+              IsActiveSecondry: false
+              SelfPay: false
+              PracticeTypeId: 25
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/SameOrSimilarInquiry:
+    post:
+      operationId: sameOrSimilarInquiry
+      tags:
+      - Same or Similar
+      summary: SameOrSimilarInquiry
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/SameOrSimilarInquiry\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/SameOrSimilarInquiry | \n\nThis endpoint submits\
+        \ a Same/Similar request into our queue. Note that this is not real time, and either the postback\
+        \ URL must be used (to submit the response to), or the GetSameOrSimilarResponse endpoint must\
+        \ be called with the request ID.\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/SameOrSimilarInquiry\
+        \ | \n\nMethod | \nPOST | \n\nHeaders | \nDescription | \n\nContent-Type | \napplication/json\
+        \ | \n\nAuthorization | \nAuthorization token from above preceded by the String \"Bearer\" | \n\
+        \nClient-API-Id* | \nYour pVerify client-api-id | \n\nBody | \nDescription | \n\nData Parameters\
+        \ | \nSee Right Panel | \n\n*Note: The Client-API-Id is required in header. Header keys are case\
+        \ sensitive.\n\nSameOrSimilarInquiry Request fields\n\nProperty Name | \nData Type | \nUsage |\
+        \ \nDescription | \n\nmemberId | \nString | \nRequired | \nPatient's member ID (MBI). | \n\npatient.FirstName\
+        \ | \nString | \nRequired | \nPatient First Name. | \n\npatientLastName | \nString | \nRequired\
+        \ | \nPatient Last Name. | \n\npatientDOB | \nString | \nRequired | \nPatient DOB (Expected format:\
+        \ MM/dd/YYYY ie 01/01/2000). | \n\npatientStateCode | \nString | \nRequired | \nPatient State\
+        \ Code ex: AL. | \n\nhcpcsCodes | \nString | \nRequired | \nHCPCS starting with A, B, E, K and\
+        \ L Codes supported, can sent multiple codes in same alphabetical category separated by comma.\
+        \ | \n\ndosStart | \nString | \nOptional | \nDate of service start date (Expected format: MM/dd/YYYY\
+        \ ie 01/01/2000). Default value is 5 years before date to current date. | \n\ndosEnd | \nString\
+        \ | \nOptional | \nDate of service end date (Expected format: MM/dd/YYYY ie 01/01/2000). Default\
+        \ value is current date (Today's date). | \n\nlocation | \nString | \nOptional | \nLocation name\
+        \ and the default is client user's location or client's location. | \n\ncallbackURL | \nString\
+        \ | \nOptional | \nJSON response will be posted to callbackURL when inquiry is processed and if\
+        \ callbackURL is valid. This URL should support HTTP POST method and Content-Type =’application/json’\
+        \ | \n\nAPIResponseCode Meaning\n\nAPIResponseCode | \nDescription | \n\n0 | \nProcessed | \n\n\
+        1 | \nRejected | \n\n2 | \nNoFunds (Insufficient Account Balance) | \n\n3 | \nPending (Pending\
+        \ need to get response later) | \n\n4 | \nInvalidRequest (Required Data Missing) | \n\n5 | \n\
+        InvalidFormat (data fields / data format is wrong) | \n\n6 | \nLocationError (Location is not\
+        \ configured) | \n\nSame or Similar Response Details\n\nProperty Name | \nData Type | \nDescription\
+        \ | \n\nRequestId | \nlong | \nSame or Similar Request ID. | \n\napiResponseCode | \nint | \n\
+        API transaction response code. Please see apiResponseCodes section. | \n\napiResponseMessage |\
+        \ \nString | \nAPI transaction response message. | \n\nisDataError | \nboolean | \nTrue - when\
+        \ invalid patient details (Invalid MBI or Incorrect DOB, Name etc) | \n\nClaims | \nList | \n\
+        \ | \n\n | \nContains claim status info. | \n | \n\nMessage | \nString | \nContains messages other\
+        \ than error messages (No claims found). | \n\nStatus | \nString | \nStatus of transaction. |\
+        \ \n\nClaim.HCPCS | \nString | \nContains HCPCS returned in response. | \n\nClaim.Status | \n\
+        String | \nContains Claim & Code status âAllowed ,Denied or No Claims. For Invalid data request\
+        \ it is Error. | \n\nClaim.DOSStart | \nString | \nClaim & Code Date of service start date. It\
+        \ is empty for Error or for No Claims. (Expected format: MM/dd/YYYY ie 01/01/2000) | \n\nClaim.DOSEnd\
+        \ | \nString | \nClaim & Code Date of service end date. It is empty for Jurisdiction A and D inquiries.\
+        \ It is empty for Error or for No Claims. (Expected format: MM/dd/YYYY ie 01/01/2000) | \n\nClaim.Unit\
+        \ | \nString | \nNo of units. | \n\nClaim.SupplierName | \nString | \nContains supplier name for\
+        \ all allowed or denied requests. Empty for no claims & error. | \n\nClaim.phone | \nString |\
+        \ \nContains supplier phone number for all allowed or denied. Empty for no claims & error. | \n\
+        \nClaim.Message | \nString | \nContains notes or error message, Ex: No claims found or Invalid\
+        \ MBI or Incorrect DOB or Incorrect name | \n\nDetailsURL | \nstring | \nURL for the full report\
+        \ | \n\nExpectedTimeInSeconds | \nstring | \nIt gives expected response time in seconds | \n\n\
+        Response JSON Processing Steps\n\nStep 1: Check the value of the API Response Code property. If\
+        \ the API Response Code is 3 (Pending) then the request is pending and the Request ID can be extracted.\n\
+        \nStep 2: Save the data\n\nNote: The Same or Similar API always returns API response code as 3\
+        \ (pending)"
+      deprecated: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                memberId:
+                  type: string
+                  example: '1231234567'
+                patientFirstName:
+                  type: string
+                  example: Test1
+                patientLastName:
+                  type: string
+                  example: Test2
+                patientDOB:
+                  type: string
+                  example: 01/02/2020
+                patientStateCode:
+                  type: string
+                  example: NJ
+                hcpcsCodes:
+                  type: string
+                  example: L3960,L3982,L3995
+                dosStart:
+                  type: string
+                  example: 04/21/2020
+                dosEnd:
+                  type: string
+                  example: 04/21/2020
+                location:
+                  type: string
+                  example: location Name
+                callBackUrl:
+                  type: string
+            example:
+              memberId: '1231234567'
+              patientFirstName: Test1
+              patientLastName: Test2
+              patientDOB: 01/02/2020
+              patientStateCode: NJ
+              hcpcsCodes: L3960,L3982,L3995
+              dosStart: 04/21/2020
+              dosEnd: 04/21/2020
+              location: location Name
+              callBackUrl: ''
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetSameOrSimilarResponse/{requestId}:
+    get:
+      operationId: getSameOrSimilarResponse
+      tags:
+      - Same or Similar
+      summary: GetSameOrSimilarResponse
+      description: "Get Same or Similar Response Using Unique Request ID\n\nEnvironment | \nURL | \n\n\
+        Test | \nhttps://testapi.pverify.com/API/GetSameOrSimilarResponse/125 | \n\nProduction | \nhttps://api.pverify.com/API/GetSameOrSimilarResponse/125\
+        \ | \n\nThis call is used to get the transaction result later using a unique request ID.\n\nNote:\
+        \ We purge this data after 90 days\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/GetSameOrSimilarResponse/125\
+        \ | \n\nMethod | \nGET | \n\nHeaders | \nDescription | \n\nContent-Type | \napplication/json |\
+        \ \n\nAuthorization | \nAuthorization token from above preceded by the String \"Bearer\" | \n\n\
+        Client-API-Id* | \nYour pVerify client-api-id | \n\n*Note: The Client-API-Id header is required.\
+        \ Header keys are case sensitive.\n\nNotes\n\nAlways check for apiResponseCode property value\
+        \ before processing.\n\nIf APIResponseCode is zero then look for ErrorMessage and Claims to process\
+        \ response.\n\nA successful GetSameOrSimilarResponse will have the same format as the SameOrSimilarInquiry\
+        \ response.\n\nAPI Response Codes\n\nAPIResponseCode | \nDescription | \n\n0 | \nProcessed | \n\
+        \n1 | \nRejected | \n\n2 | \nNoFunds (Insufficient Account Balance) | \n\n3 | \nPending (Pending\
+        \ need to get response later) | \n\n4 | \nInvalidRequest (Required Data Missing) | \n\n5 | \n\
+        InvalidFormat (data fields / data format is wrong) | \n\n6 | \nLocationError (Location is not\
+        \ configured) | \n\nField Descriptions\n\nSame or Similar Response Details\n\nProperty Name |\
+        \ \nData Type | \nDescription | \n\nRequestId | \nlong | \nSame or Similar Request ID. | \n\n\
+        apiResponseCode | \nint | \nAPI transaction response code. Please see apiResponseCodes section.\
+        \ | \n\napiResponseMessage | \nString | \nAPI transaction response message. | \n\nisDataError\
+        \ | \nboolean | \nTrue - when invalid patient details (Invalid MBI or Incorrect DOB, Name etc)\
+        \ | \n\nClaims | \nList | \n | \n\n | \nContains claim status info. | \n | \n\nMessage | \nString\
+        \ | \nContains messages other than error messages (No claims found). | \n\nStatus | \nString |\
+        \ \nStatus of transaction. | \n\nClaim.HCPCS | \nString | \nContains HCPCS returned in response.\
+        \ | \n\nClaim.Status | \nString | \nContains Claim & Code status âAllowed ,Denied or No Claims.\
+        \ For Invalid data request it is Error. | \n\nClaim.DOSStart | \nString | \nClaim & Code Date\
+        \ of service start date. It is empty for Error or for No Claims. (Expected format: MM/dd/YYYY\
+        \ ie 01/01/2000) | \n\nClaim.DOSEnd | \nString | \nClaim & Code Date of service end date. It is\
+        \ empty for Jurisdiction A and D inquiries. It is empty for Error or for No Claims. (Expected\
+        \ format: MM/dd/YYYY ie 01/01/2000) | \n\nClaim.Unit | \nString | \nNo of units. | \n\nClaim.SupplierName\
+        \ | \nString | \nContains supplier name for all allowed or denied requests. Empty for no claims\
+        \ & error. | \n\nClaim.phone | \nString | \nContains supplier phone number for all allowed or\
+        \ denied. Empty for no claims & error. | \n\nClaim.Message | \nString | \nContains notes or error\
+        \ message, Ex: No claims found or Invalid MBI or Incorrect DOB or Incorrect name | \n\nDetailsURL\
+        \ | \nstring | \nURL for the full report |"
+      deprecated: true
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /PDFReport/SameorSimilar/{id}:
+    get:
+      operationId: getSameOrSimilarReport
+      tags:
+      - Same or Similar
+      summary: Same Or Similar Report
+      description: "This returns a PDF report of the Same or Similar request.\n\nNote two things: \n\n\
+        The endpoint is premium.pverify.com \n\nAuthentication token is not used, instead pass your API\
+        \ ID and Secret."
+      deprecated: true
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - clientApiId: []
+        clientSecret: []
+  /API/GetSameAndSimilarDetailsURL/{requestId}:
+    get:
+      operationId: getSameOrSimilarDetailsUrl
+      tags:
+      - Same or Similar
+      summary: SoS Details URL
+      description: "Environment | \nURL | \n\nTest | \n/API/GetSameAndSimilarDetailsURL/{id} | \n\nProduction\
+        \ | \n/API/GetSameAndSimilarDetailsURL/{id} | \n\nThis GET method will return details URL with\
+        \ Same and Simialr Request ID as a parameter.\n\nGetSameAndSimilarDetailsURL Request\n\nKey |\
+        \ \nValue | \n\nURL | \n/API/GetSameAndSimilarDetailsURL/{id} | \n\nMethod | \nGET | \n\nHeaders\
+        \ | \nDescription | \n\nAuthorization | \nAuthorization token from above preceded by the String\
+        \ \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id | \n\nContent-Type | \napplication/json\
+        \ | \n\n*Note: The Client-API-Id header is required. Header keys are case sensitive.\n\nGetSameAndSimilarDetailsURL\
+        \ Resposne\n\nKey | \nValue | \n\nisDetailsURLGenerated | \nTrue or false | \n\nurl | \nstring\
+        \ URL | \n\nerrorMessage | \nMessage when isDetailsURLGenerated is false | \n\nJSON Response\n\
+        \n{\n\n\"isDetailsURLGenerated\": true,\n\n\"url\": \"https://premium.pverify.com/Details\",\n\
+        \n\"errorMessage\": null\n\n}"
+      deprecated: true
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/CMNInquiry:
+    post:
+      operationId: cmnInquiry
+      tags:
+      - CMN
+      summary: CMNInquiry
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/CMNInquiry | \n\
+        \nProduction | \nhttps://api.pverify.com/API/CMNInquiry | \n\nThis endpoint submits a Same/Similar\
+        \ request into our queue. Note that this is not real time, and either the postback URL must be\
+        \ used (to submit the response to), or the GetSameOrSimilarResponse endpoint must be called with\
+        \ the request ID.\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/CMNInquiry | \n\n\
+        Method | \nPOST | \n\nHeaders | \nDescription | \n\nContent-Type | \napplication/json | \n\nAuthorization\
+        \ | \nAuthorization token from above preceded by the String \"Bearer\" | \n\nClient-API-Id* |\
+        \ \nYour pVerify client-api-id | \n\nBody | \nDescription | \n\nData Parameters | \nSee Right\
+        \ Panel | \n\n*Note: The Client-API-Id is required in header. Header keys are case sensitive.\n\
+        \nCMNInquiry Request fields\n\nProperty Name | \nData Type | \nUsage | \nDescription | \n\nmemberId\
+        \ | \nString | \nRequired | \nPatient's member ID (HICN). | \n\npatientFirstName | \nString |\
+        \ \nRequired | \nPatient First Name. | \n\npatientLastName | \nString | \nRequired | \nPatient\
+        \ Last Name. | \n\npatientDOB | \nString | \nRequired | \nPatient DOB (Expected format: MM/dd/YYYY\
+        \ ie 01/01/2000). | \n\npatientStateCode | \nString | \nRequired | \nPatient State Code ex: AL.\
+        \ | \n\nhcpcsCode | \nString | \nRequired | \nHCPCS -L codes only. Multiple codes can be sent\
+        \ by separating with a comma (,). | \n\ndosStart | \nString | \nOptional | \nDate of service start\
+        \ date (Expected format: MM/dd/YYYY ie 01/01/2000). Default value is 5 years before date to current\
+        \ date. | \n\ndosEnd | \nString | \nOptional | \nDate of service end date (Expected format: MM/dd/YYYY\
+        \ ie 01/01/2000). Default value is current date (Today's date). | \n\nlocation | \nString | \n\
+        Optional | \nLocation name and the default is client user's location or client's location. | \n\
+        \ncallBackUrl | \nString | \nOptional | \nto Post response data on client side | \n\nAPIResponseCode\
+        \ Meaning\n\nAPIResponseCode | \nDescription | \n\n0 | \nProcessed | \n\n1 | \nRejected | \n\n\
+        2 | \nNoFunds (Insufficient Account Balance) | \n\n3 | \nPending (Pending need to get response\
+        \ later) | \n\n4 | \nInvalidRequest (Required Data Missing) | \n\n5 | \nInvalidFormat (data fields\
+        \ / data format is wrong) | \n\n6 | \nLocationError (Location is not configured) | \n\n** Response\
+        \ JSON Processing Steps **\n\nStep 1: Check the value of the API Response Code property. If the\
+        \ API Response Code is 3 (Pending) then the request is pending and the Request ID can be extracted.\n\
+        \nStep 2: Save the data\n\nNote: The CMN API always returns API response code as 3 (pending)"
+      deprecated: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                memberId:
+                  type: string
+                  example: '123456'
+                patientFirstName:
+                  type: string
+                  example: First Name
+                patientLastName:
+                  type: string
+                  example: Last Name
+                patientDOB:
+                  type: string
+                  example: Date of birth
+                patientStateCode:
+                  type: string
+                  example: StateCode
+                hcpcsCode:
+                  type: string
+                  example: A, B, E, or K code
+                dosStart:
+                  type: string
+                  example: 12/09/2020
+                dosEnd:
+                  type: string
+                  example: 12/09/2020
+                location:
+                  type: string
+                  example: location Name
+                callBackUrl:
+                  type: string
+                  example: http://www.test.com/api/PostData
+            example:
+              memberId: '123456'
+              patientFirstName: First Name
+              patientLastName: Last Name
+              patientDOB: Date of birth
+              patientStateCode: StateCode
+              hcpcsCode: A, B, E, or K code
+              dosStart: 12/09/2020
+              dosEnd: 12/09/2020
+              location: location Name
+              callBackUrl: http://www.test.com/api/PostData
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetCMNResponse/{requestId}:
+    get:
+      operationId: getCMNResponse
+      tags:
+      - CMN
+      summary: GetCMNResponse
+      description: "Environment | \nURL | \n\nTest | \nhttps://testapi.pverify.com/API/GetCMNResponse/{requestID}\
+        \ | \n\nProduction | \nhttps://api.pverify.com/API/GetCMNResponse/{requestID} | \n\nThis call\
+        \ is used to get the transaction result later using a unique request ID.\n\nNote: We purge this\
+        \ data after 90 days\n\nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/GetCMNResponse/{requestID}\
+        \ | \n\nMethod | \nGET | \n\nHeaders | \nDescription | \n\nContent-Type | \napplication/json |\
+        \ \n\nAuthorization | \nAuthorization token from above preceded by the String \"Bearer\" | \n\n\
+        Client-API-Id* | \nYour pVerify client-api-id | \n\n*Note: The Client-API-Id header is required.\
+        \ Header keys are case sensitive.\n\nNotes\n\nAlways check for apiResponseCode property value\
+        \ before processing.\n\nIf APIResponseCode is zero then look for ErrorMessage and Claims to process\
+        \ response.\n\nA successful GetSameOrSimilarResponse will have the same format as the SameOrSimilarInquiry\
+        \ response.\n\nAPI Response Codes\n\nAPIResponseCode | \nDescription | \n\n0 | \nProcessed | \n\
+        \n1 | \nRejected | \n\n2 | \nNoFunds (Insufficient Account Balance) | \n\n3 | \nPending (Pending\
+        \ need to get response later) | \n\n4 | \nInvalidRequest (Required Data Missing) | \n\n5 | \n\
+        InvalidFormat (data fields / data format is wrong) | \n\n6 | \nLocationError (Location is not\
+        \ configured) | \n\nCMN Response Details\n\nProperty Name | \nData Type | \nDescription | \n\n\
+        RequestId | \nlong | \nSame or Similar Request ID. | \n\napiResponseCode | \nint | \nAPI transaction\
+        \ response code. Please see apiResponseCodes section. | \n\napiResponseMessage | \nString | \n\
+        API transaction response message. | \n\nisDataError | \nboolean | \nTrue - when invalid patient\
+        \ details (Invalid HICN/MBI or Invalid DOB); False - for all valid requests. | \n\nCertificatesCount\
+        \ | \nint | \nNo of certiifcates found in response | \n\nMessage | \nString | \nContains messages\
+        \ other than error messages (No claims found). | \n\nStatus | \nString | \nStatus of transaction\
+        \ (Processed, Rejected or Pending). | \n\nRentalsDescription | \nString | \nOxygen Rentals Description.\
+        \ | \n\nIsVerifiedAllJusrisdiction | \nBoolean | \nTells the transaction is verified in all Jurisdiction\
+        \ or not.If value false then need to get response using same API later. | \n\nVerifiedJurisdcitions\
+        \ | \nString Array | \nContians Verified jurisdictions. | \n\nCertificates | \nList | \n | \n\n\
+        \ | \nContains claim certificates status info. | \n | \n\nCertificate.SubmittedHcpcs | \nString\
+        \ | \nHCPCS Code Submitted in Request | \n\nCertificate.ApprovedHcpcs | \nString | \nHCPCS Code\
+        \ which is approved by Medicare | \n\nCertificate.InitialDate | \nString | \nInitial Date of Billing\
+        \ | \n\nCertificate.RevisedDate | \nString | \nRevised Date for CMN, if any. | \n\nCertificate.LastClaimDate\
+        \ | \nString | \nDate on which Last claim is recorded. | \n\nCertificate.Status | \nString | \n\
+        Status of Certificate. Valid / Open | \n\nCertificate.SupplierName | \nString | \nSupplier Name.\
+        \ | \n\nCertificate.SupplierPhone | \nString | \nSupplier Phone Number | \n\nCertificate.TypeValue\
+        \ | \nString | \nType – Initial, Recert or Revised. | \n\nCertificate.LengthOfNeed | \nString\
+        \ | \nLength for which CMN is approved. | \n\nCertificate.TotalRentalPayments | \nTotal Rental\
+        \ Payments | \n | \n\nCertificate.Message | \nString | \nContains Message like No Certificates\
+        \ are found. |"
+      deprecated: true
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /PDFReport/CMN/{id}:
+    get:
+      operationId: getCmnReport
+      tags:
+      - CMN
+      summary: CMN Report
+      description: 'This returns a PDF report of the CMN request.
+
+
+        Note two things:
+
+
+        The endpoint is premium.pverify.com
+
+
+        Authentication token is not used, instead pass your API ID and Secret.'
+      deprecated: true
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - clientApiId: []
+        clientSecret: []
+  /API/SNFInquiry:
+    post:
+      operationId: snfInquiry
+      tags:
+      - SNF
+      summary: SNF Inquiry
+      description: "Environment | \nURL | \n\nProduction | \nhttps://api.pverify.com/API/SNFInquiry |\
+        \ \n\nThe pVerify API for SNF is like Same or Similar in that it will not deliver a result instantly,\
+        \ instead the user is expected to call the GET method 1 minute later.\n\nKey | \nValue | \n\n\
+        URL | \nhttps://api.pverify.com/API/SNFInquiry | \n\nMethod | \nPOST | \n\nHeaders | \nDescription\
+        \ | \n\nContent-Type | \napplication/json | \n\nAuthorization | \nAuthorization token from above\
+        \ preceded by the String \"Bearer\" | \n\nClient-API-Id* | \nYour pVerify client-api-id | \n\n\
+        Body | \nSee Below | \n\nSNF Codes Inquiry Request Fields\n\nKey | \nType | \nUsage | \nValue\
+        \ | \n\nPayerCode | \nString | \nRequired | \nPayer Code | \n\nMemberId | \nString | \nRequired\
+        \ | \nMember ID | \n\nPatientFirstName | \nString | \nRequired | \nPatient First Name | \n\nPatientLastName\
+        \ | \nString | \nRequired | \nPatient Last Name | \n\nPatientDOB | \nString | \nRequired | \n\
+        Patient Date of Birth (MM/DD/YYYY) | \n\nPatientStateCode | \nString | \nRequired | \nPatient\
+        \ State | \n\nDOS | \nString | \nOptional | \nDate of Service (MM/DD/YYYY) | \n\nLocation | \n\
+        String | \nOptional | \nLocation is the practice location. Note by setting this, you will lock\
+        \ the patient to one location, so that users that login in via our portal who are not authorized\
+        \ to see that location will not see the patient. | \n\nCallbackURL | \nString | \nOptional | \n\
+        JSON response will be posted to callbackURL when inquiry is processed and if callbackURL is valid.\
+        \ This URL should support HTTP POST method and Content-Type =’application/json’ | \n\nMRN | \n\
+        String | \nOptional | \nMedical Record Number (like Same or Similar, when populated we will send\
+        \ the results back to this URL) - optional | \n\nSNF Codes Inquiry Response Fields\n\nKey | \n\
+        Type | \nDescription | \n\nrequestId | \nString | \nrequestId | \n\nProcessed | \nboolean | \n\
+        Returns true if processed | \n\nisDataError | \nboolean | \nDetermines if data error occurred\
+        \ | \n\nerrorMessage | \nString | \nError Message | \n\nDetails | \nObject | \nDetails | \n\n\
+        Details.DOSStart | \nString | \nDate of service start date (Format: MM/DD/YYYY) | \n\nDetails.DOSEnd\
+        \ | \nString | \nDate of service end (Format: MM/DD/YYYY) | \n\nDetails.AdmitanceDate | \nString\
+        \ | \nAdmitance date | \n\nDetails.DischargedDate | \nString | \nDischarged date | \n\nDetails.BillingNPI\
+        \ | \nString | \nBilling NPI | \n\nDetails.PatientStatus | \nString | \nPatient Status | \n\n\
+        Details.Message | \nString | \nDetails Message | \n\nDetails.SNFRequestId | \nInt | \nSNF request\
+        \ ID | \n\nDetails.CreatedOn | \nString | \nDate and time created | \n\nDetails.BillingType |\
+        \ \nString | \nBilling type | \n\nMessage | \nString | \nMessage | \n\nStatus | \nString | \n\
+        Status | \n\nexpectedTimeInSeconds | \nString | \nExpected time to get response (when you can\
+        \ call GET) | \n\napiResponseCode | \nint | \nAPI Response Code | \n\napiResponseMessage | \n\
+        String | \nAPI Response Message |"
+      deprecated: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                PayerCode:
+                  type: string
+                  example: '00007'
+                MemberId:
+                  type: string
+                  example: 123456789A
+                PatientFirstName:
+                  type: string
+                  example: firstName
+                PatientLastName:
+                  type: string
+                  example: lastName
+                PatientDOB:
+                  type: string
+                  example: 01/02/1983
+                PatientStateCode:
+                  type: string
+                  example: TX
+                DOS:
+                  type: string
+                  example: 07/22/2020
+                Location:
+                  nullable: true
+                CallbackURL:
+                  nullable: true
+                MRN:
+                  nullable: true
+            example:
+              PayerCode: '00007'
+              MemberId: 123456789A
+              PatientFirstName: firstName
+              PatientLastName: lastName
+              PatientDOB: 01/02/1983
+              PatientStateCode: TX
+              DOS: 07/22/2020
+              Location: null
+              CallbackURL: null
+              MRN: null
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
+  /API/GetSNFResponse/{requestId}:
+    get:
+      operationId: getSNFResponse
+      tags:
+      - SNF
+      summary: GetSNFResponse
+      description: "Environment | \nURL | \n\nProduction | \nhttps://api.pverify.com/API/GETSNFResponse\
+        \ | \n\nThis GET call is intended to retrieve the SNF response initiated by the SNFInquiry POST\
+        \ call. By adding the requestId received in the POST call, users can retrieve the SNFInquiry Response.\n\
+        \nKey | \nValue | \n\nURL | \nhttps://api.pverify.com/API/GETSNFResponse | \n\nMethod | \nGET\
+        \ | \n\nHeaders | \nDescription | \n\nContent-Type | \napplication/json | \n\nAuthorization |\
+        \ \nAuthorization token from above preceded by the String \"Bearer\" | \n\nClient-API-Id* | \n\
+        Your pVerify client-api-id | \n\nBody | \nNone | \n\nURL Params | \nRequestId (see SNFInquiry)\
+        \ | \n\nGetSNFResponse Response Fields\n\nKey | \nType | \nDescription | \n\nrequestId | \nString\
+        \ | \nrequestId | \n\nProcessed | \nboolean | \nDetermines if processed | \n\nIsDataError | \n\
+        boolean | \nDetermines if error occurred | \n\nerrorMessage | \nString | \nError Message | \n\n\
+        Details | \nObject | \nDetails | \n\nDetails.Id | \nint | \nId | \n\nDetails.DOSStart | \nString\
+        \ | \nDate of Service Start (MM/DD/YYYY) | \n\nDetails.DOSEnd | \nString | \nDate of Service End\
+        \ (MM/DD/YYYY) | \n\nDetails.AdmitanceDate | \nString | \nAdmittance Date (MM/DD/YYYY) | \n\n\
+        Details.DischargedDate | \nString | \nDischarged Date (MM/DD/YYYY) | \n\nDetails.BillingAPI |\
+        \ \nString | \nBilling API | \n\nDetails.PatientStatus | \nString | \nPatient Status | \n\nDetails.Message\
+        \ | \nString | \nMessage | \n\nDetails.SNFRequestID | \nint | \nSNF request ID | \n\nDetails.CreatedOn\
+        \ | \nString | \nTime Stamp of date and time created | \n\nDetails.BillingType | \nString | \n\
+        Billing Type | \n\nmessage | \nString | \nMessage | \n\nstatus | \nString | \nStatus | \n\napiResponseCode\
+        \ | \nint | \nAPI Response Code | \n\napiResponseMessage | \nString | \nAPI Response Message |"
+      deprecated: true
+      parameters:
+      - name: requestId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Unique pVerify transaction / request id returned by the matching inquiry call.
+      responses:
+        '200':
+          description: OK
+      security:
+      - bearerAuth: []
+        clientApiId: []
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
-      description: OAuth2 access token returned by the /Token endpoint.
+      description: 'OAuth2 access token returned by POST /Token, sent as `Authorization: Bearer <token>`.'
     clientApiId:
       type: apiKey
       in: header
       name: Client-API-Id
-      description: Client API identifier issued by pVerify, required on all API calls.
-  schemas:
-    TokenRequest:
-      type: object
-      required:
-        - Client_Id
-        - Client_Secret
-        - grant_type
-      properties:
-        Client_Id:
-          type: string
-        Client_Secret:
-          type: string
-        grant_type:
-          type: string
-          default: client_credentials
-          enum:
-            - client_credentials
-    TokenResponse:
-      type: object
-      properties:
-        access_token:
-          type: string
-        token_type:
-          type: string
-          example: bearer
-        expires_in:
-          type: integer
-          description: Token lifetime in seconds.
-    Provider:
-      type: object
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        npi:
-          type: string
-        pin:
-          type: string
-    Subscriber:
-      type: object
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        dob:
-          type: string
-          description: Date of birth (MM/DD/YYYY).
-        memberID:
-          type: string
-    Dependent:
-      type: object
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
-        dob:
-          type: string
-        gender:
-          type: string
-        patientRelationship:
-          type: string
-    EligibilityRequest:
-      type: object
-      required:
-        - payerCode
-        - provider
-        - subscriber
-      properties:
-        payerCode:
-          type: string
-          description: pVerify payer code identifying the target insurer.
-        payerName:
-          type: string
-        provider:
-          $ref: '#/components/schemas/Provider'
-        subscriber:
-          $ref: '#/components/schemas/Subscriber'
-        dependent:
-          $ref: '#/components/schemas/Dependent'
-        isSubscriberPatient:
-          type: string
-          description: '"True" if the subscriber is the patient, otherwise "False".'
-        doS_StartDate:
-          type: string
-          description: Date of service start (MM/DD/YYYY).
-        doS_EndDate:
-          type: string
-          description: Date of service end (MM/DD/YYYY).
-        PracticeTypeCode:
-          type: string
-          description: Code identifying the practice type / benefit set requested.
-        referenceId:
-          type: string
-        Location:
-          type: string
-        IncludeTextResponse:
-          type: boolean
-        InternalId:
-          type: string
-        CustomerID:
-          type: string
-    EligibilitySummaryResponse:
-      type: object
-      properties:
-        requestId:
-          type: string
-        APIResponseCode:
-          type: string
-        APIResponseMessage:
-          type: string
-        PayerName:
-          type: string
-        PlanCoverageSummary:
-          type: object
-          additionalProperties: true
-        HBPC_Deductible_OOP_Summary:
-          type: object
-          additionalProperties: true
-        DemographicInfo:
-          type: object
-          additionalProperties: true
-    EligibilityInquiryResponse:
-      type: object
-      properties:
-        requestId:
-          type: string
-        APIResponseCode:
-          type: string
-        APIResponseMessage:
-          type: string
-        Status:
-          type: string
-        EDIResponse:
-          type: string
-          description: Raw 271 EDI response when requested.
-        ServiceDetails:
-          type: array
-          items:
-            type: object
-            additionalProperties: true
-    PendingInquiry:
-      type: object
-      properties:
-        requestId:
-          type: string
-        status:
-          type: string
-        submittedDate:
-          type: string
-        payerCode:
-          type: string
-    CancelTransactionRequest:
-      type: object
-      required:
-        - requestId
-      properties:
-        requestId:
-          type: string
-    StatusResponse:
-      type: object
-      properties:
-        APIResponseCode:
-          type: string
-        APIResponseMessage:
-          type: string
-        Status:
-          type: string
-    BatchEligibilityRequest:
-      type: object
-      required:
-        - requests
-      properties:
-        batchReferenceId:
-          type: string
-        requests:
-          type: array
-          items:
-            $ref: '#/components/schemas/EligibilityRequest'
-    BatchSubmissionResponse:
-      type: object
-      properties:
-        batchId:
-          type: string
-        accepted:
-          type: integer
-        status:
-          type: string
-    ClaimStatusRequest:
-      type: object
-      required:
-        - payerCode
-        - provider
-        - subscriber
-      properties:
-        payerCode:
-          type: string
-        provider:
-          $ref: '#/components/schemas/Provider'
-        subscriber:
-          $ref: '#/components/schemas/Subscriber'
-        claimNumber:
-          type: string
-        claimChargeAmount:
-          type: string
-        serviceStartDate:
-          type: string
-        serviceEndDate:
-          type: string
-    ClaimStatusResponse:
-      type: object
-      properties:
-        requestId:
-          type: string
-        APIResponseCode:
-          type: string
-        APIResponseMessage:
-          type: string
-        claimStatusCategoryCode:
-          type: string
-        claimStatusCode:
-          type: string
-        claimStatusDescription:
-          type: string
-        totalClaimChargeAmount:
-          type: string
-        claimPaymentAmount:
-          type: string
-    Payer:
-      type: object
-      properties:
-        payerCode:
-          type: string
-        payerName:
-          type: string
-        isActive:
-          type: boolean
-        isSupportingEligibility:
-          type: boolean
-        isSupportingClaims:
-          type: boolean
-        isEDIPayer:
-          type: boolean
-    EstimationRequest:
-      type: object
-      required:
-        - payerCode
-        - provider
-        - subscriber
-      properties:
-        payerCode:
-          type: string
-        provider:
-          $ref: '#/components/schemas/Provider'
-        subscriber:
-          $ref: '#/components/schemas/Subscriber'
-        serviceCptCodes:
-          type: array
-          items:
-            type: string
-        placeOfService:
-          type: string
-        contractedAmount:
-          type: string
-        dateOfService:
-          type: string
-    EstimationResponse:
-      type: object
-      properties:
-        requestId:
-          type: string
-        APIResponseCode:
-          type: string
-        APIResponseMessage:
-          type: string
-        estimatedPatientResponsibility:
-          type: string
-        estimatedInsurancePayment:
-          type: string
-        deductibleApplied:
-          type: string
-        coinsuranceApplied:
-          type: string
-        copayApplied:
-          type: string
+      description: Client API identifier issued by pVerify. Required on every call; header keys are case
+        sensitive.
+    clientSecret:
+      type: apiKey
+      in: header
+      name: Client-Secret
+      description: Client secret issued by pVerify, used by the one-step (no-token) endpoints and the
+        premium report endpoints.
