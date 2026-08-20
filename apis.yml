@@ -58,6 +58,9 @@ apis:
   baseURL: https://api.pverify.com
   tags:
   - Authentication
+  - Tokens
+  tags_raw:
+  - Authentication
   - OAuth2
   - Tokens
   properties:
