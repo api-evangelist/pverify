@@ -4,11 +4,18 @@
     {
       "source": "https://pverify.com/blog/",
       "feed_url": "https://pverify.com/blog/",
-      "title": "pVerify Blog",
+      "title": "",
       "saved": 0,
-      "error": "parse_failed"
+      "method": "none"
+    },
+    {
+      "source": "https://pverify.com/contact-support/",
+      "feed_url": "https://pverify.com/contact-support/",
+      "title": "",
+      "saved": 0,
+      "method": "none"
     }
   ],
-  "fetched": "2026-08-15T12:11:08Z",
+  "fetched": "2026-08-22T20:20:02Z",
   "post_count": 12
 }
