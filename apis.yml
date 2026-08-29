@@ -340,6 +340,9 @@ apis:
   - type: APIReference
     url: https://postman.pverify.com/
 common:
+- type: CapabilityMap
+  url: capabilities/pverify-capability-edges.yml
+  name: pVerify Business Capability Map
 - type: Website
   url: https://www.pverify.com
 - type: DeveloperPortal
