@@ -11,6 +11,18 @@ description: pVerify is a US healthcare insurance eligibility and revenue-cycle 
   bearer token plus a case-sensitive Client-API-Id header. pVerify publishes no OpenAPI — its machine-readable
   contract is a public Postman Collection v2.0.0 at https://postman.pverify.com/, from which the OpenAPI
   documents in this repository were derived operation-for-operation.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: tiered
   onboarding: sales-led
