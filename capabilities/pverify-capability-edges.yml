@@ -19,53 +19,54 @@ edges:
   capability_id_l1: BC-2800
   capability_name: Eligibility & Benefits Verification
   confidence: 0.95
-  evidence: 'POST /api/EligibilitySummary; GET /API/GetEligibility271/{requestId}; vendor: ''exchanges
-    X12 270/271 eligibility transactions and returns parsed ... benefit summaries'''
-  reason: Core 270/271 eligibility and benefit verification transactions with payers — unambiguously eligibility
-    and benefits verification.
+  evidence: GET /API/GetEligibility271/{requestId}  getEligibility271; POST /api/EligibilitySummary
+  reason: X12 270/271 eligibility transactions returning parsed benefit summaries is plainly verification
+    of insurance coverage and benefits before service.
 - tag: Dental Eligibility
   spec_file: pverify-dental-eligibility-api-openapi.yml
   capability_id: BC-2800.30
   capability_id_l1: BC-2800
   capability_name: Eligibility & Benefits Verification
   confidence: 0.9
-  evidence: POST /api/DentalEligibilityBenefitSummary  'DentalEligibilityBenefitSummary'
-  reason: Operations submit dental insurance eligibility inquiries and return parsed benefit summaries
-    — verification of coverage and benefits before service delivery.
+  evidence: POST /api/DentalEligibilityBenefitSummary  dentalEligibilityBenefitSummary
+  reason: Operations return insurance eligibility and benefit summaries for dental payers — directly Eligibility
+    & Benefits Verification prior to service delivery.
 - tag: Claim Status
   spec_file: pverify-claim-status-api-openapi.yml
   capability_id: BC-2870.30
   capability_id_l1: BC-2870
   capability_name: Claim Production & Submission
   confidence: 0.85
-  evidence: 'POST /API/ClaimStatusInquiry; vendor: ''runs 276/277 claim status inquiries'''
-  reason: X12 276/277 claim status inquiry against payers is exactly status tracking of submitted claims
-    within provider revenue cycle management.
+  evidence: 'POST /API/ClaimStatusInquiry  claimStatusInquiry ... vendor: ''runs 276/277 claim status
+    inquiries'''
+  reason: X12 276/277 claim status inquiry against payers matches Claim Production & Submission, which
+    explicitly covers 'status tracking of claims to payers'.
 - tag: Estimation
   spec_file: pverify-estimation-api-openapi.yml
   capability_id: BC-2800.40
   capability_id_l1: BC-2800
   capability_name: Financial Counselling & Estimation
   confidence: 0.85
-  evidence: POST /api/EstimateCalculation  estimateCalculation; 'pVerify Patient Cost Estimator API'
-  reason: Computes patient cost estimates, i.e. out-of-pocket estimation supporting patient financial
-    counselling before service.
+  evidence: pVerify Patient Cost Estimator API ... POST /api/EstimateCalculation  estimateCalculation
+  reason: Patient cost estimation calculation maps to Financial Counselling & Estimation (out-of-pocket
+    estimation) in patient access.
 - tag: Insurance Discovery
   spec_file: pverify-insurance-discovery-api-openapi.yml
   capability_id: BC-2800.30
   capability_id_l1: BC-2800
   capability_name: Eligibility & Benefits Verification
   confidence: 0.8
-  evidence: 'POST /api/InsuranceDiscovery; vendor: ''discovers unknown active coverage for self-pay patients'''
-  reason: Discovery of unknown active insurance coverage for self-pay patients is coverage/benefits verification
-    within patient access, upstream of billing.
+  evidence: 'POST /api/InsuranceDiscovery ... vendor: ''discovers unknown active coverage for self-pay
+    patients'''
+  reason: Discovery of active insurance coverage for patients presenting as self-pay is coverage/benefits
+    verification within patient access; could alternatively sit in revenue cycle, hence 0.8.
 - tag: CGX Widget
   spec_file: pverify-cgx-widget-api-openapi.yml
   capability_id: BC-2800
   capability_id_l1: BC-2800
   capability_name: Patient Access Management
-  confidence: 0.7
-  evidence: POST /api/CGXInquiry  'CGXInquiry - Estimates and Eligibility Combo'
-  reason: The single domain operation performs a combined patient cost estimate and insurance eligibility
-    inquiry, which sits in pre-encounter patient access. Because it deliberately spans both eligibility
-    verification and financial estimation, only the L1 is asserted.
+  confidence: 0.75
+  evidence: POST /api/CGXInquiry  cgxInquiry  CGXInquiry - Estimates and Eligibility Combo
+  reason: The inquiry combines insurance eligibility verification with patient cost estimates, both pre-encounter
+    patient-access activities. Because it spans both eligibility verification and financial estimation,
+    only the L1 is asserted.
