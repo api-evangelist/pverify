@@ -1,17 +1,21 @@
-generated: '2026-07-15'
+generated: '2026-09-16'
 method: generated
-source: openapi/pverify-openapi.yml
+source: openapi/pverify-authentication-api-openapi.yml, openapi/pverify-cgx-widget-api-openapi.yml,
+  openapi/pverify-claim-status-api-openapi.yml, openapi/pverify-cmn-api-openapi.yml, openapi/pverify-dental-eligibility-api-openapi.yml,
+  openapi/pverify-eligibility-api-openapi.yml, openapi/pverify-estimation-api-openapi.yml, openapi/pverify-insurance-discovery-api-openapi.yml,
+  openapi/pverify-mbi-lookup-api-openapi.yml, openapi/pverify-patient-demographic-validator-api-openapi.yml,
+  openapi/pverify-payers-api-openapi.yml, openapi/pverify-same-or-similar-api-openapi.yml, openapi/pverify-snf-api-openapi.yml
 description: Recommended x-agentic-access execution contracts, classified heuristically from
   the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
   audience per deployment. See research/curity/agentic-governance/.
 summary:
-  operations: 10
+  operations: 39
   by_action_class:
-    acting: 7
-    connected: 3
+    acting: 18
+    connected: 21
   by_consequence:
-    write: 7
-    read: 3
+    write: 18
+    read: 21
   human_in_the_loop_required: 0
 operations:
 - path: /Token
@@ -30,7 +34,169 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /API/EligibilitySummary
+- path: /Widget/Setup
+  method: post
+  operationId: createWidgetSetup
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/CGXInquiry
+  method: post
+  operationId: cgxInquiry
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /API/ClaimStatusInquiry
+  method: post
+  operationId: claimStatusInquiry
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /API/GetClaimStatusResponse/{requestId}
+  method: get
+  operationId: getClaimStatusResponse
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /API/CMNInquiry
+  method: post
+  operationId: cmnInquiry
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /API/GetCMNResponse/{requestId}
+  method: get
+  operationId: getCMNResponse
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /PDFReport/CMN/{id}
+  method: get
+  operationId: getCmnReport
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /API/GetEligibilitySummary/{requestId}
+  method: get
+  operationId: getEligibilitySummary
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/DentalEligibilitySummary
+  method: post
+  operationId: dentalEligibilitySummary
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/DentalEligibilityBenefitSummary
+  method: post
+  operationId: dentalEligibilityBenefitSummary
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/DentalEligibilitySummary
+  method: post
+  operationId: dentalEligibilitySummaryV2
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /API/GetDentalEligibilitySummary/{requestId}
+  method: get
+  operationId: getDentalEligibilitySummary
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/EligibilitySummary
   method: post
   operationId: eligibilitySummary
   x-agentic-access:
@@ -46,9 +212,19 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /API/EligibilityInquiry
+- path: /API/GetEligibility271/{requestId}
+  method: get
+  operationId: getEligibility271
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /API/EasyEligibilitySummary
   method: post
-  operationId: eligibilityInquiry
+  operationId: easyEligibilitySummary
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -62,16 +238,6 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /API/GetEligibilityResponse
-  method: get
-  operationId: getEligibilityResponse
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
 - path: /API/GetPendingInquiries
   method: get
   operationId: getPendingInquiries
@@ -98,41 +264,9 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /API/BatchEligibility
-  method: post
-  operationId: batchEligibility
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /API/ClaimStatus
-  method: post
-  operationId: claimStatus
-  x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
-    token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
-- path: /API/Payers
+- path: /Report/EligibilityPDFReport/{requestId}
   method: get
-  operationId: getPayers
+  operationId: getEligibilityPdfReport
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -140,9 +274,19 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /API/EstimationInquiry
+- path: /API/GetEligibilityDetailsURL/{requestId}
+  method: get
+  operationId: getEligibilityDetailsUrl
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/EstimateCalculation
   method: post
-  operationId: estimationInquiry
+  operationId: estimateCalculation
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -156,3 +300,219 @@ operations:
       - abnormal
       - high-value
     audit: required
+- path: /api/InsuranceDiscovery
+  method: post
+  operationId: insuranceDiscovery
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/GetInusuranceDiscoverySummaryResponse/{requestId}
+  method: get
+  operationId: getInsuranceDiscoverySummaryResponse
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /API/GetInsuranceDiscoveryDetailsURL/{requestId}
+  method: get
+  operationId: getInsuranceDiscoveryDetailsUrl
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /PDFReport/InsuranceDiscovery/{id}
+  method: get
+  operationId: getInsuranceDiscoveryReport
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /API/MBIInquiry
+  method: post
+  operationId: mbiInquiry
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /API/GetMBIResponse/{requestId}
+  method: get
+  operationId: getMBIResponse
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/PatientFinderInquiry
+  method: post
+  operationId: patientFinderInquiry
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /API/PatientFinderInquiryResults
+  method: post
+  operationId: patientFinderInquiryResults
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /API/GetPatientFinderResponse/{requestId}
+  method: get
+  operationId: getPatientFinderResponse
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /API/GetAllPayers
+  method: get
+  operationId: getAllPayers
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/GetPayerStatus
+  method: get
+  operationId: getPayerStatus
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /API/GetPayerStatusStatistics
+  method: get
+  operationId: getPayerStatusStatistics
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /API/SameOrSimilarInquiry
+  method: post
+  operationId: sameOrSimilarInquiry
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /API/GetSameOrSimilarResponse/{requestId}
+  method: get
+  operationId: getSameOrSimilarResponse
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /PDFReport/SameorSimilar/{id}
+  method: get
+  operationId: getSameOrSimilarReport
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /API/GetSameAndSimilarDetailsURL/{requestId}
+  method: get
+  operationId: getSameOrSimilarDetailsUrl
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /API/SNFInquiry
+  method: post
+  operationId: snfInquiry
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /API/GetSNFResponse/{requestId}
+  method: get
+  operationId: getSNFResponse
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
