@@ -1,0 +1,44 @@
+{
+  "provider": "pverify",
+  "sources": [
+    "_original/pverify-openapi.yml"
+  ],
+  "outputs": [
+    "pverify-authentication-api-openapi.yml",
+    "pverify-cgx-widget-api-openapi.yml",
+    "pverify-cmn-api-openapi.yml",
+    "pverify-claim-status-api-openapi.yml",
+    "pverify-dental-eligibility-api-openapi.yml",
+    "pverify-eligibility-api-openapi.yml",
+    "pverify-estimation-api-openapi.yml",
+    "pverify-insurance-discovery-api-openapi.yml",
+    "pverify-mbi-lookup-api-openapi.yml",
+    "pverify-patient-demographic-validator-api-openapi.yml",
+    "pverify-payers-api-openapi.yml",
+    "pverify-snf-api-openapi.yml",
+    "pverify-same-or-similar-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "pverify-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "pverify-authentication-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pverify-cgx-widget-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pverify-claim-status-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pverify-cmn-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pverify-dental-eligibility-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pverify-eligibility-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pverify-estimation-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pverify-insurance-discovery-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pverify-mbi-lookup-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pverify-patient-demographic-validator-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pverify-payers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pverify-same-or-similar-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "pverify-snf-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

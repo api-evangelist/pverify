@@ -1,11 +1,7 @@
-# Derived from pVerify's published Postman collection: https://postman.pverify.com/
-# method: derived  generated: 2026-08-14
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: pVerify Patient Cost Estimator API
-  description: pVerify Patient Cost Estimator API, derived operation-for-operation from the public Postman
-    collection pVerify publishes at https://postman.pverify.com/ (last updated 03/01/2026). All calls
-    require an OAuth2 bearer token from POST /Token plus the Client-API-Id header.
+  title: pVerify Estimation API
+  description: Real-time healthcare insurance eligibility and revenue-cycle API. Derived operation-for-operation from the public Postman collection pVerify publishes at https://postman.pverify.com/ (collection 6ceb8797-50ff-42fd-98a3-64beefaa6c94, last updated 03/01/2026). Covers eligibility (270/271), dental eligibility, insurance discovery, MBI lookup, patient demographic validation, claim status (276/277), patient cost estimation, payer lists and the CGX widget.
   version: '1.0'
   termsOfService: https://pverify.com/privacy-policy/
   contact:
@@ -26,39 +22,219 @@ paths:
       tags:
       - Estimation
       summary: EstimateCalculation
-      description: "Environment | \nURL | \n\nProduction | \nhttps://api.pverify.com/api/EstimateCalculation\
-        \ | \n\nThis POST call will get an estimated price from CMS (Medicare) non-facility price index.\
-        \ In order for you to use this, we must add the estimator service (which is free) to your account.\
-        \ Additionally, for the Zip code, use 0 for national pricing, and you can send an array of CPT\
-        \ codes per the Postman example. Please note, due to the nature of the EstimateCalculation call,\
-        \ no test credentials are available.\n\nEstimateCalculation Request\n\nKey | \nValue | \n\nURL\
-        \ | \nhttps://api.pverify.com/api/EstimateCalculation | \n\nMethod | \nPOST | \n\nHeaders | \n\
-        Description | \n\nClient-API-Id* | \nYour pVerify client-api-id | \n\nContent-Type | \napplication/json\
-        \ | \n\nBody | \nDescription | \n\nData Parameters | \nSee fields to the right | \n\n*Note: The\
-        \ Client-API-Id is required in header. Header keys are case sensitive.\n\nEstimateCalculation\
-        \ Request Fields\n\nField | \nType | \nDescription | \n\nzipCode | \nString | \nZip code of your\
-        \ location. Use 0 for national pricing. | \n\ncptCodes | \nString | \nArray of CPT codes needed\
-        \ for estimate. If there is a modifier include it as a dash. For example, 93024-TC would be the\
-        \ cardiac drug stress test technical component. | \n\ncoPay | \nString | \nDollar amount of patient\
-        \ copay. | \n\ncoinsPercentage | \nString | \nIn percent, coinsurance | \n\ndeductibleRemaining\
-        \ | \nString | \nDollar amount of deductible remaining | \n\noutofPocketRemaining | \nString |\
-        \ \nOut of pocket remaining- if this is blank we will not include this in the calculation. | \n\
-        \nisCopayIncludeInDeductible | \nBoolean | \nAdd copay to coinsurance or not. | \n\nisSecondaryStatusActive\
-        \ | \nBoolean | \nIf patient has secondary insurance- if this is true then patient responsibility\
-        \ is zero. | \n\nNonMedicareMultipleFactor | \nDecimal | \nNonMedicare Multiple factor to CPT\
-        \ values calculation | \n\nInternalId | \nString | \nInternal Id for patient | \n\nEstimateCalculation\
-        \ Response\n\nField | \nDescription | \n\npatientResponsibility | \nThe amount the patient owes.\
-        \ | \n\ncopay | \nPatient copay. | \n\ncoInsPercentage | \nCoinsurance percentage. | \n\ncoInsAmount\
-        \ | \nCoinsurance Amount. | \n\nestimatedAllowable | \nTHe sum of the charges (note: not all charges\
-        \ are approved by CMS) | \n\ndeductibleRemainging | \nAmount of deductible remaining.+ | \n\n\
-        outOfPocketRemaining | \nAmount remaining for out of pocket.++ | \n\namountPayable | \nAmount\
-        \ Payable | \n\nselected CPTs | \nSelected CPT codes | \n\nzipCode | \nZip code returned | \n\n\
-        apiResponseCode | \nAPI response code | \n\napiResponseMessage | \nAPI response message | \n\n\
-        InternalId | \nInternal Id for patient | \n\n+The deductible must be met before insurance applies.\
-        \ For example, if the deductible remaining is 1000, then the patient will have to pay out of pocket\
-        \ $1000 for next procedure as long as the procedure amount > $1000.++This is typically a high\
-        \ number. Once it reaches zero, the patient responsibility is zero. It is designed for catastrophic\
-        \ coverage ie: major surgery or chemotherapy."
+      description: 'Environment |
+
+        URL |
+
+
+        Production |
+
+        https://api.pverify.com/api/EstimateCalculation |
+
+
+        This POST call will get an estimated price from CMS (Medicare) non-facility price index. In order for you to use this, we must add the estimator service (which is free) to your account. Additionally, for the Zip code, use 0 for national pricing, and you can send an array of CPT codes per the Postman example. Please note, due to the nature of the EstimateCalculation call, no test credentials are available.
+
+
+        EstimateCalculation Request
+
+
+        Key |
+
+        Value |
+
+
+        URL |
+
+        https://api.pverify.com/api/EstimateCalculation |
+
+
+        Method |
+
+        POST |
+
+
+        Headers |
+
+        Description |
+
+
+        Client-API-Id* |
+
+        Your pVerify client-api-id |
+
+
+        Content-Type |
+
+        application/json |
+
+
+        Body |
+
+        Description |
+
+
+        Data Parameters |
+
+        See fields to the right |
+
+
+        *Note: The Client-API-Id is required in header. Header keys are case sensitive.
+
+
+        EstimateCalculation Request Fields
+
+
+        Field |
+
+        Type |
+
+        Description |
+
+
+        zipCode |
+
+        String |
+
+        Zip code of your location. Use 0 for national pricing. |
+
+
+        cptCodes |
+
+        String |
+
+        Array of CPT codes needed for estimate. If there is a modifier include it as a dash. For example, 93024-TC would be the cardiac drug stress test technical component. |
+
+
+        coPay |
+
+        String |
+
+        Dollar amount of patient copay. |
+
+
+        coinsPercentage |
+
+        String |
+
+        In percent, coinsurance |
+
+
+        deductibleRemaining |
+
+        String |
+
+        Dollar amount of deductible remaining |
+
+
+        outofPocketRemaining |
+
+        String |
+
+        Out of pocket remaining- if this is blank we will not include this in the calculation. |
+
+
+        isCopayIncludeInDeductible |
+
+        Boolean |
+
+        Add copay to coinsurance or not. |
+
+
+        isSecondaryStatusActive |
+
+        Boolean |
+
+        If patient has secondary insurance- if this is true then patient responsibility is zero. |
+
+
+        NonMedicareMultipleFactor |
+
+        Decimal |
+
+        NonMedicare Multiple factor to CPT values calculation |
+
+
+        InternalId |
+
+        String |
+
+        Internal Id for patient |
+
+
+        EstimateCalculation Response
+
+
+        Field |
+
+        Description |
+
+
+        patientResponsibility |
+
+        The amount the patient owes. |
+
+
+        copay |
+
+        Patient copay. |
+
+
+        coInsPercentage |
+
+        Coinsurance percentage. |
+
+
+        coInsAmount |
+
+        Coinsurance Amount. |
+
+
+        estimatedAllowable |
+
+        THe sum of the charges (note: not all charges are approved by CMS) |
+
+
+        deductibleRemainging |
+
+        Amount of deductible remaining.+ |
+
+
+        outOfPocketRemaining |
+
+        Amount remaining for out of pocket.++ |
+
+
+        amountPayable |
+
+        Amount Payable |
+
+
+        selected CPTs |
+
+        Selected CPT codes |
+
+
+        zipCode |
+
+        Zip code returned |
+
+
+        apiResponseCode |
+
+        API response code |
+
+
+        apiResponseMessage |
+
+        API response message |
+
+
+        InternalId |
+
+        Internal Id for patient |
+
+
+        +The deductible must be met before insurance applies. For example, if the deductible remaining is 1000, then the patient will have to pay out of pocket $1000 for next procedure as long as the procedure amount > $1000.++This is typically a high number. Once it reaches zero, the patient responsibility is zero. It is designed for catastrophic coverage ie: major surgery or chemotherapy.'
       requestBody:
         required: true
         content:
@@ -94,8 +270,7 @@ paths:
                 NonMedicareMultipleFactor:
                   type: number
                   example: 1.2
-                InternalId:
-                  nullable: true
+                InternalId: {}
             example:
               zipCode: '27713'
               cptCodes:
@@ -126,11 +301,9 @@ components:
       type: apiKey
       in: header
       name: Client-API-Id
-      description: Client API identifier issued by pVerify. Required on every call; header keys are case
-        sensitive.
+      description: Client API identifier issued by pVerify. Required on every call; header keys are case sensitive.
     clientSecret:
       type: apiKey
       in: header
       name: Client-Secret
-      description: Client secret issued by pVerify, used by the one-step (no-token) endpoints and the
-        premium report endpoints.
+      description: Client secret issued by pVerify, used by the one-step (no-token) endpoints and the premium report endpoints.
