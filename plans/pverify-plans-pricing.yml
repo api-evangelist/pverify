@@ -284,3 +284,75 @@ notes: >-
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - subscription
+  units:
+  - transaction
+  plans:
+  - name: Advanced Eligibility — Standard
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - transaction
+    periods:
+    - month
+  - name: Advanced Eligibility — Enterprise
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - transaction
+    periods:
+    - month
+  - name: Insurance Discovery — Standard
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - transaction
+    periods:
+    - month
+  - name: Insurance Discovery — Enterprise
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - transaction
+    periods:
+    - month
+  - name: MBI Lookup — Standard
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - transaction
+    periods:
+    - month
+  - name: MBI Lookup — Enterprise
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - transaction
+    periods:
+    - month
+  - name: Claim Status — Standard
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - transaction
+    periods:
+    - month
+  - name: Claim Status — Enterprise
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - transaction
+    periods:
+    - month
