@@ -1,4 +1,4 @@
-# pVerify (pverify)
+# pVerify
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,162 +64,182 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-pVerify provides real-time healthcare insurance eligibility verification and revenue-cycle APIs. Its RESTful API at https://api.pverify.com exchanges EDI 270/271 eligibility transactions, returns plan and benefit summaries, checks claim status (276/277), lists supported payers, and estimates patient financial responsibility, secured with OAuth2 bearer tokens.
+pVerify is a US healthcare insurance eligibility and revenue-cycle API company, part of DoseSpot (now Interra Health). Its REST API at https://api.pverify.com exchanges X12 270/271 eligibility transactions and returns parsed, practice-type-specific benefit summaries; runs 276/277 claim status inquiries; discovers unknown active coverage for self-pay patients; looks up Medicare Beneficiary Identifiers; validates patient demographics; publishes a supported-payer catalog with live per-payer up/down status; and estimates patient financial responsibility at the point of service. Authentication is an OAuth2 client-credentials bearer token plus a case-sensitive Client-API-Id header. pVerify publishes no OpenAPI — its machine-readable contract is a public Postman Collection v2.0.0 at https://postman.pverify.com/, from which the OpenAPI documents in this repository were derived operation-for-operation.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/pverify/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/pverify/refs/heads/main/apis.yml)
+**Areas:** Healthcare · Insurance · Eligibility · Claims · EDI · 270/271 · 276/277 · Revenue Cycle · Medicare · Payers · Insurance Discovery · Patient Estimation
 
-## Tags
+## pVerify on APIs.io
 
-- Healthcare
-- Insurance
-- Eligibility
-- Claims
-- EDI
-- 270/271
+Everything profiled for pVerify is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/pverify/](https://apis.io/providers/pverify/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (13)
 
-- **Created:** 2026-06-21
-- **Modified:** 2026-06-21
+- [pVerify Authentication API](https://apis.io/apis/pverify/pverify-authentication-api/) — OAuth2 client-credentials token endpoint. POST /Token exchanges Client_Id + Client_Secret for a bearer access_token used on every other pVerify call,…
+- [pVerify Eligibility API](https://apis.io/apis/pverify/pverify-eligibility-api/) — Real-time X12 270/271 insurance eligibility verification. Submit an EligibilitySummary inquiry, poll the pending queue, retrieve the parsed benefit summary…
+- [pVerify Dental Eligibility API](https://apis.io/apis/pverify/pverify-dental-eligibility-api/) — Dental insurance eligibility and benefit verification, including the only version-prefixed path in the pVerify surface (/api/v2/DentalEligibilitySummary)…
+- [pVerify Insurance Discovery API](https://apis.io/apis/pverify/pverify-insurance-discovery-api/) — Find unknown or unreported active insurance coverage for a patient presenting as self-pay, returning candidate payers and member IDs plus a hosted details…
+- [pVerify MBI Lookup API](https://apis.io/apis/pverify/pverify-mbi-lookup-api/) — Look up a Medicare Beneficiary Identifier for a patient from demographic data, for providers who need the MBI before they can run Medicare eligibility.
+- [pVerify Patient Demographic Validator API](https://apis.io/apis/pverify/pverify-patient-demographic-validator-api/) — Validate and complete patient demographic data (pDV) — name, date of birth, gender and address — so that downstream eligibility and discovery inquiries…
+- [pVerify Claim Status API](https://apis.io/apis/pverify/pverify-claim-status-api/) — X12 276/277 claim status inquiry. Ask a payer what happened to a submitted claim and retrieve the 277 response by RequestID. Not every payer supports…
+- [pVerify Patient Cost Estimator API](https://apis.io/apis/pverify/pverify-estimation-api/) — Estimate patient financial responsibility for a planned service from the payer benefit data, for point-of-service collection.
+- [pVerify Payers API](https://apis.io/apis/pverify/pverify-payers-api/) — The payer network surface: the full supported-payer catalog, live per-payer up/down status (the only pVerify operation requiring no authentication), and…
+- [pVerify CGX Widget API](https://apis.io/apis/pverify/pverify-cgx-widget-api/) — Provision and drive the embeddable eligibility-and-estimates widget. Setup runs against the premium portal host; CGXInquiry returns a combined estimate plus…
+- [pVerify Same or Similar API (discontinued)](https://apis.io/apis/pverify/pverify-same-or-similar-api/) — Medicare same-or-similar DME history check. pVerify labels this product "(Discontinued)" in its own documentation while continuing to document it in full;…
+- [pVerify CMN API (discontinued)](https://apis.io/apis/pverify/pverify-cmn-api/) — Certificate of Medical Necessity lookup. Labelled "(Discontinued)" by pVerify; every operation is marked deprecated in the spec.
+- [pVerify SNF API (discontinued)](https://apis.io/apis/pverify/pverify-snf-api/) — Skilled Nursing Facility stay verification. Labelled "(Discontinued)" by pVerify; every operation is marked deprecated in the spec.
 
-## APIs
+### Published properties
 
-### pVerify Eligibility Inquiry API
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-Real-time 270/271 eligibility inquiry that posts a full benefit request to a payer and returns the detailed 271 response, with asynchronous retrieval (GetEligibilityResponse), pending-queue listing (GetPendingInquiries), and transaction cancellation (CancelTransaction).
+#### AsyncAPI (1)
 
-- **Human URL:** [https://docs.pverify.io/](https://docs.pverify.io/)
-- **Base URL:** `https://api.pverify.com`
+Event-driven and webhook contracts.
 
-#### Tags
+- [Pverify Callbacks](https://apis.io/asyncapis/pverify/pverify-callbacks/)
 
-- Eligibility
-- 270/271
-- Real Time
+#### MCP servers (1)
 
-#### Properties
+Model Context Protocol servers that expose the API to agents.
 
-- [Documentation](https://docs.pverify.io/)
-- [API Reference](https://www.pverify.com/rest-api/)
-- [OpenAPI](openapi/pverify-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/pverify.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/pverify.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [pverify-mcp.yml](https://apis.io/servers/pverify/pverify-mcp-yml/)
 
-### pVerify Eligibility Summary API
+#### Agentic access (1)
 
-Posts a single real-time eligibility request and returns a condensed, practice-type-specific summary of plan, coverage, copay, coinsurance, deductible, and out-of-pocket benefits.
+Which operations an agent can call, which act, and which need a human in the loop.
 
-- **Human URL:** [https://docs.pverify.io/](https://docs.pverify.io/)
-- **Base URL:** `https://api.pverify.com`
+- [Pverify Agentic Access](https://apis.io/agentic-access/pverify/pverify-agentic-access/)
 
-#### Tags
+#### Vocabulary (1)
 
-- Eligibility
-- Benefits
-- Summary
+The provider's domain terms, defined.
 
-#### Properties
+- [Pverify Vocabulary](https://apis.io/vocabularies/pverify/pverify-vocabulary/)
 
-- [Documentation](https://docs.pverify.io/)
-- [API Reference](https://www.pverify.com/rest-api/)
-- [OpenAPI](openapi/pverify-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/pverify.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/pverify.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### Collections (7)
 
-### pVerify Batch Eligibility API
+Postman and Open Collection request collections.
 
-Submits many eligibility verifications in a single batch for asynchronous processing and later retrieval of completed results.
+- [pVerify API](https://apis.io/collections/pverify/open-pverify/)
+- [pVerify Authentication API](https://apis.io/collections/pverify/open-pverify-authentication-api/)
+- [pVerify Authentication Batch API](https://apis.io/collections/pverify/open-pverify-batch-api/)
+- [pVerify Authentication Claim Status API](https://apis.io/collections/pverify/open-pverify-claim-status-api/)
+- [pVerify Authentication Eligibility API](https://apis.io/collections/pverify/open-pverify-eligibility-api/)
+- [pVerify Authentication Estimation API](https://apis.io/collections/pverify/open-pverify-estimation-api/)
+- [pVerify Authentication Payers API](https://apis.io/collections/pverify/open-pverify-payers-api/)
 
-- **Human URL:** [https://docs.pverify.io/](https://docs.pverify.io/)
-- **Base URL:** `https://api.pverify.com`
+#### Overlays (13)
 
-#### Tags
+OpenAPI overlays, including conversational phrasing for each operation.
 
-- Batch
-- Eligibility
-- Async
+- [Pverify Authentication Api Overlay](https://apis.io/overlays/pverify/pverify-authentication-api-overlay/)
+- [Pverify Cgx Widget Api Overlay](https://apis.io/overlays/pverify/pverify-cgx-widget-api-overlay/)
+- [Pverify Claim Status Api Overlay](https://apis.io/overlays/pverify/pverify-claim-status-api-overlay/)
+- [Pverify Cmn Api Overlay](https://apis.io/overlays/pverify/pverify-cmn-api-overlay/)
+- [Pverify Dental Eligibility Api Overlay](https://apis.io/overlays/pverify/pverify-dental-eligibility-api-overlay/)
+- [Pverify Eligibility Api Overlay](https://apis.io/overlays/pverify/pverify-eligibility-api-overlay/)
+- [Pverify Estimation Api Overlay](https://apis.io/overlays/pverify/pverify-estimation-api-overlay/)
+- [Pverify Insurance Discovery Api Overlay](https://apis.io/overlays/pverify/pverify-insurance-discovery-api-overlay/)
+- [Pverify Mbi Lookup Api Overlay](https://apis.io/overlays/pverify/pverify-mbi-lookup-api-overlay/)
+- [Pverify Patient Demographic Validator Api Overlay](https://apis.io/overlays/pverify/pverify-patient-demographic-validator-api-overlay/)
+- [Pverify Payers Api Overlay](https://apis.io/overlays/pverify/pverify-payers-api-overlay/)
+- [Pverify Same Or Similar Api Overlay](https://apis.io/overlays/pverify/pverify-same-or-similar-api-overlay/)
+- [Pverify Snf Api Overlay](https://apis.io/overlays/pverify/pverify-snf-api-overlay/)
 
-#### Properties
+#### Security (3)
 
-- [Documentation](https://docs.pverify.io/)
-- [OpenAPI](openapi/pverify-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/pverify.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/pverify.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Authentication, trust centre, and vulnerability disclosure.
 
-### pVerify Claim Status API
+- [Pverify Authentication](https://apis.io/security/pverify/pverify-authentication/)
+- [Pverify Domain Security](https://apis.io/security/pverify/pverify-domain-security/)
+- [Pverify Trust Center](https://apis.io/security/pverify/pverify-trust-center/)
 
-Real-time 276/277 claim status inquiry returning the current processing state, dates, and amounts for a submitted claim direct from the payer.
+#### Plans and pricing (1)
 
-- **Human URL:** [https://docs.pverify.io/](https://docs.pverify.io/)
-- **Base URL:** `https://api.pverify.com`
+Published plans, tiers and prices.
 
-#### Tags
+- [Pverify Plans Pricing](https://apis.io/plans/pverify/pverify-plans-pricing/)
 
-- Claims
-- 276/277
-- Claim Status
+#### Rate limits (1)
 
-#### Properties
+Published request limits.
 
-- [Documentation](https://docs.pverify.io/)
-- [API Reference](https://www.pverify.com/claim-status/)
-- [OpenAPI](openapi/pverify-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/pverify.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/pverify.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Pverify Rate Limits](https://apis.io/rate-limits/pverify/pverify-rate-limits/)
 
-### pVerify Payers API
+#### FinOps (1)
 
-Returns the current pVerify payer list with payerCode, payerName, and capability flags (isActive, isSupportingEligibility, isSupportingClaims, isEDIPayer) for mapping requests to supported insurers.
+What the API costs to run, by operation.
 
-- **Human URL:** [https://docs.pverify.io/](https://docs.pverify.io/)
-- **Base URL:** `https://api.pverify.com`
+- [Pverify Finops](https://apis.io/finops/pverify/pverify-finops/)
 
-#### Tags
+## Where to find this API
 
-- Payers
-- Reference Data
-- Catalog
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
-#### Properties
-
-- [Documentation](https://docs.pverify.io/)
-- [API Reference](https://pverify.com/payer-list/)
-- [OpenAPI](openapi/pverify-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/pverify.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/pverify.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### pVerify Estimation API
-
-Patient cost estimation that combines real-time benefits with contracted/fee data to estimate patient financial responsibility for planned services.
-
-- **Human URL:** [https://docs.pverify.io/](https://docs.pverify.io/)
-- **Base URL:** `https://api.pverify.com`
-
-#### Tags
-
-- Estimation
-- Price Transparency
-- Patient Responsibility
-
-#### Properties
-
-- [Documentation](https://docs.pverify.io/)
-- [API Reference](https://www.pverify.com/patient-estimator/)
-- [OpenAPI](openapi/pverify-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/pverify.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/pverify.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-## Common Properties
-
-- [GitHub Organization](https://github.com/pVerify)
-- [LinkedIn](https://www.linkedin.com/company/pverify)
 - [Website](https://www.pverify.com)
 - [Documentation](https://docs.pverify.io/)
-- [Plans](plans/pverify-plans-pricing.yml)
-- [Rate Limits](rate-limits/pverify-rate-limits.yml)
-- [Fin Ops](finops/pverify-finops.yml)
+- [Getting started](https://pverify.com/templates/)
+- [API reference](https://postman.pverify.com/)
+- [Pricing](https://pverify.com/pricing/)
+- [Support](https://pverify.com/contact-support/)
+- [Blog](https://pverify.com/blog/)
+- [Compliance](https://trust.dosespot.com/)
+- [Terms of service](https://pverify.com/pverify-legal-documentation/)
+- [Privacy policy](https://pverify.com/privacy-policy/)
+- [GitHub](https://github.com/pVerify)
+- [Status](https://status.dosespot.com/posts/dashboard)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 51.2** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 56.4 |
+| Contract governance | 33.3 |
+| Operational transparency | 42.1 |
+| Developer ergonomics | 49.4 |
+| Access clarity | 53.9 |
+
+**Agent readiness 36.0** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 19.3** — Insurance
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/pverify/](https://apis.io/providers/pverify/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for pVerify: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/pverify/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
